@@ -4,6 +4,8 @@
 #include <string>
 #include <sys/types.h>
 
+#include <glm/glm.hpp>
+
 namespace SimpleGL {
   class AbstractShader;
   class ShaderProgramPrivate;
@@ -21,6 +23,7 @@ namespace SimpleGL {
     std::string message();
 
     bool setUniform(std::string name, float value);
+    bool setUniform(std::string name, glm::mat4 value);
 
   private:
     ShaderProgramPrivate *d;

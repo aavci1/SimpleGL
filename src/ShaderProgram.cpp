@@ -5,6 +5,8 @@
 
 #include <GL/glew.h>
 
+#include <glm/ext.hpp>
+
 #include <vector>
 
 namespace SimpleGL {
@@ -97,6 +99,19 @@ namespace SimpleGL {
     glUseProgram(d->id);
     // set uniform value
     glUniform1f(location, value);
+    // unselect this program
+    glUseProgram(0);
+  }
+
+  bool ShaderProgram::setUniform(std::string name, glm::mat4 value) {
+    // get uniform location
+    GLint location = glGetUniformLocation(d->id, name.c_str());
+    if (location == -1)
+      return false;
+    // select this program
+    glUseProgram(d->id);
+    // set uniform value
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
     // unselect this program
     glUseProgram(0);
   }
