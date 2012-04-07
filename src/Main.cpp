@@ -62,22 +62,20 @@ int main(int argc, char **argv) {
   if (!shaderProgram->compileAndLink())
     printf("Compiling shader program failed:\n%s", shaderProgram->message().c_str());
 
-  float fTriangle[] = {
-    -5.0f, -5.0f, +5.0f, 1.0f, 0.0f, 0.0f,
-     0.0f, +5.0f,  0.0f, 0.0f, 1.0f, 0.0f,
-    -5.0f, -5.0f, -5.0f, 0.0f, 0.0f, 1.0f,
-
-    +5.0f, -5.0f, +5.0f, 1.0f, 0.0f, 0.0f,
-     0.0f, +5.0f,  0.0f, 0.0f, 1.0f, 0.0f,
-    -5.0f, -5.0f, +5.0f, 0.0f, 0.0f, 1.0f,
-
-    +5.0f, -5.0f, +5.0f, 1.0f, 0.0f, 0.0f,
-     0.0f, +5.0f,  0.0f, 0.0f, 0.0f, 1.0f,
-    +5.0f, -5.0f, -5.0f, 1.0f, 0.0f, 0.0f,
-
-    +5.0f, -5.0f, +5.0f, 1.0f, 0.0f, 0.0f,
-     0.0f, +5.0f,  0.0f, 0.0f, 0.0f, 1.0f,
-    -5.0f, -5.0f, +5.0f, 1.0f, 0.0f, 0.0f,
+  float vertices[] = {
+    -7.5f, -5.0f, +7.5f, 1.0f, 0.0f, 0.0f,
+    +7.5f, -5.0f, +7.5f, 0.0f, 1.0f, 0.0f,
+    +7.5f, -5.0f, -7.5f, 0.0f, 0.0f, 1.0f,
+    -7.5f, -5.0f, -7.5f, 1.0f, 0.0f, 1.0f,
+     0.0f, +5.0f,  0.0f, 1.0f, 1.0f, 1.0f
+  };
+  ushort indices[] = {
+    0, 1, 4,
+    1, 2, 4,
+    2, 3, 4,
+    3, 0, 4,
+    2, 1, 0,
+    3, 2, 0
   };
   // generate and bind vertex array object
   uint vao;
@@ -88,15 +86,19 @@ int main(int argc, char **argv) {
   glGenBuffers(1, &vbo);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
   // assign data
-  glBufferData(GL_ARRAY_BUFFER, sizeof(fTriangle), fTriangle, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
   // enable position
   glEnableVertexAttribArray(SGL_POSITION);
   glVertexAttribPointer(SGL_POSITION, 3, GL_FLOAT, GL_FALSE, 24, 0);
   // enable color
   glEnableVertexAttribArray(SGL_COLOR);
   glVertexAttribPointer(SGL_COLOR, 3, GL_FLOAT, GL_FALSE, 24, (void *)12);
-  // unbind vertex buffer object
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  // generate index buffer object
+  uint ibo;
+  glGenBuffers(1, &ibo);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+  // assign data
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
   // unbind vertex array object
   glBindVertexArray(0);
   // while not escape pressed and window is not closed
@@ -104,15 +106,13 @@ int main(int argc, char **argv) {
   // set color to clear background
   glClearColor(0.0f, 0.5f, 1.0f, 1.0f);
   modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
-  viewMatrix = glm::translate(viewMatrix, glm::vec3(0, 0, -20));
+  viewMatrix = glm::translate(viewMatrix, glm::vec3(0, 0, -25));
+  glEnable(GL_CULL_FACE);
   while (!glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED)) {
     // get time
     time = glfwGetTime();
-    // update matrices
-    modelMatrix = glm::rotate(modelMatrix, 0.01f, glm::vec3(0, 1, 0));
-    viewMatrix = glm::rotate(viewMatrix, 0.01f, glm::vec3(1, 0, 0));
     // clear color buffer
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // update uniforms
     shaderProgram->setUniform("sglWorldViewProjMatrix", projMatrix * viewMatrix * modelMatrix);
     // select shader to use
@@ -120,11 +120,19 @@ int main(int argc, char **argv) {
     // select vertex array object to draw
     glBindVertexArray(vao);
     // draw item
-    glDrawArrays(GL_TRIANGLES, 0, 12);
+    glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_SHORT, 0);
     // unselect shader
     glUseProgram(0);
     // swap front and back rendering buffers
     glfwSwapBuffers();
+    if (glfwGetKey(GLFW_KEY_UP))
+      modelMatrix = glm::rotate(modelMatrix, +0.01f, glm::vec3(1, 0, 0));
+    if (glfwGetKey(GLFW_KEY_DOWN))
+      modelMatrix = glm::rotate(modelMatrix, -0.01f, glm::vec3(1, 0, 0));
+    if (glfwGetKey(GLFW_KEY_LEFT))
+      modelMatrix = glm::rotate(modelMatrix, +0.01f, glm::vec3(0, 1, 0));
+    if (glfwGetKey(GLFW_KEY_RIGHT))
+      modelMatrix = glm::rotate(modelMatrix, -0.01f, glm::vec3(0, 1, 0));
   }
   // clean up
   delete shaderProgram;
