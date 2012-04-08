@@ -1,6 +1,7 @@
 #include "FragmentShader.h"
 #include "VertexShader.h"
 #include "ShaderProgram.h"
+#include "Texture.h"
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
@@ -30,12 +31,12 @@ void GLFWCALL resize(int width, int height) {
   //   printf("new size: %dx%d\n", width, height);
   glViewport(0, 0, (GLsizei) width, (GLsizei) height);
   // update perspective
-  projMatrix = glm::perspectiveFov(90.0f, 1.0f * width, 1.0f * height, 10.0f, 10000.0f);
+  projMatrix = glm::perspectiveFov(90.0f, 1.0f * width, 1.0f * height, 1.0f, 10000.0f);
 }
 
 int main(int argc, char **argv) {
   if (!glfwInit()) {
-    printf("error: cannot initialize glfw.\n");
+    printf("error: can not initialize glfw.\n");
     return 1;
   }
   // request opengl version
@@ -53,21 +54,26 @@ int main(int argc, char **argv) {
   glfwSetWindowSizeCallback(resize);
   // initialize glew, must be after window creation
   if (glewInit() != GLEW_OK) {
-    printf("error: cannot initialize glew.\n");
+    printf("error: can not initialize glew.\n");
     return 1;
   }
+  // load texture
+  Texture *texture = new Texture("media/laminate.jpg");
+  if (!texture->load())
+    printf("error: can not load texture %s.", texture->path().c_str());
+  // load shader
   ShaderProgram *shaderProgram = new ShaderProgram();
-  shaderProgram->addShader(new VertexShader(readAll("media/projection.vert")));
-  shaderProgram->addShader(new FragmentShader(readAll("media/minimal.frag")));
+  shaderProgram->addShader(new VertexShader(readAll("media/texture.vert")));
+  shaderProgram->addShader(new FragmentShader(readAll("media/texture.frag")));
   if (!shaderProgram->compileAndLink())
-    printf("Compiling shader program failed:\n%s", shaderProgram->message().c_str());
+    printf("error: can not compile shader:\n%s", shaderProgram->message().c_str());
 
   float vertices[] = {
-    -7.5f, -5.0f, +7.5f, 1.0f, 0.0f, 0.0f,
-    +7.5f, -5.0f, +7.5f, 0.0f, 1.0f, 0.0f,
-    +7.5f, -5.0f, -7.5f, 0.0f, 0.0f, 1.0f,
-    -7.5f, -5.0f, -7.5f, 1.0f, 0.0f, 1.0f,
-     0.0f, +5.0f,  0.0f, 1.0f, 1.0f, 1.0f
+    -7.5f, -5.0f, +7.5f, 0.0f, 0.0f,
+    +7.5f, -5.0f, +7.5f, 1.0f, 0.0f,
+    +7.5f, -5.0f, -7.5f, 0.0f, 0.0f,
+    -7.5f, -5.0f, -7.5f, 1.0f, 0.0f,
+     0.0f, +5.0f,  0.0f, 0.5f, 1.0f,
   };
   ushort indices[] = {
     0, 1, 4,
@@ -89,10 +95,10 @@ int main(int argc, char **argv) {
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
   // enable position
   glEnableVertexAttribArray(SGL_POSITION);
-  glVertexAttribPointer(SGL_POSITION, 3, GL_FLOAT, GL_FALSE, 24, 0);
+  glVertexAttribPointer(SGL_POSITION, 3, GL_FLOAT, GL_FALSE, 20, 0);
   // enable color
-  glEnableVertexAttribArray(SGL_COLOR);
-  glVertexAttribPointer(SGL_COLOR, 3, GL_FLOAT, GL_FALSE, 24, (void *)12);
+  glEnableVertexAttribArray(SGL_TEXCOORD0);
+  glVertexAttribPointer(SGL_TEXCOORD0, 2, GL_FLOAT, GL_FALSE, 20, (void *)12);
   // generate index buffer object
   uint ibo;
   glGenBuffers(1, &ibo);
@@ -103,18 +109,28 @@ int main(int argc, char **argv) {
   glBindVertexArray(0);
   // while not escape pressed and window is not closed
   double time = glfwGetTime();
+  float timeDiff = 0;
   // set color to clear background
   glClearColor(0.0f, 0.5f, 1.0f, 1.0f);
   modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
   viewMatrix = glm::translate(viewMatrix, glm::vec3(0, 0, -25));
   glEnable(GL_CULL_FACE);
+  glEnable(GL_TEXTURE_2D);
   while (!glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED)) {
+    // update time
+    timeDiff = glfwGetTime() - time;
     // get time
-    time = glfwGetTime();
+    time += timeDiff;
+    // apply animations
+    modelMatrix = glm::rotate(modelMatrix, timeDiff * 50, glm::vec3(0, 1, 0));
     // clear color buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // select texture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture->id());
+    glBindSampler(0, texture->sampler());
     // update uniforms
-    shaderProgram->setUniform("sglWorldViewProjMatrix", projMatrix * viewMatrix * modelMatrix);
+    shaderProgram->setUniform("sglModelViewProjMatrix", projMatrix * viewMatrix * modelMatrix);
     // select shader to use
     glUseProgram(shaderProgram->id());
     // select vertex array object to draw
@@ -125,14 +141,6 @@ int main(int argc, char **argv) {
     glUseProgram(0);
     // swap front and back rendering buffers
     glfwSwapBuffers();
-    if (glfwGetKey(GLFW_KEY_UP))
-      modelMatrix = glm::rotate(modelMatrix, +0.01f, glm::vec3(1, 0, 0));
-    if (glfwGetKey(GLFW_KEY_DOWN))
-      modelMatrix = glm::rotate(modelMatrix, -0.01f, glm::vec3(1, 0, 0));
-    if (glfwGetKey(GLFW_KEY_LEFT))
-      modelMatrix = glm::rotate(modelMatrix, +0.01f, glm::vec3(0, 1, 0));
-    if (glfwGetKey(GLFW_KEY_RIGHT))
-      modelMatrix = glm::rotate(modelMatrix, -0.01f, glm::vec3(0, 1, 0));
   }
   // clean up
   delete shaderProgram;

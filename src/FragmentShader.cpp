@@ -1,8 +1,8 @@
 #include "FragmentShader.h"
 
-#include <cstring>
-
 #include <GL/glew.h>
+
+#include <cstring>
 
 namespace SimpleGL {
   class FragmentShaderPrivate {

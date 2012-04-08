@@ -10,7 +10,8 @@ set (SOURCES
   src/FragmentShader.cpp
   src/VertexShader.cpp
   src/ShaderProgram.cpp
+  src/Texture.cpp
 )
 # opengl target
 add_executable (SimpleGL WIN32 ${SOURCES} resources.rc)
-target_link_libraries (SimpleGL GL GLEW glfw)
+target_link_libraries (SimpleGL GL GLEW glfw freeimage)
