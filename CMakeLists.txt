@@ -10,6 +10,7 @@ set (SOURCES
   src/FragmentShader.cpp
   src/VertexShader.cpp
   src/ShaderProgram.cpp
+  src/SubMesh.cpp
   src/Texture.cpp
 )
 # opengl target

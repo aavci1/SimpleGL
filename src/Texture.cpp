@@ -7,7 +7,7 @@
 namespace SimpleGL {
   class TexturePrivate {
   public:
-    TexturePrivate() : id(0), sampler(0), width(0), height(0), bitsPerPixel(0) {
+    TexturePrivate() : id(0), sampler(0), width(0), height(0), bitsPerPixel(0), index(0) {
     }
 
     ~TexturePrivate() {
@@ -19,6 +19,7 @@ namespace SimpleGL {
     uint width;
     uint height;
     uint bitsPerPixel;
+    ushort index;
   };
 
   Texture::Texture(std::string path) : d(new TexturePrivate()) {
@@ -37,26 +38,6 @@ namespace SimpleGL {
     glDeleteSamplers(1, &d->sampler);
     // delete data
     delete d;
-  }
-
-  uint Texture::id() {
-    return d->id;
-  }
-
-  uint Texture::sampler() {
-    return d->sampler;
-  }
-
-  uint Texture::width() {
-    return d->width;
-  }
-
-  uint Texture::height() {
-    return d->height;
-  }
-
-  uint Texture::bitsPerPixel() {
-    return d->bitsPerPixel;
   }
 
   std::string Texture::path() {
@@ -100,7 +81,27 @@ namespace SimpleGL {
     glBindTexture(GL_TEXTURE_2D, 0);
     // unload image
     FreeImage_Unload(dib);
+    // return success
+    return true;
+  }
 
+  bool Texture::select(ushort index) {
+    // update index
+    d->index = index;
+    // activate texture
+    glActiveTexture(GL_TEXTURE0 + d->index);
+    glBindTexture(GL_TEXTURE_2D, d->id);
+    glBindSampler(d->index, d->sampler);
+    // return success
+    return true;
+  }
+
+  bool Texture::deselect() {
+    // activate texture and unbind
+    glActiveTexture(GL_TEXTURE0 + d->index);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindSampler(d->index, 0);
+    // return success
     return true;
   }
 }

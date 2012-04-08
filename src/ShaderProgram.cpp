@@ -1,5 +1,6 @@
 #include "ShaderProgram.h"
 
+#include "Attribute.h"
 #include "FragmentShader.h"
 #include "VertexShader.h"
 
@@ -34,10 +35,6 @@ namespace SimpleGL {
     glDeleteProgram(d->id);
     // delete data
     delete d;
-  }
-
-  uint ShaderProgram::id() {
-    return d->id;
   }
 
   void ShaderProgram::addShader(AbstractShader *shader) {
@@ -101,6 +98,8 @@ namespace SimpleGL {
     glUniform1f(location, value);
     // unselect this program
     glUseProgram(0);
+    // return succes
+    return true;
   }
 
   bool ShaderProgram::setUniform(std::string name, glm::mat4 value) {
@@ -114,5 +113,21 @@ namespace SimpleGL {
     glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
     // unselect this program
     glUseProgram(0);
+    // return succes
+    return true;
+  }
+
+  bool ShaderProgram::select() const {
+    // select shader
+    glUseProgram(d->id);
+    // return succes
+    return true;
+  }
+
+  bool ShaderProgram::deselect() const {
+    // deselect shader
+    glUseProgram(0);
+    // return succes
+    return true;
   }
 }

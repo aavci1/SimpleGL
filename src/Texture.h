@@ -13,14 +13,12 @@ namespace SimpleGL {
     Texture(std::string path);
     ~Texture();
 
-    uint id();
-    uint sampler();
-    uint width();
-    uint height();
-    uint bitsPerPixel();
     std::string path();
 
     bool load();
+
+    bool select(ushort index);
+    bool deselect();
 
   private:
     TexturePrivate *d;
