@@ -56,14 +56,14 @@ namespace SimpleGL {
       // increase offset
       offset += 3 * sizeof(float);
     }
-    // vertex position
+    // vertex normal
     if (vertexFormat & SGL_NORMAL) {
       glEnableVertexAttribArray(SGL_NORMAL);
       glVertexAttribPointer(SGL_NORMAL, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
       // increase offset
       offset += 3 * sizeof(float);
     }
-    // vertex position
+    // vertex color
     if (vertexFormat & SGL_COLOR) {
       glEnableVertexAttribArray(SGL_COLOR);
       glVertexAttribPointer(SGL_COLOR, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
@@ -77,14 +77,14 @@ namespace SimpleGL {
       // increase offset
       offset += 2 * sizeof(float);
     }
-    // texture coordinate 0
+    // texture coordinate 1
     if (vertexFormat & SGL_TEXCOORD1) {
       glEnableVertexAttribArray(SGL_TEXCOORD1);
       glVertexAttribPointer(SGL_TEXCOORD1, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
       // increase offset
       offset += 2 * sizeof(float);
     }
-    // texture coordinate 0
+    // texture coordinate 2
     if (vertexFormat & SGL_TEXCOORD2) {
       glEnableVertexAttribArray(SGL_TEXCOORD2);
       glVertexAttribPointer(SGL_TEXCOORD2, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
