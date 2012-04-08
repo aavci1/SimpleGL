@@ -136,7 +136,7 @@ int main(int argc, char **argv) {
     // select vertex array object to draw
     glBindVertexArray(vao);
     // draw item
-    glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(ushort), GL_UNSIGNED_SHORT, 0);
     // unselect shader
     glUseProgram(0);
     // swap front and back rendering buffers
