@@ -1,11 +1,11 @@
-#version 330
+#version 330 core
 
 // model view projection matrix
 uniform mat4 sglModelViewProjMatrix;
 // vertex position and texture coordinate
 in vec3 sglPosition; 
 in vec2 sglTexCoord0;
-// texture coordinate is passed to the fragment shader
+// texture coordinate passed to the fragment shader
 out vec2 fs_in_texCoord0;
 
 void main() { 
