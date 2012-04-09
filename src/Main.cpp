@@ -18,11 +18,11 @@
 using namespace SimpleGL;
 
 float vertices[] = {
-  -7.5f, -5.0f, +7.5f, 0.0f, 0.0f,
-  +7.5f, -5.0f, +7.5f, 1.0f, 0.0f,
-  +7.5f, -5.0f, -7.5f, 0.0f, 0.0f,
-  -7.5f, -5.0f, -7.5f, 1.0f, 0.0f,
-   0.0f, +5.0f,  0.0f, 0.5f, 1.0f,
+  -7.5f, -5.0f, +7.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+  +7.5f, -5.0f, +7.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+  +7.5f, -5.0f, -7.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+  -7.5f, -5.0f, -7.5f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+   0.0f, +5.0f,  0.0f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f
 };
 uint indices[] = {
   0, 1, 4,
@@ -68,6 +68,8 @@ int main(int argc, char **argv) {
     glfwTerminate();
     return 1;
   }
+  // set window title
+  glfwSetWindowTitle("SimpleGL");
   // set window resize call back, must be set after window creation
   glfwSetWindowSizeCallback(resize);
   // initialize glew, must be after window creation
@@ -81,19 +83,19 @@ int main(int argc, char **argv) {
     printf("error: can not load texture %s.", texture->path().c_str());
   // load shader
   ShaderProgram *shaderProgram = new ShaderProgram();
-  shaderProgram->addShader(new VertexShader(readAll("media/texture.vert")));
-  shaderProgram->addShader(new FragmentShader(readAll("media/texture.frag")));
+  shaderProgram->addShader(new VertexShader(readAll("media/textured_vp.glsl")));
+  shaderProgram->addShader(new FragmentShader(readAll("media/textured_fp.glsl")));
   if (!shaderProgram->compileAndLink())
     printf("error: can not compile shader:\n%s", shaderProgram->message().c_str());
   // load submesh
   SubMesh *submesh = new SubMesh();
-  submesh->setVertexData(SGL_POSITION | SGL_TEXCOORD0, vertices, 5, 20);
+  submesh->setVertexData(SGL_POSITION | SGL_TEXCOORD0 | SGL_COLOR, vertices, 5, 32);
   submesh->setIndexData(indices, 18);
   // while not escape pressed and window is not closed
   double time = glfwGetTime();
   float timeDiff = 0;
   // set color to clear background
-  glClearColor(0.0f, 0.5f, 1.0f, 1.0f);
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   glEnable(GL_CULL_FACE);
   glEnable(GL_TEXTURE_2D);
   modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
