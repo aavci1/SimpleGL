@@ -49,7 +49,7 @@ void GLFWCALL resize(int width, int height) {
   //   printf("new size: %dx%d\n", width, height);
   glViewport(0, 0, (GLsizei) width, (GLsizei) height);
   // update perspective
-  projMatrix = glm::perspectiveFov(90.0f, 1.0f * width, 1.0f * height, 1.0f, 10000.0f);
+  projMatrix = glm::perspectiveFov(60.0f, 1.0f * width, 1.0f * height, 1.0f, 10000.0f);
 }
 
 int main(int argc, char **argv) {
@@ -100,6 +100,7 @@ int main(int argc, char **argv) {
   glEnable(GL_TEXTURE_2D);
   modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
   viewMatrix = glm::translate(viewMatrix, glm::vec3(0, 0, -25));
+  // start rendering
   while (!glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED)) {
     // update time
     timeDiff = glfwGetTime() - time;
@@ -125,6 +126,8 @@ int main(int argc, char **argv) {
     glfwSwapBuffers();
   }
   // clean up
+  delete submesh;
+  delete texture;
   delete shaderProgram;
   // clean up
   glfwTerminate();
