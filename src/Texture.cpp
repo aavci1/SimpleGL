@@ -7,14 +7,13 @@
 namespace SimpleGL {
   class TexturePrivate {
   public:
-    TexturePrivate() : id(0), sampler(0), width(0), height(0), bitsPerPixel(0), index(0) {
+    TexturePrivate() : id(0), width(0), height(0), bitsPerPixel(0), index(0) {
     }
 
     ~TexturePrivate() {
     }
 
     GLuint id;
-    GLuint sampler;
     std::string path;
     uint width;
     uint height;
@@ -25,8 +24,6 @@ namespace SimpleGL {
   Texture::Texture(std::string path) : d(new TexturePrivate()) {
     // generate texture object
     glGenTextures(1, &d->id);
-    // generate sampler object
-    glGenSamplers(1, &d->sampler);
     // save path
     d->path = path;
   }
@@ -34,8 +31,6 @@ namespace SimpleGL {
   Texture::~Texture() {
     // delete texture
     glDeleteTextures(1, &d->id);
-    // delete sampler
-    glDeleteSamplers(1, &d->sampler);
     // delete data
     delete d;
   }
@@ -72,9 +67,13 @@ namespace SimpleGL {
       return false;
     // bind texture
     glBindTexture(GL_TEXTURE_2D, d->id);
-    int iFormat = d->bitsPerPixel == 24 ? GL_BGR : d->bitsPerPixel == 8 ? GL_LUMINANCE : 0;
     // fill in texture data
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, d->width, d->height, 0, iFormat, GL_UNSIGNED_BYTE, imageData);
+    if (d->bitsPerPixel == 32)
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, d->width, d->height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
+    else if (d->bitsPerPixel == 24)
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, d->width, d->height, 0, GL_BGR, GL_UNSIGNED_BYTE, imageData);
+    else if (d->bitsPerPixel == 8)
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, d->width, d->height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, imageData);
     // generate mipmaps
     glGenerateMipmap(GL_TEXTURE_2D);
     // unbind texture
@@ -91,7 +90,6 @@ namespace SimpleGL {
     // activate texture
     glActiveTexture(GL_TEXTURE0 + d->index);
     glBindTexture(GL_TEXTURE_2D, d->id);
-    glBindSampler(d->index, d->sampler);
     // return success
     return true;
   }
@@ -100,7 +98,6 @@ namespace SimpleGL {
     // activate texture and unbind
     glActiveTexture(GL_TEXTURE0 + d->index);
     glBindTexture(GL_TEXTURE_2D, 0);
-    glBindSampler(d->index, 0);
     // return success
     return true;
   }
