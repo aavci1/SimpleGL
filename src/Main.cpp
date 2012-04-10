@@ -111,9 +111,10 @@ int main(int argc, char **argv) {
     // clear color buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // select texture
-    texture->select(0);
+    texture->select(1);
     // update uniforms
     shaderProgram->setUniform("sglModelViewProjMatrix", projMatrix * viewMatrix * modelMatrix);
+    shaderProgram->setUniform("sglSampler", 1);
     // select shader
     shaderProgram->select();
     // draw submesh

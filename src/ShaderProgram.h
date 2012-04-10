@@ -21,6 +21,7 @@ namespace SimpleGL {
 
     std::string message();
 
+    bool setUniform(std::string name, int value);
     bool setUniform(std::string name, float value);
     bool setUniform(std::string name, glm::mat4 value);
 

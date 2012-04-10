@@ -87,6 +87,21 @@ namespace SimpleGL {
     return d->message;
   }
 
+  bool ShaderProgram::setUniform(std::string name, int value) {
+    // get uniform location
+    GLint location = glGetUniformLocation(d->id, name.c_str());
+    if (location == -1)
+      return false;
+    // select this program
+    glUseProgram(d->id);
+    // set uniform value
+    glUniform1i(location, value);
+    // unselect this program
+    glUseProgram(0);
+    // return succes
+    return true;
+  }
+
   bool ShaderProgram::setUniform(std::string name, float value) {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
