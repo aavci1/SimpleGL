@@ -21,16 +21,32 @@ float vertices[] = {
   -7.5f, -5.0f, +7.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
   +7.5f, -5.0f, +7.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
   +7.5f, -5.0f, -7.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-  -7.5f, -5.0f, -7.5f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-   0.0f, +5.0f,  0.0f, 1.0f, 1.0f, 1.0f, 0.5f, 1.0f
+  -7.5f, -5.0f, -7.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+
+  -7.5f, +5.0f, +7.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+  +7.5f, +5.0f, +7.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+  +7.5f, +5.0f, -7.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+  -7.5f, +5.0f, -7.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f
 };
 uint indices[] = {
-  0, 1, 4,
-  1, 2, 4,
-  2, 3, 4,
+  // bottom
+  0, 3, 2,
+  0, 2, 1,
+  // top
+  4, 5, 6,
+  4, 6, 7,
+  // back
+  2, 3, 7,
+  2, 7, 6,
+  // left
   3, 0, 4,
-  2, 1, 0,
-  3, 2, 0
+  3, 4, 7,
+  // right
+  1, 2, 6,
+  1, 6, 5,
+  // front
+  0, 1, 5,
+  0, 5, 4
 };
 
 glm::mat4 projMatrix;
@@ -89,8 +105,8 @@ int main(int argc, char **argv) {
     printf("error: can not compile shader:\n%s", shaderProgram->message().c_str());
   // load submesh
   SubMesh *submesh = new SubMesh();
-  submesh->setVertexData(SGL_POSITION | SGL_TEXCOORD0 | SGL_COLOR, vertices, 5, 32);
-  submesh->setIndexData(indices, 18);
+  submesh->setVertexData(SGL_POSITION | SGL_TEXCOORD0 | SGL_COLOR, vertices, 8, 32);
+  submesh->setIndexData(indices, 36);
   // while not escape pressed and window is not closed
   double time = glfwGetTime();
   float timeDiff = 0;
@@ -106,8 +122,14 @@ int main(int argc, char **argv) {
     timeDiff = glfwGetTime() - time;
     // get time
     time += timeDiff;
+    // toggle cull face
+    if (glfwGetKey(GLFW_KEY_LCTRL))
+      glDisable(GL_CULL_FACE);
+    else
+      glEnable(GL_CULL_FACE);
     // apply animations
-    modelMatrix = glm::rotate(modelMatrix, timeDiff * 50, glm::vec3(0, 1, 0));
+    if (!glfwGetKey(GLFW_KEY_SPACE))
+      modelMatrix = glm::rotate(modelMatrix, timeDiff * 50, glm::vec3(0, 1, 0));
     // clear color buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // select texture
