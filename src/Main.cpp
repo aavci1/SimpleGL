@@ -20,35 +20,55 @@
 using namespace SimpleGL;
 
 float vertices[] = {
-  -7.5f, -5.0f, +7.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-  +7.5f, -5.0f, +7.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-  +7.5f, -5.0f, -7.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-  -7.5f, -5.0f, -7.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+  -1.0f, -1.0f,  1.0f, 0.0f, 0.0f, +1.0f, 0.0f, 0.0f,
+   1.0f, -1.0f,  1.0f, 0.0f, 0.0f, +1.0f, 1.0f, 0.0f,
+   1.0f,  1.0f,  1.0f, 0.0f, 0.0f, +1.0f, 1.0f, 1.0f,
+  -1.0f,  1.0f,  1.0f, 0.0f, 0.0f, +1.0f, 0.0f, 1.0f,
 
-  -7.5f, +5.0f, +7.5f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-  +7.5f, +5.0f, +7.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-  +7.5f, +5.0f, -7.5f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-  -7.5f, +5.0f, -7.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f
+  -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+  -1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+   1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+   1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+
+  -1.0f,  1.0f, -1.0f, 0.0f, +1.0f, 0.0f, 0.0f, 1.0f,
+  -1.0f,  1.0f,  1.0f, 0.0f, +1.0f, 0.0f, 0.0f, 0.0f,
+   1.0f,  1.0f,  1.0f, 0.0f, +1.0f, 0.0f, 1.0f, 0.0f,
+   1.0f,  1.0f, -1.0f, 0.0f, +1.0f, 0.0f, 1.0f, 1.0f,
+
+  -1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+   1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+   1.0f, -1.0f,  1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+  -1.0f, -1.0f,  1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+
+   1.0f, -1.0f, -1.0f, +1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+   1.0f,  1.0f, -1.0f, +1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+   1.0f,  1.0f,  1.0f, +1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+   1.0f, -1.0f,  1.0f, +1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+
+  -1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+  -1.0f, -1.0f,  1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+  -1.0f,  1.0f,  1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+  -1.0f,  1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f
 };
+
 uint indices[] = {
-  // bottom
-  0, 3, 2,
-  0, 2, 1,
-  // top
+  0, 1, 2,
+  0, 2, 3,
+
   4, 5, 6,
   4, 6, 7,
-  // back
-  2, 3, 7,
-  2, 7, 6,
-  // left
-  3, 0, 4,
-  3, 4, 7,
-  // right
-  1, 2, 6,
-  1, 6, 5,
-  // front
-  0, 1, 5,
-  0, 5, 4
+
+  8, 9, 10,
+  8, 10, 11,
+
+  12, 13, 14,
+  12, 14, 15,
+
+  16, 17, 18,
+  16, 18, 19,
+
+  20, 21, 22,
+  20, 22, 23
 };
 
 glm::mat4 projMatrix;
@@ -107,7 +127,7 @@ int main(int argc, char **argv) {
     printf("error: can not compile shader:\n%s", shaderProgram->message().c_str());
   // load submesh
   SubMesh *submesh = new SubMesh();
-  submesh->setVertexData(SGL_POSITION | SGL_TEXCOORD0 | SGL_NORMAL, vertices, 8, 32);
+  submesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, 24, 32);
   submesh->setIndexData(indices, 36);
   // while not escape pressed and window is not closed
   double time = glfwGetTime();
@@ -117,6 +137,7 @@ int main(int argc, char **argv) {
   glEnable(GL_CULL_FACE);
   glEnable(GL_TEXTURE_2D);
   modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
+  modelMatrix = glm::scale(modelMatrix, glm::vec3(7.5f));
   viewMatrix = glm::translate(viewMatrix, glm::vec3(0, 0, -25));
   // get window width and height
   int width = 0, height = 0;
@@ -140,9 +161,9 @@ int main(int argc, char **argv) {
     ////////////////////////////////////////
     // GEOMETRY PASS
     ////////////////////////////////////////
-    // select gbuffer for writing
+    // select gbuffer
     gbuffer->select();
-    // clear color buffer
+    // clear color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // select texture
     texture->select(1);
@@ -162,7 +183,7 @@ int main(int argc, char **argv) {
     //////////////////////////////////////
     // BLIT TO SCREEN
     //////////////////////////////////////
-    // clear screen
+    // clear color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // blit the gbuffer to the screen
     gbuffer->blit();
