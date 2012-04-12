@@ -5,22 +5,32 @@
 namespace SimpleGL {
   class CameraPrivate {
   public:
-    CameraPrivate() : fov(60.0f), nearClipDistance(1.0f), farClipDistance(10000.0f), width(0), height(0) {
+    CameraPrivate() : position(0, 0, 0), lookAt(0, 0, -1), up(0, 1, 0), fov(60.0f), nearClipDistance(1.0f), farClipDistance(10000.0f), aspectRatio(1.33) {
+      recalcViewMatrix();
+      recalcProjectionMatrix();
     }
 
     ~CameraPrivate() {
     }
 
-    void recalcProjectionMatrix() {
-      projectionMatrix = glm::perspectiveFov(fov, float(width), float(height), nearClipDistance, farClipDistance);
+    void recalcViewMatrix() {
+      viewMatrix = glm::lookAt(position, lookAt, glm::normalize(up));
     }
+
+    void recalcProjectionMatrix() {
+      projectionMatrix = glm::perspective(fov, aspectRatio, nearClipDistance, farClipDistance);
+    }
+
 
     float fov;
     float nearClipDistance;
     float farClipDistance;
-    uint width;
-    uint height;
+    float aspectRatio;
 
+    glm::vec3 position;
+    glm::vec3 lookAt;
+    glm::vec3 up;
+    glm::mat4 viewMatrix;
     glm::mat4 projectionMatrix;
   };
 
@@ -29,6 +39,30 @@ namespace SimpleGL {
 
   Camera::~Camera() {
     delete d;
+  }
+
+  void Camera::setPosition(const glm::vec3 &position) {
+    d->position = position;
+    // recalc view matrix
+    d->recalcViewMatrix();
+  }
+
+  void Camera::setPosition(float x, float y, float z) {
+    d->position = glm::vec3(x, y, z);
+    // recalc view matrix
+    d->recalcViewMatrix();
+  }
+
+  void Camera::lookAt(const glm::vec3 &lookAt) {
+    d->lookAt = lookAt;
+    // recalc view matrix
+    d->recalcViewMatrix();
+  }
+
+  void Camera::lookAt(float x, float y, float z) {
+    d->lookAt = glm::vec3(x, y, z);
+    // recalc view matrix
+    d->recalcViewMatrix();
   }
 
   void Camera::setFov(float fov) {
@@ -49,11 +83,14 @@ namespace SimpleGL {
     d->recalcProjectionMatrix();
   }
 
-  void Camera::setViewportSize(uint width, uint height) {
-    d->width = width;
-    d->height = height;
+  void Camera::setAspectRatio(float aspectRatio) {
+    d->aspectRatio = aspectRatio;
     // recalc projection matrix
     d->recalcProjectionMatrix();
+  }
+
+  const glm::mat4 &Camera::viewMatrix() const {
+    return d->viewMatrix;
   }
 
   const glm::mat4 &Camera::projectionMatrix() const {

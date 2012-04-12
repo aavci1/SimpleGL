@@ -13,6 +13,7 @@ set (SOURCES
   src/Main.cpp
   src/Mesh.cpp
   src/Node.cpp
+  src/PlaneMesh.cpp
   src/Renderer.cpp
   src/Shader.cpp
   src/ShaderProgram.cpp

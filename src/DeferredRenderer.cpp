@@ -88,10 +88,6 @@ namespace SimpleGL {
     d->gbuffer->setWritable(true);
     // enable depth mask
     glDepthMask(GL_TRUE);
-    // set depth func
-    glDepthFunc(GL_LESS);
-    // set depth range
-    glDepthRange(1, 0);
     // enable depth test
     glEnable(GL_DEPTH_TEST);
     // disable blending
@@ -99,7 +95,7 @@ namespace SimpleGL {
     // clear color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // render scene
-    d->renderHelper(root, camera->projectionMatrix());
+    d->renderHelper(root, camera->projectionMatrix() * camera->viewMatrix());
     // unbind gbuffer
     d->gbuffer->setWritable(false);
     // LIGHTING PASS

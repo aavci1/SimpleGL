@@ -3,37 +3,37 @@
 #include "Attribute.h"
 
 namespace SimpleGL {
-  CubeMesh::CubeMesh(glm::vec3 scale) : Mesh() {
+  CubeMesh::CubeMesh(glm::vec3 size) : Mesh() {
     float vertices[] = {
-      -1.0f * scale.x, -1.0f * scale.y,  1.0f * scale.z, 0.0f, 0.0f, +1.0f, 0.0f, 0.0f,
-       1.0f * scale.x, -1.0f * scale.y,  1.0f * scale.z, 0.0f, 0.0f, +1.0f, 1.0f, 0.0f,
-       1.0f * scale.x,  1.0f * scale.y,  1.0f * scale.z, 0.0f, 0.0f, +1.0f, 1.0f, 1.0f,
-      -1.0f * scale.x,  1.0f * scale.y,  1.0f * scale.z, 0.0f, 0.0f, +1.0f, 0.0f, 1.0f,
+      -1.0f * size.x, -1.0f * size.y,  1.0f * size.z, 0.0f, 0.0f, +1.0f, 0.0f, 0.0f,
+       1.0f * size.x, -1.0f * size.y,  1.0f * size.z, 0.0f, 0.0f, +1.0f, 1.0f, 0.0f,
+       1.0f * size.x,  1.0f * size.y,  1.0f * size.z, 0.0f, 0.0f, +1.0f, 1.0f, 1.0f,
+      -1.0f * size.x,  1.0f * size.y,  1.0f * size.z, 0.0f, 0.0f, +1.0f, 0.0f, 1.0f,
 
-      -1.0f * scale.x, -1.0f * scale.y, -1.0f * scale.z, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
-      -1.0f * scale.x,  1.0f * scale.y, -1.0f * scale.z, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-       1.0f * scale.x,  1.0f * scale.y, -1.0f * scale.z, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
-       1.0f * scale.x, -1.0f * scale.y, -1.0f * scale.z, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+      -1.0f * size.x, -1.0f * size.y, -1.0f * size.z, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+      -1.0f * size.x,  1.0f * size.y, -1.0f * size.z, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+       1.0f * size.x,  1.0f * size.y, -1.0f * size.z, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+       1.0f * size.x, -1.0f * size.y, -1.0f * size.z, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
 
-      -1.0f * scale.x,  1.0f * scale.y, -1.0f * scale.z, 0.0f, +1.0f, 0.0f, 0.0f, 1.0f,
-      -1.0f * scale.x,  1.0f * scale.y,  1.0f * scale.z, 0.0f, +1.0f, 0.0f, 0.0f, 0.0f,
-       1.0f * scale.x,  1.0f * scale.y,  1.0f * scale.z, 0.0f, +1.0f, 0.0f, 1.0f, 0.0f,
-       1.0f * scale.x,  1.0f * scale.y, -1.0f * scale.z, 0.0f, +1.0f, 0.0f, 1.0f, 1.0f,
+      -1.0f * size.x,  1.0f * size.y, -1.0f * size.z, 0.0f, +1.0f, 0.0f, 0.0f, 1.0f,
+      -1.0f * size.x,  1.0f * size.y,  1.0f * size.z, 0.0f, +1.0f, 0.0f, 0.0f, 0.0f,
+       1.0f * size.x,  1.0f * size.y,  1.0f * size.z, 0.0f, +1.0f, 0.0f, 1.0f, 0.0f,
+       1.0f * size.x,  1.0f * size.y, -1.0f * size.z, 0.0f, +1.0f, 0.0f, 1.0f, 1.0f,
 
-      -1.0f * scale.x, -1.0f * scale.y, -1.0f * scale.z, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-       1.0f * scale.x, -1.0f * scale.y, -1.0f * scale.z, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-       1.0f * scale.x, -1.0f * scale.y,  1.0f * scale.z, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-      -1.0f * scale.x, -1.0f * scale.y,  1.0f * scale.z, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+      -1.0f * size.x, -1.0f * size.y, -1.0f * size.z, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+       1.0f * size.x, -1.0f * size.y, -1.0f * size.z, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+       1.0f * size.x, -1.0f * size.y,  1.0f * size.z, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+      -1.0f * size.x, -1.0f * size.y,  1.0f * size.z, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
 
-       1.0f * scale.x, -1.0f * scale.y, -1.0f * scale.z, +1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-       1.0f * scale.x,  1.0f * scale.y, -1.0f * scale.z, +1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-       1.0f * scale.x,  1.0f * scale.y,  1.0f * scale.z, +1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-       1.0f * scale.x, -1.0f * scale.y,  1.0f * scale.z, +1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+       1.0f * size.x, -1.0f * size.y, -1.0f * size.z, +1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+       1.0f * size.x,  1.0f * size.y, -1.0f * size.z, +1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+       1.0f * size.x,  1.0f * size.y,  1.0f * size.z, +1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+       1.0f * size.x, -1.0f * size.y,  1.0f * size.z, +1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 
-      -1.0f * scale.x, -1.0f * scale.y, -1.0f * scale.z, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-      -1.0f * scale.x, -1.0f * scale.y,  1.0f * scale.z, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-      -1.0f * scale.x,  1.0f * scale.y,  1.0f * scale.z, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-      -1.0f * scale.x,  1.0f * scale.y, -1.0f * scale.z, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f
+      -1.0f * size.x, -1.0f * size.y, -1.0f * size.z, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+      -1.0f * size.x, -1.0f * size.y,  1.0f * size.z, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+      -1.0f * size.x,  1.0f * size.y,  1.0f * size.z, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+      -1.0f * size.x,  1.0f * size.y, -1.0f * size.z, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f
     };
 
     uint indices[] = {
