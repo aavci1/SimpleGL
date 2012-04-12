@@ -5,6 +5,8 @@
 #include "SubMesh.h"
 #include "Texture.h"
 
+#include "GBuffer.h"
+
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
@@ -23,10 +25,10 @@ float vertices[] = {
   +7.5f, -5.0f, -7.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
   -7.5f, -5.0f, -7.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
 
-  -7.5f, +5.0f, +7.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-  +7.5f, +5.0f, +7.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-  +7.5f, +5.0f, -7.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-  -7.5f, +5.0f, -7.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f
+  -7.5f, +5.0f, +7.5f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+  +7.5f, +5.0f, +7.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+  +7.5f, +5.0f, -7.5f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+  -7.5f, +5.0f, -7.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f
 };
 uint indices[] = {
   // bottom
@@ -99,13 +101,13 @@ int main(int argc, char **argv) {
     printf("error: can not load texture %s.", texture->path().c_str());
   // load shader
   ShaderProgram *shaderProgram = new ShaderProgram();
-  shaderProgram->addShader(new VertexShader(readAll("media/textured_vp.glsl")));
-  shaderProgram->addShader(new FragmentShader(readAll("media/textured_fp.glsl")));
+  shaderProgram->addShader(new VertexShader(readAll("media/deferred_vp.glsl")));
+  shaderProgram->addShader(new FragmentShader(readAll("media/deferred_fp.glsl")));
   if (!shaderProgram->compileAndLink())
     printf("error: can not compile shader:\n%s", shaderProgram->message().c_str());
   // load submesh
   SubMesh *submesh = new SubMesh();
-  submesh->setVertexData(SGL_POSITION | SGL_TEXCOORD0 | SGL_COLOR, vertices, 8, 32);
+  submesh->setVertexData(SGL_POSITION | SGL_TEXCOORD0 | SGL_NORMAL, vertices, 8, 32);
   submesh->setIndexData(indices, 36);
   // while not escape pressed and window is not closed
   double time = glfwGetTime();
@@ -116,6 +118,11 @@ int main(int argc, char **argv) {
   glEnable(GL_TEXTURE_2D);
   modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
   viewMatrix = glm::translate(viewMatrix, glm::vec3(0, 0, -25));
+  // get window width and height
+  int width = 0, height = 0;
+  glfwGetWindowSize(&width, &height);
+  // create g-buffer
+  GBuffer *gbuffer = new GBuffer(width, height);
   // start rendering
   while (!glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED)) {
     // update time
@@ -130,6 +137,11 @@ int main(int argc, char **argv) {
     // apply animations
     if (!glfwGetKey(GLFW_KEY_SPACE))
       modelMatrix = glm::rotate(modelMatrix, timeDiff * 50, glm::vec3(0, 1, 0));
+    ////////////////////////////////////////
+    // GEOMETRY PASS
+    ////////////////////////////////////////
+    // select gbuffer for writing
+    gbuffer->select();
     // clear color buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // select texture
@@ -145,6 +157,15 @@ int main(int argc, char **argv) {
     shaderProgram->deselect();
     // deselect texture
     texture->deselect();
+    // deselect gbuffer
+    gbuffer->deselect();
+    //////////////////////////////////////
+    // BLIT TO SCREEN
+    //////////////////////////////////////
+    // clear screen
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // blit the gbuffer to the screen
+    gbuffer->blit();
     // swap front and back rendering buffers
     glfwSwapBuffers();
   }

@@ -8,6 +8,7 @@ set (SOURCES
   src/Main.cpp
   src/AbstractShader.cpp
   src/FragmentShader.cpp
+  src/GBuffer.cpp
   src/VertexShader.cpp
   src/ShaderProgram.cpp
   src/SubMesh.cpp
