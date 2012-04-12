@@ -1,5 +1,11 @@
 #version 330 core
 
+// uniforms
+uniform sampler2D sglSampler;
+// input
+in vec4 _worldPosition;
+in vec4 _normal;
+in vec2 _texCoord;
 // outputs
 out vec4 Color;
 out vec4 Normal;
@@ -7,9 +13,9 @@ out vec4 Position;
 
 void main(void) {
   // color of the fragment
-  Color = vec4(1.0, 0.0, 0.0, 1.0);
+  Color = texture2D(sglSampler, _texCoord);
   // normal of the fragment
-  Normal = vec4(0.0, 1.0, 0.0, 1.0);
+  Normal = _normal;
   // position of the fragment
-  Position = vec4(0.0, 0.0, 1.0, 1.0);
+  Position = _worldPosition;
 }
