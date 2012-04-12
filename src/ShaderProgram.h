@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 
 namespace SimpleGL {
-  class AbstractShader;
+  class Shader;
   class ShaderProgramPrivate;
 
   class ShaderProgram {
@@ -15,7 +15,7 @@ namespace SimpleGL {
     ShaderProgram();
     ~ShaderProgram();
 
-    void addShader(AbstractShader *shader);
+    void addShader(Shader *shader);
 
     bool compileAndLink();
 

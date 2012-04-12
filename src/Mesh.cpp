@@ -1,4 +1,4 @@
-#include "SubMesh.h"
+#include "Mesh.h"
 
 #include "Attribute.h"
 
@@ -7,44 +7,44 @@
 namespace SimpleGL {
   class SubMeshPrivate {
   public:
-    SubMeshPrivate() : vao(0), vbo(0), ibo(0), vertexCount(0), indexCount(0) {
+    SubMeshPrivate() : vertexArray(0), vertexBuffer(0), indexBuffer(0), vertexCount(0), indexCount(0) {
     }
 
     ~SubMeshPrivate() {
     }
 
-    GLuint vao;
-    GLuint vbo;
-    GLuint ibo;
+    GLuint vertexArray;
+    GLuint vertexBuffer;
+    GLuint indexBuffer;
     uint vertexCount;
     uint indexCount;
   };
 
-  SubMesh::SubMesh() : d(new SubMeshPrivate()) {
+  Mesh::Mesh() : d(new SubMeshPrivate()) {
     // generate vertex array
-    glGenVertexArrays(1, &d->vao);
+    glGenVertexArrays(1, &d->vertexArray);
     // generate vertex buffer
-    glGenBuffers(1, &d->vbo);
+    glGenBuffers(1, &d->vertexBuffer);
     // generate index buffer
-    glGenBuffers(1, &d->ibo);
+    glGenBuffers(1, &d->indexBuffer);
   }
 
-  SubMesh::~SubMesh() {
+  Mesh::~Mesh() {
     // delete vertex array
-    glDeleteVertexArrays(1, &d->vao);
+    glDeleteVertexArrays(1, &d->vertexArray);
     // delete vertex buffer
-    glDeleteBuffers(1, &d->vbo);
+    glDeleteBuffers(1, &d->vertexBuffer);
     // delete index buffer
-    glDeleteBuffers(1, &d->ibo);
+    glDeleteBuffers(1, &d->indexBuffer);
     // delete data
     delete d;
   }
 
-  bool SubMesh::setVertexData(uint vertexFormat, float vertexData[], uint vertexCount, uint stride) {
+  bool Mesh::setVertexData(uint vertexFormat, float vertexData[], uint vertexCount, uint stride) {
     // generate and bind vertex array object
-    glBindVertexArray(d->vao);
+    glBindVertexArray(d->vertexArray);
     // generate vertex buffer object
-    glBindBuffer(GL_ARRAY_BUFFER, d->vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, d->vertexBuffer);
     // assign data
     glBufferData(GL_ARRAY_BUFFER, stride * vertexCount, vertexData, GL_STATIC_DRAW);
     // define vertex data
@@ -99,11 +99,11 @@ namespace SimpleGL {
     return true;
   }
 
-  bool SubMesh::setIndexData(uint indexData[], uint indexCount) {
+  bool Mesh::setIndexData(uint indexData[], uint indexCount) {
     // generate and bind vertex array object
-    glBindVertexArray(d->vao);
+    glBindVertexArray(d->vertexArray);
     // generate index buffer object
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, d->ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, d->indexBuffer);
     // assign data
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indexCount, indexData, GL_STATIC_DRAW);
     // unbind vertex array object
@@ -114,8 +114,8 @@ namespace SimpleGL {
     return true;
   }
 
-  bool SubMesh::draw() const {
-    glBindVertexArray(d->vao);
+  bool Mesh::render() const {
+    glBindVertexArray(d->vertexArray);
     glDrawElements(GL_TRIANGLES, d->indexCount, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
     // return success

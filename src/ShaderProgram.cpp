@@ -23,7 +23,7 @@ namespace SimpleGL {
 
     GLuint id;
     std::string message;
-    std::vector<AbstractShader *> shaders;
+    std::vector<Shader *> shaders;
   };
 
   ShaderProgram::ShaderProgram() : d(new ShaderProgramPrivate()) {
@@ -37,7 +37,7 @@ namespace SimpleGL {
     delete d;
   }
 
-  void ShaderProgram::addShader(AbstractShader *shader) {
+  void ShaderProgram::addShader(Shader *shader) {
     d->shaders.push_back(shader);
   }
 

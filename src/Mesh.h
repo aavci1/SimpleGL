@@ -6,17 +6,15 @@
 namespace SimpleGL {
   class SubMeshPrivate;
 
-  class SubMesh {
+  class Mesh {
   public:
-    SubMesh();
-    ~SubMesh();
-
-    const uint id() const;
+    Mesh();
+    ~Mesh();
 
     bool setVertexData(uint vertexFormat, float vertexData[], uint vertexCount, uint stride);
     bool setIndexData(uint indexData[], uint indexCount);
 
-    bool draw() const;
+    bool render() const;
 
   private:
     SubMeshPrivate *d;

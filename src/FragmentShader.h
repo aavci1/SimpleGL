@@ -1,12 +1,12 @@
 #ifndef FRAGMENTSHADER_H
 #define FRAGMENTSHADER_H
 
-#include "AbstractShader.h"
+#include "Shader.h"
 
 namespace SimpleGL {
   class FragmentShaderPrivate;
 
-  class FragmentShader : public AbstractShader {
+  class FragmentShader : public Shader {
   public:
     FragmentShader(std::string source);
     ~FragmentShader();

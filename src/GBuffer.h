@@ -12,8 +12,8 @@ namespace SimpleGL {
     GBuffer(uint width, uint height);
     ~GBuffer();
 
-    void select();
-    void deselect();
+    void setWritable(bool writable);
+    void setReadable(bool readable);
 
     void blit();
 

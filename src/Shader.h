@@ -1,14 +1,14 @@
-#ifndef ABSTRACTSHADER_H
-#define ABSTRACTSHADER_H
+#ifndef SHADER_H
+#define SHADER_H
 
 #include <string>
 #include <sys/types.h>
 
 namespace SimpleGL {
-  class AbstractShader {
+  class Shader {
   public:
-    AbstractShader();
-    ~AbstractShader();
+    Shader();
+    ~Shader();
 
     virtual uint id() = 0;
 
@@ -17,4 +17,4 @@ namespace SimpleGL {
   };
 }
 
-#endif // ABSTRACTSHADER_H
+#endif // SHADER_H

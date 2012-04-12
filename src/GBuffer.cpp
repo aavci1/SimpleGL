@@ -5,7 +5,7 @@
 namespace SimpleGL {
   class GBufferPrivate {
   public:
-    GBufferPrivate(unsigned int width, unsigned int height) : width(width), height(height), frameBuffer(0), colorBuffer(0), normalBuffer(0), depthBuffer(0) {
+    GBufferPrivate(unsigned int width, unsigned int height) : width(width), height(height), frameBuffer(0), colorBuffer(0), normalBuffer(0), positionBuffer(0), depthBuffer(0) {
     }
 
     ~GBufferPrivate() {
@@ -16,6 +16,7 @@ namespace SimpleGL {
     GLuint frameBuffer;
     GLuint colorBuffer;
     GLuint normalBuffer;
+    GLuint positionBuffer;
     GLuint depthBuffer;
   };
 
@@ -34,21 +35,28 @@ namespace SimpleGL {
     glBindTexture(GL_TEXTURE_2D, d->normalBuffer);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, d->width, d->height, 0, GL_RGB, GL_FLOAT, NULL);
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, d->normalBuffer, 0);
+    // generate position buffer
+    glGenTextures(1, &d->positionBuffer);
+    glBindTexture(GL_TEXTURE_2D, d->positionBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, d->width, d->height, 0, GL_RGB, GL_FLOAT, NULL);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, d->positionBuffer, 0);
     // generate depth buffer
     glGenTextures(1, &d->depthBuffer);
     glBindTexture(GL_TEXTURE_2D, d->depthBuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, d->width, d->height, 0, GL_RGB, GL_FLOAT, NULL);
-    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, d->depthBuffer, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, d->width, d->height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, d->depthBuffer, 0);
     // set draw buffer
-    GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
+    GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
     glDrawBuffers(3, drawBuffers);
     // unbind the frame buffer
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   }
 
   GBuffer::~GBuffer() {
-    // delete position buffer
+    // delete depth buffer
     glDeleteTextures(1, &d->depthBuffer);
+    // delete position buffer
+    glDeleteTextures(1, &d->positionBuffer);
     // delete normal buffer
     glDeleteTextures(1, &d->normalBuffer);
     // delete color buffer
@@ -57,12 +65,18 @@ namespace SimpleGL {
     glDeleteFramebuffers(1, &d->frameBuffer);
   }
 
-  void GBuffer::select() {
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, d->frameBuffer);
+  void GBuffer::setWritable(bool writable) {
+    if (writable)
+      glBindFramebuffer(GL_DRAW_FRAMEBUFFER, d->frameBuffer);
+    else
+      glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   }
 
-  void GBuffer::deselect() {
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+  void GBuffer::setReadable(bool readable) {
+    if (readable)
+      glBindFramebuffer(GL_READ_FRAMEBUFFER, d->frameBuffer);
+    else
+      glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
   }
 
   void GBuffer::blit() {

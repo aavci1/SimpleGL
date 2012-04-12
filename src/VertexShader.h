@@ -1,12 +1,12 @@
 #ifndef VERTEXSHADER_H
 #define VERTEXSHADER_H
 
-#include "AbstractShader.h"
+#include "Shader.h"
 
 namespace SimpleGL {
   class VertexShaderPrivate;
 
-  class VertexShader : public AbstractShader {
+  class VertexShader : public Shader {
   public:
     VertexShader(std::string source);
     ~VertexShader();

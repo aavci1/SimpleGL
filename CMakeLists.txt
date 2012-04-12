@@ -5,14 +5,19 @@ cmake_minimum_required (VERSION 2.8)
 add_definitions(-O2 -msse2)
 # add sources
 set (SOURCES
-  src/Main.cpp
-  src/AbstractShader.cpp
+  src/Camera.cpp
+  src/CubeMesh.cpp
+  src/DeferredRenderer.cpp
   src/FragmentShader.cpp
   src/GBuffer.cpp
-  src/VertexShader.cpp
+  src/Main.cpp
+  src/Mesh.cpp
+  src/Node.cpp
+  src/Renderer.cpp
+  src/Shader.cpp
   src/ShaderProgram.cpp
-  src/SubMesh.cpp
   src/Texture.cpp
+  src/VertexShader.cpp
 )
 # opengl target
 add_executable (SimpleGL WIN32 ${SOURCES} resources.rc)
