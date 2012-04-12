@@ -1,5 +1,5 @@
-#ifndef SHADER_H
-#define SHADER_H
+#ifndef ABSTRACTSHADER_H
+#define ABSTRACTSHADER_H
 
 #include <string>
 #include <sys/types.h>
@@ -17,4 +17,4 @@ namespace SimpleGL {
   };
 }
 
-#endif // SHADER_H
+#endif // ABSTRACTSHADER_H
