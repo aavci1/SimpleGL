@@ -2,11 +2,11 @@
 
 #include "Attribute.h"
 #include "Camera.h"
-#include "CubeMesh.h"
 #include "FragmentShader.h"
 #include "GBuffer.h"
 #include "Light.h"
 #include "Node.h"
+#include "QuadMesh.h"
 #include "ShaderProgram.h"
 #include "Texture.h"
 #include "VertexShader.h"
@@ -20,12 +20,13 @@
 namespace SimpleGL {
   class DeferredRendererPrivate {
   public:
-    DeferredRendererPrivate(uint width, uint height) : width(width), height(height), gbuffer(new GBuffer(width, height)), directionLightShader(0) {
+    DeferredRendererPrivate(uint width, uint height) : width(width), height(height), gbuffer(new GBuffer(width, height)), directionalLightShader(0), quad(new QuadMesh()) {
     }
 
     ~DeferredRendererPrivate() {
       delete gbuffer;
-      delete directionLightShader;
+      delete directionalLightShader;
+      delete quad;
       // clean up
       delete texture;
       delete shaderProgram;
@@ -69,18 +70,19 @@ namespace SimpleGL {
     int height;
     GBuffer *gbuffer;
     std::vector<Light *> lights;
-    ShaderProgram *directionLightShader;
+    ShaderProgram *directionalLightShader;
+    QuadMesh *quad;
     Texture *texture;
     ShaderProgram *shaderProgram;
   };
 
   DeferredRenderer::DeferredRenderer(uint width, uint height) : Renderer(), d(new DeferredRendererPrivate(width, height)) {
     // load directional light shader
-    d->directionLightShader = new ShaderProgram();
-    d->directionLightShader->addShader(new VertexShader(d->readAll("media/deferred_directional_light_vp.glsl")));
-    d->directionLightShader->addShader(new FragmentShader(d->readAll("media/deferred_directional_light_fp.glsl")));
-    if (!d->directionLightShader->compileAndLink())
-      printf("error: can not compile shader:\n%s", d->directionLightShader->message().c_str());
+    d->directionalLightShader = new ShaderProgram();
+    d->directionalLightShader->addShader(new VertexShader(d->readAll("media/deferred_directional_light_vp.glsl")));
+    d->directionalLightShader->addShader(new FragmentShader(d->readAll("media/deferred_directional_light_fp.glsl")));
+    if (!d->directionalLightShader->compileAndLink())
+      printf("error: can not compile shader:\n%s", d->directionalLightShader->message().c_str());
     // load texture
     d->texture = new Texture("media/laminate.jpg");
     if (!d->texture->load())
@@ -130,22 +132,23 @@ namespace SimpleGL {
     glBlendFunc(GL_ONE, GL_ONE);
     // TODO: points lights pass
     // directional lights pass
-    d->directionLightShader->setUniform("screenSize", glm::vec2(d->width, d->height));
-    d->directionLightShader->setUniform("cameraPos", glm::vec3(0, 170, 1000)); // TODO: get from camera
-    d->directionLightShader->setUniform("colorSampler", d->gbuffer->colorSampler());
-    d->directionLightShader->setUniform("normalSampler", d->gbuffer->normalSampler());
-    d->directionLightShader->setUniform("positionSampler", d->gbuffer->positionSampler());
-    d->directionLightShader->setUniform("depthSampler", 3);
+    d->directionalLightShader->setUniform("screenSize", glm::vec2(d->width, d->height));
+    d->directionalLightShader->setUniform("cameraPos", glm::vec3(0, 170, 1000)); // TODO: get from camera
+    d->directionalLightShader->setUniform("colorSampler", d->gbuffer->colorSampler());
+    d->directionalLightShader->setUniform("normalSampler", d->gbuffer->normalSampler());
+    d->directionalLightShader->setUniform("positionSampler", d->gbuffer->positionSampler());
+    d->directionalLightShader->setUniform("depthSampler", 3);
     for (int i = 0;  i < d->lights.size(); ++i) {
       if (d->lights.at(i)->type() == LT_DIRECTIONAL) {
-        d->directionLightShader->setUniform("direction", d->lights.at(i)->direction());
-        d->directionLightShader->setUniform("ambientColor", d->lights.at(i)->ambientColor());
-        d->directionLightShader->setUniform("diffuseColor", d->lights.at(i)->diffuseColor());
-        d->directionLightShader->setUniform("specularColor", d->lights.at(i)->specularColor());
-        d->directionLightShader->select();
-        CubeMesh *mesh = new CubeMesh();
-        mesh->render();
-        d->directionLightShader->deselect();
+        d->directionalLightShader->setUniform("direction", d->lights.at(i)->direction());
+        d->directionalLightShader->setUniform("ambientColor", d->lights.at(i)->ambientColor());
+        d->directionalLightShader->setUniform("diffuseColor", d->lights.at(i)->diffuseColor());
+        d->directionalLightShader->setUniform("specularColor", d->lights.at(i)->specularColor());
+        d->directionalLightShader->select();
+        // render full screen quad
+        d->quad->render();
+        // deselect shader
+        d->directionalLightShader->deselect();
       }
     }
 //    d->gbuffer->blit();

@@ -15,6 +15,7 @@ set (SOURCES
   src/Mesh.cpp
   src/Node.cpp
   src/PlaneMesh.cpp
+  src/QuadMesh.cpp
   src/Renderer.cpp
   src/Shader.cpp
   src/ShaderProgram.cpp

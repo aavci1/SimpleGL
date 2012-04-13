@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
   // request opengl profile
   glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   // try to open the window
-  if (!glfwOpenWindow(1920, 1080, 8, 8, 8, 0, 24, 0, GLFW_FULLSCREEN)) {
+  if (!glfwOpenWindow(1024, 768, 8, 8, 8, 0, 24, 0, GLFW_WINDOW)) {
     printf("error: cannot open glfw window.\n");
     glfwTerminate();
     return 1;
