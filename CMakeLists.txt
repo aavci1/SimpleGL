@@ -10,6 +10,7 @@ set (SOURCES
   src/DeferredRenderer.cpp
   src/FragmentShader.cpp
   src/GBuffer.cpp
+  src/Light.cpp
   src/Main.cpp
   src/Mesh.cpp
   src/Node.cpp

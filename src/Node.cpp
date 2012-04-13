@@ -1,5 +1,6 @@
 #include "Node.h"
 
+#include "Light.h"
 #include "Mesh.h"
 
 #include <glm/ext.hpp>
@@ -15,6 +16,7 @@ namespace SimpleGL {
 
     std::vector<Node *> nodes;
     std::vector<Mesh *> meshes;
+    std::vector<Light *> lights;
     glm::mat4 transformationMatrix;
   };
 
@@ -39,6 +41,14 @@ namespace SimpleGL {
 
   const std::vector<Mesh *> &Node::meshes() {
     return d->meshes;
+  }
+
+  void Node::attachLight(Light *light) {
+    d->lights.push_back(light);
+  }
+
+  const std::vector<Light *> &Node::lights() {
+    return d->lights;
   }
 
   void Node::translate(glm::vec3 translation) {

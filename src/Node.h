@@ -6,6 +6,7 @@
 #include <vector>
 
 namespace SimpleGL {
+  class Light;
   class Mesh;
   class NodePrivate;
 
@@ -19,6 +20,9 @@ namespace SimpleGL {
 
     void attachMesh(Mesh *mesh);
     const std::vector<Mesh *> &meshes();
+
+    void attachLight(Light *light);
+    const std::vector<Light *> &lights();
 
     void translate(glm::vec3 translation);
     void rotate(glm::vec3 axis, float angle);

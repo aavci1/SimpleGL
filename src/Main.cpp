@@ -1,6 +1,7 @@
 #include "DeferredRenderer.h"
 #include "Camera.h"
 #include "CubeMesh.h"
+#include "Light.h"
 #include "Node.h"
 #include "PlaneMesh.h"
 
@@ -58,28 +59,39 @@ int main(int argc, char **argv) {
   Renderer *renderer = new DeferredRenderer(width, height);
   // create camera
   Camera *camera = new Camera();
-  camera->setPosition(0, 10, 20);
-  camera->lookAt(0, 10, 0);
+  camera->setPosition(0, 170, 1000);
+  camera->lookAt(0, 0, 0);
   camera->setAspectRatio(float(width) / float(height));
   // create root node
   Node *rootNode = new Node();
   rootNode->translate(glm::vec3(0.0f, 0.0f, 0.0f));
-  rootNode->attachMesh(new PlaneMesh(glm::vec2(100, 100), glm::vec2(10, 10)));
+  rootNode->attachMesh(new PlaneMesh(glm::vec2(1000, 1000), glm::vec2(10, 10)));
   // create childNode
   Node *childNode1 = new Node();
-  childNode1->translate(glm::vec3(0.0f, 10.0f, 0.0f));
-  childNode1->attachMesh(new CubeMesh(glm::vec3(2.5f)));
+  childNode1->translate(glm::vec3(0.0f, 50.0f, 0.0f));
+  childNode1->attachMesh(new CubeMesh(glm::vec3(100.0f)));
   rootNode->attachNode(childNode1);
-  // create child node
-  Node *childNode2 = new Node();
-  childNode2->translate(glm::vec3(5.0f, 0.0f, 0.0f));
-  childNode2->attachMesh(new CubeMesh(glm::vec3(1.0f)));
-  childNode1->attachNode(childNode2);
-  // create child node
-  Node *childNode3 = new Node();
-  childNode3->translate(glm::vec3(0.0f, 5.0f, 0.0f));
-  childNode3->attachMesh(new CubeMesh(glm::vec3(1.0f)));
-  childNode2->attachNode(childNode3);
+  // create lightNode
+  Node *lightNode = new Node();
+  lightNode->translate(glm::vec3(0.0f, 200.0f, 0.0f));
+  Light *directionalLight = new Light();
+  directionalLight->setType(LT_DIRECTIONAL);
+  directionalLight->setAmbientColor(glm::vec3(0, 0, 0));
+  directionalLight->setDiffuseColor(glm::vec3(1, 1, 1));
+  directionalLight->setSpecularColor(glm::vec3(1, 1, 1));
+  directionalLight->setDirection(glm::normalize(glm::vec3(1, -1, 1)));
+  lightNode->attachLight(directionalLight);
+  rootNode->attachNode(lightNode);
+//  // create child node
+//  Node *childNode2 = new Node();
+//  childNode2->translate(glm::vec3(5.0f, 0.0f, 0.0f));
+//  childNode2->attachMesh(new CubeMesh(glm::vec3(1.0f)));
+//  childNode1->attachNode(childNode2);
+//  // create child node
+//  Node *childNode3 = new Node();
+//  childNode3->translate(glm::vec3(0.0f, 5.0f, 0.0f));
+//  childNode3->attachMesh(new CubeMesh(glm::vec3(1.0f)));
+//  childNode2->attachNode(childNode3);
   // start rendering
   double time = glfwGetTime();
   float timeDiff = 0;
@@ -93,16 +105,11 @@ int main(int argc, char **argv) {
       glDisable(GL_CULL_FACE);
     else
       glEnable(GL_CULL_FACE);
-    // apply animations
-    if (!glfwGetKey(GLFW_KEY_SPACE)) {
-      childNode1->rotate(glm::vec3(0, 1, 0), timeDiff * 50);
-      childNode2->rotate(glm::vec3(1, 0, 0), timeDiff * 50);
-      childNode3->rotate(glm::vec3(0, 1, 0), timeDiff * 50);
-    }
     // render one frame
     renderer->renderOneFrame(camera, rootNode);
     // swap front and back rendering buffers
     glfwSwapBuffers();
+    directionalLight->setDirection(glm::normalize(glm::vec3(sinf(time * 2), -1.0, cosf(time * 2))));
   }
   // clean up
   glfwTerminate();

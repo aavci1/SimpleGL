@@ -29,21 +29,29 @@ namespace SimpleGL {
     glGenTextures(1, &d->colorBuffer);
     glBindTexture(GL_TEXTURE_2D, d->colorBuffer);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, d->width, d->height, 0, GL_RGB, GL_FLOAT, NULL);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, d->colorBuffer, 0);
     // generate normal buffer
     glGenTextures(1, &d->normalBuffer);
     glBindTexture(GL_TEXTURE_2D, d->normalBuffer);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, d->width, d->height, 0, GL_RGB, GL_FLOAT, NULL);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, d->normalBuffer, 0);
     // generate position buffer
     glGenTextures(1, &d->positionBuffer);
     glBindTexture(GL_TEXTURE_2D, d->positionBuffer);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, d->width, d->height, 0, GL_RGB, GL_FLOAT, NULL);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, d->positionBuffer, 0);
     // generate depth buffer
     glGenTextures(1, &d->depthBuffer);
     glBindTexture(GL_TEXTURE_2D, d->depthBuffer);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, d->width, d->height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, d->depthBuffer, 0);
     // set draw buffer
     GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
@@ -65,6 +73,18 @@ namespace SimpleGL {
     glDeleteFramebuffers(1, &d->frameBuffer);
   }
 
+  const uint GBuffer::colorSampler() const {
+    return 0;
+  }
+
+  const uint GBuffer::normalSampler() const {
+    return 1;
+  }
+
+  const uint GBuffer::positionSampler() const {
+    return 2;
+  }
+
   void GBuffer::setWritable(bool writable) {
     if (writable)
       glBindFramebuffer(GL_DRAW_FRAMEBUFFER, d->frameBuffer);
@@ -72,11 +92,16 @@ namespace SimpleGL {
       glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   }
 
-  void GBuffer::setReadable(bool readable) {
-    if (readable)
-      glBindFramebuffer(GL_READ_FRAMEBUFFER, d->frameBuffer);
-    else
-      glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+  void GBuffer::setReadable() {
+    // bind color buffer
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, d->colorBuffer);
+    // bind normal buffer
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, d->normalBuffer);
+    // bind position buffer
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, d->positionBuffer);
   }
 
   void GBuffer::blit() {

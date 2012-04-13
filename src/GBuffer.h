@@ -13,7 +13,11 @@ namespace SimpleGL {
     ~GBuffer();
 
     void setWritable(bool writable);
-    void setReadable(bool readable);
+    void setReadable();
+
+    const uint colorSampler() const;
+    const uint normalSampler() const;
+    const uint positionSampler() const;
 
     void blit();
 
