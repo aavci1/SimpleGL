@@ -52,11 +52,11 @@ namespace SimpleGL {
       for (int i = 0; i < node->meshes().size(); ++i) {
         // select texture
         texture->select(0);
+        // select shader
+        shaderProgram->select();
         // update uniforms
         shaderProgram->setUniform("sglModelViewProjMatrix", modelViewProj);
         shaderProgram->setUniform("sglSampler", 0);
-        // select shader
-        shaderProgram->select();
         // render the mesh
         node->meshes().at(i)->render();
         // deselect shader
@@ -132,25 +132,26 @@ namespace SimpleGL {
     glBlendFunc(GL_ONE, GL_ONE);
     // TODO: points lights pass
     // directional lights pass
+    d->directionalLightShader->select();
     d->directionalLightShader->setUniform("screenSize", glm::vec2(d->width, d->height));
     d->directionalLightShader->setUniform("cameraPos", glm::vec3(0, 170, 1000)); // TODO: get from camera
     d->directionalLightShader->setUniform("colorSampler", d->gbuffer->colorSampler());
     d->directionalLightShader->setUniform("normalSampler", d->gbuffer->normalSampler());
     d->directionalLightShader->setUniform("positionSampler", d->gbuffer->positionSampler());
-    d->directionalLightShader->setUniform("depthSampler", 3);
     for (int i = 0;  i < d->lights.size(); ++i) {
       if (d->lights.at(i)->type() == LT_DIRECTIONAL) {
+        // set light parameters
         d->directionalLightShader->setUniform("direction", d->lights.at(i)->direction());
         d->directionalLightShader->setUniform("ambientColor", d->lights.at(i)->ambientColor());
         d->directionalLightShader->setUniform("diffuseColor", d->lights.at(i)->diffuseColor());
         d->directionalLightShader->setUniform("specularColor", d->lights.at(i)->specularColor());
-        d->directionalLightShader->select();
         // render full screen quad
         d->quad->render();
-        // deselect shader
-        d->directionalLightShader->deselect();
       }
     }
+    // deselect shader
+    d->directionalLightShader->deselect();
+
 //    d->gbuffer->blit();
   }
 }

@@ -92,12 +92,8 @@ namespace SimpleGL {
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
       return false;
-    // select this program
-    glUseProgram(d->id);
     // set uniform value
     glUniform1i(location, value);
-    // unselect this program
-    glUseProgram(0);
     // return succes
     return true;
   }
@@ -107,12 +103,8 @@ namespace SimpleGL {
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
       return false;
-    // select this program
-    glUseProgram(d->id);
     // set uniform value
     glUniform1i(location, value);
-    // unselect this program
-    glUseProgram(0);
     // return succes
     return true;
   }
@@ -122,12 +114,8 @@ namespace SimpleGL {
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
       return false;
-    // select this program
-    glUseProgram(d->id);
     // set uniform value
     glUniform1f(location, value);
-    // unselect this program
-    glUseProgram(0);
     // return succes
     return true;
   }
@@ -138,12 +126,8 @@ namespace SimpleGL {
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
       return false;
-    // select this program
-    glUseProgram(d->id);
     // set uniform value
     glUniform2f(location, value.x, value.y);
-    // unselect this program
-    glUseProgram(0);
     // return succes
     return true;
   }
@@ -153,12 +137,8 @@ namespace SimpleGL {
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
       return false;
-    // select this program
-    glUseProgram(d->id);
     // set uniform value
     glUniform3f(location, value.x, value.y, value.z);
-    // unselect this program
-    glUseProgram(0);
     // return succes
     return true;
   }
@@ -168,12 +148,8 @@ namespace SimpleGL {
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
       return false;
-    // select this program
-    glUseProgram(d->id);
     // set uniform value
     glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
-    // unselect this program
-    glUseProgram(0);
     // return succes
     return true;
   }
