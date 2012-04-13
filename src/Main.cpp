@@ -83,11 +83,22 @@ int main(int argc, char **argv) {
   // start rendering
   double time = glfwGetTime();
   float timeDiff = 0;
+  int frames = 0;
+  float fpsTime = 0;
   while (!glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED)) {
     // update time
     timeDiff = glfwGetTime() - time;
     // get time
     time += timeDiff;
+    // increase frame counter
+    fpsTime += timeDiff;
+    frames++;
+    // calculate fps
+    if (fpsTime >= 1.0) {
+      printf("FPS: %f\n", frames / fpsTime);
+      frames = 0;
+      fpsTime = 0;
+    }
     // toggle cull face
     if (glfwGetKey(GLFW_KEY_LCTRL))
       glDisable(GL_CULL_FACE);
