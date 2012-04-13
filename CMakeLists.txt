@@ -19,6 +19,7 @@ set (SOURCES
   src/Renderer.cpp
   src/Shader.cpp
   src/ShaderProgram.cpp
+  src/SphereMesh.cpp
   src/Texture.cpp
   src/VertexShader.cpp
 )

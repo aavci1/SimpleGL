@@ -4,6 +4,7 @@
 #include "Light.h"
 #include "Node.h"
 #include "PlaneMesh.h"
+#include "SphereMesh.h"
 
 #include <glm/glm.hpp>
 
@@ -68,8 +69,8 @@ int main(int argc, char **argv) {
   rootNode->attachMesh(new PlaneMesh(glm::vec2(1000, 1000), glm::vec2(10, 10)));
   // create childNode
   Node *childNode1 = new Node();
-  childNode1->translate(glm::vec3(0.0f, 50.0f, 0.0f));
-  childNode1->attachMesh(new CubeMesh(glm::vec3(100.0f)));
+  childNode1->translate(glm::vec3(0.0f, 250.0f, 0.0f));
+  childNode1->attachMesh(new SphereMesh(200.0f, 32, 32));
   rootNode->attachNode(childNode1);
   // create lightNode
   Node *lightNode = new Node();
@@ -109,6 +110,7 @@ int main(int argc, char **argv) {
     renderer->renderOneFrame(camera, rootNode);
     // swap front and back rendering buffers
     glfwSwapBuffers();
+    // animate the light
     directionalLight->setDirection(glm::normalize(glm::vec3(sinf(time * 2), -1.0, cosf(time * 2))));
   }
   // clean up
