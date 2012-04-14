@@ -2,6 +2,7 @@
 #define NODE_H
 
 #include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 #include <vector>
 
@@ -16,19 +17,30 @@ namespace SimpleGL {
     ~Node();
 
     void attachNode(Node *node);
-    const std::vector<Node *> &nodes();
+    const std::vector<Node *> &nodes() const;
 
     void attachMesh(Mesh *mesh);
-    const std::vector<Mesh *> &meshes();
+    const std::vector<Mesh *> &meshes() const;
 
     void attachLight(Light *light);
-    const std::vector<Light *> &lights();
+    const std::vector<Light *> &lights() const;
 
-    void translate(glm::vec3 translation);
-    void rotate(glm::vec3 axis, float angle);
-    void scale(glm::vec3 scale);
+    void setPosition(const glm::vec3 &translation);
+    const glm::vec3 &position() const;
 
-    const glm::mat4 &transformationMatrix();
+    void setOrientation(const glm::quat &orientation);
+    const glm::quat &orientation() const;
+
+    void setScale(const glm::vec3 &scale);
+    const glm::vec3 &scale() const;
+
+    void rotate(float angle, const glm::vec3 &axis);
+
+    void pitch(float angle);
+    void yaw(float angle);
+    void roll(float angle);
+
+    const glm::mat4 &transformationMatrix() const;
 
   private:
     NodePrivate *d;

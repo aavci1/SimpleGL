@@ -65,19 +65,18 @@ int main(int argc, char **argv) {
   camera->setAspectRatio(float(width) / float(height));
   // create root node
   Node *rootNode = new Node();
-  rootNode->translate(glm::vec3(0.0f, 0.0f, 0.0f));
   rootNode->attachMesh(new Plane(glm::vec2(1000, 1000), glm::vec2(10, 10)));
- // create lightNode
+  // create lightNode
   Light *directionalLight = new Light();
   directionalLight->setType(LT_DIRECTIONAL);
   directionalLight->setAmbientColor(glm::vec3(0, 0, 0));
   directionalLight->setDiffuseColor(glm::vec3(1, 1, 1));
   directionalLight->setSpecularColor(glm::vec3(1, 1, 1));
-  directionalLight->setDirection(glm::normalize(glm::vec3(1, -1, -1)));
+  directionalLight->setDirection(glm::vec3(0, -1, 0));
   rootNode->attachLight(directionalLight);
   // create child node
   Node *cubeNode = new Node();
-  cubeNode->translate(glm::vec3(0.0f, 100.0f, 0.0f));
+  cubeNode->setPosition(glm::vec3(0.0f, 100.0f, 0.0f));
   cubeNode->attachMesh(new Cube(glm::vec3(50.0f)));
   rootNode->attachNode(cubeNode);
   // start rendering
@@ -109,7 +108,7 @@ int main(int argc, char **argv) {
     // swap front and back rendering buffers
     glfwSwapBuffers();
     // apply animations
-    cubeNode->rotate(glm::vec3(0, 1, 0), timeDiff * 50);
+    cubeNode->rotate(timeDiff * 60, glm::vec3(1, 1, 1));
   }
   // clean up
   glfwTerminate();
