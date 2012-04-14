@@ -5,7 +5,7 @@
 namespace SimpleGL {
   class CameraPrivate {
   public:
-    CameraPrivate() : position(0, 0, 0), lookAt(0, 0, -1), up(0, 1, 0), fov(60.0f), nearClipDistance(1.0f), farClipDistance(10000.0f), aspectRatio(1.33) {
+    CameraPrivate() : position(0, 0, 0), lookAt(0, 0, 0), up(0, 1, 0), fov(60.0f), nearClipDistance(1.0f), farClipDistance(10000.0f), aspectRatio(1.33) {
       recalcViewMatrix();
       recalcProjectionMatrix();
     }
@@ -14,7 +14,7 @@ namespace SimpleGL {
     }
 
     void recalcViewMatrix() {
-      viewMatrix = glm::lookAt(position, lookAt, glm::normalize(up));
+      viewMatrix = glm::lookAt(position, lookAt, up);
     }
 
     void recalcProjectionMatrix() {
