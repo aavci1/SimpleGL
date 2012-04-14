@@ -6,8 +6,8 @@
 #include "GBuffer.h"
 #include "Light.h"
 #include "Node.h"
-#include "QuadMesh.h"
-#include "ShaderProgram.h"
+#include "Quad.h"
+#include "Program.h"
 #include "Texture.h"
 #include "VertexShader.h"
 
@@ -20,16 +20,15 @@
 namespace SimpleGL {
   class DeferredRendererPrivate {
   public:
-    DeferredRendererPrivate(uint width, uint height) : width(width), height(height), gbuffer(new GBuffer(width, height)), directionalLightShader(0), quad(new QuadMesh()) {
+    DeferredRendererPrivate(uint width, uint height) : width(width), height(height), gbuffer(new GBuffer(width, height)), directionalLightProgram(0), quad(new Quad()) {
     }
 
     ~DeferredRendererPrivate() {
       delete gbuffer;
-      delete directionalLightShader;
-      delete quad;
-      // clean up
       delete texture;
-      delete shaderProgram;
+      delete geometryProgram;
+      delete directionalLightProgram;
+      delete quad;
     }
 
     std::string readAll(const char *fileName) {
@@ -53,14 +52,14 @@ namespace SimpleGL {
         // select texture
         texture->select(0);
         // select shader
-        shaderProgram->select();
+        geometryProgram->select();
         // update uniforms
-        shaderProgram->setUniform("sglModelViewProjMatrix", modelViewProj);
-        shaderProgram->setUniform("sglSampler", 0);
+        geometryProgram->setUniform("sglModelViewProjMatrix", modelViewProj);
+        geometryProgram->setUniform("sglSampler", 0);
         // render the mesh
         node->meshes().at(i)->render();
         // deselect shader
-        shaderProgram->deselect();
+        geometryProgram->deselect();
         // deselect texture
         texture->deselect();
       }
@@ -70,29 +69,29 @@ namespace SimpleGL {
     int height;
     GBuffer *gbuffer;
     std::vector<Light *> lights;
-    ShaderProgram *directionalLightShader;
-    QuadMesh *quad;
+    Program *directionalLightProgram;
+    Quad *quad;
     Texture *texture;
-    ShaderProgram *shaderProgram;
+    Program *geometryProgram;
   };
 
   DeferredRenderer::DeferredRenderer(uint width, uint height) : Renderer(), d(new DeferredRendererPrivate(width, height)) {
     // load directional light shader
-    d->directionalLightShader = new ShaderProgram();
-    d->directionalLightShader->addShader(new VertexShader(d->readAll("media/deferred_directional_light_vp.glsl")));
-    d->directionalLightShader->addShader(new FragmentShader(d->readAll("media/deferred_directional_light_fp.glsl")));
-    if (!d->directionalLightShader->compileAndLink())
-      printf("error: can not compile shader:\n%s", d->directionalLightShader->message().c_str());
+    d->directionalLightProgram = new Program();
+    d->directionalLightProgram->addShader(new VertexShader(d->readAll("media/deferred_directional_light_vp.glsl")));
+    d->directionalLightProgram->addShader(new FragmentShader(d->readAll("media/deferred_directional_light_fp.glsl")));
+    if (!d->directionalLightProgram->compileAndLink())
+      printf("error: can not compile shader:\n%s", d->directionalLightProgram->message().c_str());
     // load texture
     d->texture = new Texture("media/laminate.jpg");
     if (!d->texture->load())
       printf("error: can not load texture %s.", d->texture->path().c_str());
     // load shader
-    d->shaderProgram = new ShaderProgram();
-    d->shaderProgram->addShader(new VertexShader(d->readAll("media/deferred_vp.glsl")));
-    d->shaderProgram->addShader(new FragmentShader(d->readAll("media/deferred_fp.glsl")));
-    if (!d->shaderProgram->compileAndLink())
-      printf("error: can not compile shader:\n%s", d->shaderProgram->message().c_str());
+    d->geometryProgram = new Program();
+    d->geometryProgram->addShader(new VertexShader(d->readAll("media/deferred_vp.glsl")));
+    d->geometryProgram->addShader(new FragmentShader(d->readAll("media/deferred_fp.glsl")));
+    if (!d->geometryProgram->compileAndLink())
+      printf("error: can not compile shader:\n%s", d->geometryProgram->message().c_str());
   }
 
   DeferredRenderer::~DeferredRenderer() {
@@ -132,25 +131,25 @@ namespace SimpleGL {
     glBlendFunc(GL_ONE, GL_ONE);
     // TODO: points lights pass
     // directional lights pass
-    d->directionalLightShader->select();
-    d->directionalLightShader->setUniform("screenSize", glm::vec2(d->width, d->height));
-    d->directionalLightShader->setUniform("cameraPos", glm::vec3(0, 170, 1000)); // TODO: get from camera
-    d->directionalLightShader->setUniform("colorSampler", d->gbuffer->colorSampler());
-    d->directionalLightShader->setUniform("normalSampler", d->gbuffer->normalSampler());
-    d->directionalLightShader->setUniform("positionSampler", d->gbuffer->positionSampler());
+    d->directionalLightProgram->select();
+    d->directionalLightProgram->setUniform("screenSize", glm::vec2(d->width, d->height));
+    d->directionalLightProgram->setUniform("cameraPos", glm::vec3(0, 170, 1000)); // TODO: get from camera
+    d->directionalLightProgram->setUniform("colorSampler", d->gbuffer->colorSampler());
+    d->directionalLightProgram->setUniform("normalSampler", d->gbuffer->normalSampler());
+    d->directionalLightProgram->setUniform("positionSampler", d->gbuffer->positionSampler());
     for (int i = 0;  i < d->lights.size(); ++i) {
       if (d->lights.at(i)->type() == LT_DIRECTIONAL) {
         // set light parameters
-        d->directionalLightShader->setUniform("direction", d->lights.at(i)->direction());
-        d->directionalLightShader->setUniform("ambientColor", d->lights.at(i)->ambientColor());
-        d->directionalLightShader->setUniform("diffuseColor", d->lights.at(i)->diffuseColor());
-        d->directionalLightShader->setUniform("specularColor", d->lights.at(i)->specularColor());
+        d->directionalLightProgram->setUniform("direction", d->lights.at(i)->direction());
+        d->directionalLightProgram->setUniform("ambientColor", d->lights.at(i)->ambientColor());
+        d->directionalLightProgram->setUniform("diffuseColor", d->lights.at(i)->diffuseColor());
+        d->directionalLightProgram->setUniform("specularColor", d->lights.at(i)->specularColor());
         // render full screen quad
         d->quad->render();
       }
     }
     // deselect shader
-    d->directionalLightShader->deselect();
+    d->directionalLightProgram->deselect();
 
 //    d->gbuffer->blit();
   }

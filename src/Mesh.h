@@ -4,7 +4,7 @@
 #include <sys/types.h>
 
 namespace SimpleGL {
-  class SubMeshPrivate;
+  class MeshPrivate;
 
   class Mesh {
   public:
@@ -17,7 +17,7 @@ namespace SimpleGL {
     bool render() const;
 
   private:
-    SubMeshPrivate *d;
+    MeshPrivate *d;
   };
   
 }

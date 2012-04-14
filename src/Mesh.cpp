@@ -5,12 +5,12 @@
 #include <GL/glew.h>
 
 namespace SimpleGL {
-  class SubMeshPrivate {
+  class MeshPrivate {
   public:
-    SubMeshPrivate() : vertexArray(0), vertexBuffer(0), indexBuffer(0), vertexCount(0), indexCount(0) {
+    MeshPrivate() : vertexArray(0), vertexBuffer(0), indexBuffer(0), vertexCount(0), indexCount(0) {
     }
 
-    ~SubMeshPrivate() {
+    ~MeshPrivate() {
     }
 
     GLuint vertexArray;
@@ -20,7 +20,7 @@ namespace SimpleGL {
     uint indexCount;
   };
 
-  Mesh::Mesh() : d(new SubMeshPrivate()) {
+  Mesh::Mesh() : d(new MeshPrivate()) {
     // generate vertex array
     glGenVertexArrays(1, &d->vertexArray);
     // generate vertex buffer

@@ -1,9 +1,9 @@
-#include "QuadMesh.h"
+#include "Quad.h"
 
 #include "Attribute.h"
 
 namespace SimpleGL {
-  QuadMesh::QuadMesh(glm::vec2 size) : Mesh() {
+  Quad::Quad(glm::vec2 size) : Mesh() {
     float vertices[] = {
       -1.0f * size.x, -1.0f * size.y, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
        1.0f * size.x, -1.0f * size.y, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,

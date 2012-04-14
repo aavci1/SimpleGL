@@ -1,10 +1,10 @@
 #include "DeferredRenderer.h"
 #include "Camera.h"
-#include "CubeMesh.h"
+#include "Cube.h"
 #include "Light.h"
 #include "Node.h"
-#include "PlaneMesh.h"
-#include "SphereMesh.h"
+#include "Plane.h"
+#include "Sphere.h"
 
 #include <glm/glm.hpp>
 
@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
   // create root node
   Node *rootNode = new Node();
   rootNode->translate(glm::vec3(0.0f, 0.0f, 0.0f));
-  rootNode->attachMesh(new PlaneMesh(glm::vec2(1000, 1000), glm::vec2(10, 10)));
+  rootNode->attachMesh(new Plane(glm::vec2(1000, 1000), glm::vec2(10, 10)));
  // create lightNode
   Light *directionalLight = new Light();
   directionalLight->setType(LT_DIRECTIONAL);
@@ -78,7 +78,7 @@ int main(int argc, char **argv) {
   // create child node
   Node *cubeNode = new Node();
   cubeNode->translate(glm::vec3(0.0f, 100.0f, 0.0f));
-  cubeNode->attachMesh(new CubeMesh(glm::vec3(50.0f)));
+  cubeNode->attachMesh(new Cube(glm::vec3(50.0f)));
   rootNode->attachNode(cubeNode);
   // start rendering
   double time = glfwGetTime();

@@ -1,4 +1,4 @@
-#include "ShaderProgram.h"
+#include "Program.h"
 
 #include "Attribute.h"
 #include "FragmentShader.h"
@@ -11,12 +11,12 @@
 #include <vector>
 
 namespace SimpleGL {
-  class ShaderProgramPrivate {
+  class ProgramPrivate {
   public:
-    ShaderProgramPrivate() {
+    ProgramPrivate() {
     }
 
-    ~ShaderProgramPrivate() {
+    ~ProgramPrivate() {
       for (int i = 0; i < shaders.size(); ++i)
         delete shaders[i];
     }
@@ -26,22 +26,22 @@ namespace SimpleGL {
     std::vector<Shader *> shaders;
   };
 
-  ShaderProgram::ShaderProgram() : d(new ShaderProgramPrivate()) {
+  Program::Program() : d(new ProgramPrivate()) {
     d->id = glCreateProgram();
   }
 
-  ShaderProgram::~ShaderProgram() {
+  Program::~Program() {
     // delete program
     glDeleteProgram(d->id);
     // delete data
     delete d;
   }
 
-  void ShaderProgram::addShader(Shader *shader) {
+  void Program::addShader(Shader *shader) {
     d->shaders.push_back(shader);
   }
 
-  bool ShaderProgram::compileAndLink() {
+  bool Program::compileAndLink() {
     for (int i = 0; i < d->shaders.size(); ++i) {
       if (!d->shaders[i]->compile()) {
         d->message = d->shaders[i]->message();
@@ -83,11 +83,11 @@ namespace SimpleGL {
     return true;
   }
 
-  std::string ShaderProgram::message() {
+  std::string Program::message() {
     return d->message;
   }
 
-  bool ShaderProgram::setUniform(std::string name, uint value) {
+  bool Program::setUniform(std::string name, uint value) {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -98,7 +98,7 @@ namespace SimpleGL {
     return true;
   }
 
-  bool ShaderProgram::setUniform(std::string name, int value) {
+  bool Program::setUniform(std::string name, int value) {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -109,7 +109,7 @@ namespace SimpleGL {
     return true;
   }
 
-  bool ShaderProgram::setUniform(std::string name, float value) {
+  bool Program::setUniform(std::string name, float value) {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -121,7 +121,7 @@ namespace SimpleGL {
   }
 
 
-  bool ShaderProgram::setUniform(std::string name, const glm::vec2 &value) {
+  bool Program::setUniform(std::string name, const glm::vec2 &value) {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -132,7 +132,7 @@ namespace SimpleGL {
     return true;
   }
 
-  bool ShaderProgram::setUniform(std::string name, const glm::vec3 &value) {
+  bool Program::setUniform(std::string name, const glm::vec3 &value) {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -143,7 +143,7 @@ namespace SimpleGL {
     return true;
   }
 
-  bool ShaderProgram::setUniform(std::string name, const glm::mat4 &value) {
+  bool Program::setUniform(std::string name, const glm::mat4 &value) {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -154,14 +154,14 @@ namespace SimpleGL {
     return true;
   }
 
-  bool ShaderProgram::select() const {
+  bool Program::select() const {
     // select shader
     glUseProgram(d->id);
     // return succes
     return true;
   }
 
-  bool ShaderProgram::deselect() const {
+  bool Program::deselect() const {
     // deselect shader
     glUseProgram(0);
     // return succes

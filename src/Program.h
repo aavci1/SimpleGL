@@ -1,5 +1,5 @@
-#ifndef SHADERPROGRAM_H
-#define SHADERPROGRAM_H
+#ifndef ROGRAM_H
+#define ROGRAM_H
 
 #include <string>
 #include <sys/types.h>
@@ -8,12 +8,12 @@
 
 namespace SimpleGL {
   class Shader;
-  class ShaderProgramPrivate;
+  class ProgramPrivate;
 
-  class ShaderProgram {
+  class Program {
   public:
-    ShaderProgram();
-    ~ShaderProgram();
+    Program();
+    ~Program();
 
     void addShader(Shader *shader);
 
@@ -32,7 +32,7 @@ namespace SimpleGL {
     bool deselect() const;
 
   private:
-    ShaderProgramPrivate *d;
+    ProgramPrivate *d;
   };
 }
-#endif // SHADERPROGRAM_H
+#endif // ROGRAM_H

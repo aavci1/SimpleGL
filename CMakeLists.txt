@@ -6,7 +6,7 @@ add_definitions(-O2 -msse2)
 # add sources
 set (SOURCES
   src/Camera.cpp
-  src/CubeMesh.cpp
+  src/Cube.cpp
   src/DeferredRenderer.cpp
   src/FragmentShader.cpp
   src/GBuffer.cpp
@@ -14,12 +14,12 @@ set (SOURCES
   src/Main.cpp
   src/Mesh.cpp
   src/Node.cpp
-  src/PlaneMesh.cpp
-  src/QuadMesh.cpp
+  src/Plane.cpp
+  src/Program.cpp
+  src/Quad.cpp
   src/Renderer.cpp
   src/Shader.cpp
-  src/ShaderProgram.cpp
-  src/SphereMesh.cpp
+  src/Sphere.cpp
   src/Texture.cpp
   src/VertexShader.cpp
 )

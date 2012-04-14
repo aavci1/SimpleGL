@@ -1,9 +1,9 @@
-#include "CubeMesh.h"
+#include "Cube.h"
 
 #include "Attribute.h"
 
 namespace SimpleGL {
-  CubeMesh::CubeMesh(glm::vec3 size) : Mesh() {
+  Cube::Cube(glm::vec3 size) : Mesh() {
     float vertices[] = {
       -1.0f * size.x, -1.0f * size.y,  1.0f * size.z, 0.0f, 0.0f, +1.0f, 0.0f, 0.0f,
        1.0f * size.x, -1.0f * size.y,  1.0f * size.z, 0.0f, 0.0f, +1.0f, 1.0f, 0.0f,

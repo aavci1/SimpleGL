@@ -1,11 +1,11 @@
-#include "SphereMesh.h"
+#include "Sphere.h"
 
 #include "Attribute.h"
 
 #include <math.h>
 
 namespace SimpleGL {
-  SphereMesh::SphereMesh(float r, int slices, int segments) : Mesh() {
+  Sphere::Sphere(float r, int slices, int segments) : Mesh() {
     // allocate the vertex buffer
     uint vertexCount = (segments + 1) * (slices+1);
     float *vertices = new float[vertexCount * 8];

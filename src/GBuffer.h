@@ -6,7 +6,6 @@
 namespace SimpleGL {
   class GBufferPrivate;
 
-
   class GBuffer {
   public:
     GBuffer(uint width, uint height);
