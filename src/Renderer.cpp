@@ -135,17 +135,17 @@ namespace SimpleGL {
     // directional lights pass
     d->directionalLightProgram->select();
     d->directionalLightProgram->setUniform("screenSize", glm::vec2(d->width, d->height));
-    d->directionalLightProgram->setUniform("cameraPos", glm::vec3(0, 170, 1000)); // TODO: get from camera
+    d->directionalLightProgram->setUniform("cameraPos", camera->position());
     d->directionalLightProgram->setUniform("colorSampler", d->gbuffer->colorSampler());
     d->directionalLightProgram->setUniform("normalSampler", d->gbuffer->normalSampler());
     d->directionalLightProgram->setUniform("positionSampler", d->gbuffer->positionSampler());
     for (int i = 0;  i < d->lights.size(); ++i) {
       if (d->lights.at(i)->type() == LT_DIRECTIONAL) {
         // set light parameters
-        d->directionalLightProgram->setUniform("direction", d->lights.at(i)->direction());
-        d->directionalLightProgram->setUniform("ambientColor", d->lights.at(i)->ambientColor());
-        d->directionalLightProgram->setUniform("diffuseColor", d->lights.at(i)->diffuseColor());
-        d->directionalLightProgram->setUniform("specularColor", d->lights.at(i)->specularColor());
+        d->directionalLightProgram->setUniform("lightDir", d->lights.at(i)->direction());
+        d->directionalLightProgram->setUniform("lightColor", d->lights.at(i)->color());
+        d->directionalLightProgram->setUniform("lightDiffuseIntensity", d->lights.at(i)->diffuseIntensity());
+        d->directionalLightProgram->setUniform("lightSpecularIntensity", d->lights.at(i)->specularIntensity());
         // render full screen quad
         d->quad->render();
       }

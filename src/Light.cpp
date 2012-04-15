@@ -3,7 +3,7 @@
 namespace SimpleGL {
   class LightPrivate {
   public:
-    LightPrivate() : type(LT_POINT), position(0, 0, 0), direction(0, 0, 1), ambientColor(0, 0, 0), diffuseColor(1, 1, 1), specularColor(1, 1, 1) {
+    LightPrivate(LightType type) : type(type), position(0.0f, 0.0f, 0.0f), direction(0.0f, 0.0f, 1.0f), color(1.0f, 1.0f, 1.0f), diffuseIntensity(1.0f), specularIntensity(1.0f) {
     }
 
     ~LightPrivate() {
@@ -12,12 +12,12 @@ namespace SimpleGL {
     LightType type;
     glm::vec3 position;
     glm::vec3 direction;
-    glm::vec3 ambientColor;
-    glm::vec3 diffuseColor;
-    glm::vec3 specularColor;
+    glm::vec3 color;
+    float diffuseIntensity;
+    float specularIntensity;
   };
 
-  Light::Light() : d(new LightPrivate()) {
+  Light::Light(LightType type) : d(new LightPrivate(type)) {
   }
 
   Light::~Light() {
@@ -32,43 +32,55 @@ namespace SimpleGL {
     d->type = type;
   }
 
-  const glm::vec3 Light::position() const {
-    return d->position;
-  }
-
   void Light::setPosition(const glm::vec3 &position) {
     d->position = position;
   }
 
-  const glm::vec3 Light::direction() const {
-    return d->direction;
+  void Light::setPosition(const float x, const float y, const float z) {
+    d->position = glm::vec3(x, y, z);
+  }
+
+  const glm::vec3 &Light::position() const {
+    return d->position;
   }
 
   void Light::setDirection(const glm::vec3 &direction) {
-    d->direction = direction;
+    d->direction = glm::normalize(direction);
   }
 
-  const glm::vec3 Light::ambientColor() const {
-    return d->ambientColor;
+  void Light::setDirection(const float x, const float y, const float z) {
+    d->direction = glm::normalize(glm::vec3(x, y, z));
   }
 
-  void Light::setAmbientColor(const glm::vec3 &color) {
-    d->ambientColor = color;
+  const glm::vec3 &Light::direction() const {
+    return d->direction;
   }
 
-  const glm::vec3 Light::diffuseColor() const {
-    return d->diffuseColor;
+  void Light::setColor(const glm::vec3 &color) {
+    d->color = color;
   }
 
-  void Light::setDiffuseColor(const glm::vec3 &color) {
-    d->diffuseColor = color;
+  void Light::setColor(const float r, const float g, const float b) {
+    d->color = glm::vec3(r, g, b);
   }
 
-  const glm::vec3 Light::specularColor() const {
-    return d->specularColor;
+  const glm::vec3 &Light::color() const {
+    return d->color;
   }
 
-  void Light::setSpecularColor(const glm::vec3 &color) {
-    d->specularColor = color;
+  void Light::setDiffuseIntensity(const float intensity) {
+    d->diffuseIntensity = intensity;
+  }
+
+  const float Light::diffuseIntensity() const {
+    return d->diffuseIntensity;
+  }
+
+  void Light::setSpecularIntensity(const float intensity) {
+    d->specularIntensity = intensity;
+  }
+
+  const float Light::specularIntensity() const {
+    return d->specularIntensity;
   }
 }

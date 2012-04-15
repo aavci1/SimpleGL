@@ -14,26 +14,29 @@ namespace SimpleGL {
 
   class Light {
   public:
-    Light();
+    Light(LightType type = LT_POINT);
     ~Light();
 
     const LightType type() const;
     void setType(LightType type);
 
-    const glm::vec3 position() const;
     void setPosition(const glm::vec3 &position);
+    void setPosition(const float x, const float y, const float z);
+    const glm::vec3 &position() const;
 
-    const glm::vec3 direction() const;
     void setDirection(const glm::vec3 &direction);
+    void setDirection(const float x, const float y, const float z);
+    const glm::vec3 &direction() const;
 
-    const glm::vec3 ambientColor() const;
-    void setAmbientColor(const glm::vec3 &color);
+    void setColor(const glm::vec3 &color);
+    void setColor(const float r, const float g, const float b);
+    const glm::vec3 &color() const;
 
-    const glm::vec3 diffuseColor() const;
-    void setDiffuseColor(const glm::vec3 &color);
+    void setDiffuseIntensity(const float intensity);
+    const float diffuseIntensity() const;
 
-    const glm::vec3 specularColor() const;
-    void setSpecularColor(const glm::vec3 &color);
+    void setSpecularIntensity(const float intensity);
+    const float specularIntensity() const;
 
   private:
     LightPrivate *d;

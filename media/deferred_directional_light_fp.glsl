@@ -7,10 +7,10 @@ uniform sampler2D colorSampler;
 uniform sampler2D normalSampler;
 uniform sampler2D positionSampler;
 // light properties
-uniform vec3 direction;
-uniform vec3 ambientColor;
-uniform vec3 diffuseColor;
-uniform vec3 specularColor;
+uniform vec3 lightDir;
+uniform vec3 lightColor;
+uniform float lightDiffuseIntensity;
+uniform float lightSpecularIntensity;
 // material properties
 float specularPower;
 float specularIntensity;
@@ -26,18 +26,17 @@ void main() {
 	specularPower = 32;
 	specularIntensity = 1;
 	
-	vec3 lightColor = ambientColor;
-	float diffuseFactor = dot(normal, -direction);
+	vec3 lightContrib = vec3(0, 0, 0);
+	float diffuseFactor = dot(normal, -lightDir);
 	if (diffuseFactor > 0) {
-		lightColor += diffuseColor * diffuseFactor;
+		lightContrib += lightColor * lightDiffuseIntensity * diffuseFactor;
 		
 		vec3 eyeDir = normalize(cameraPos - position);
-		vec3 reflectionDir = normalize(reflect(direction, normal));
-		float specularFactor = dot(eyeDir, reflectionDir);
-		specularFactor = pow(specularFactor, specularPower);
+		vec3 reflectionDir = normalize(reflect(lightDir, normal));
+		float specularFactor = pow(dot(eyeDir, reflectionDir), specularPower);
 		if (specularFactor > 0)
-			lightColor += specularColor * specularIntensity * specularFactor;
+			lightContrib += lightColor * lightSpecularIntensity * specularIntensity * specularFactor;
 	}
 
-	_color = vec4(color * lightColor, 1.0);
+	_color = vec4(color * lightContrib, 1.0);
 }

@@ -56,19 +56,18 @@ int main(int argc, char **argv) {
   Renderer *renderer = new Renderer(width, height);
   // create camera
   Camera *camera = new Camera();
-  camera->setPosition(0, 170, 1000);
-  camera->lookAt(0, 0, 0);
+  camera->setPosition(0, 170, 250);
+  camera->lookAt(0, 100, 0);
   camera->setAspectRatio(float(width) / float(height));
   // create root node
   Node *rootNode = new Node();
   rootNode->attachMesh(new Plane(glm::vec2(1000, 1000), glm::vec2(10, 10)));
   // create lightNode
-  Light *directionalLight = new Light();
-  directionalLight->setType(LT_DIRECTIONAL);
-  directionalLight->setAmbientColor(glm::vec3(0, 0, 0));
-  directionalLight->setDiffuseColor(glm::vec3(1, 1, 1));
-  directionalLight->setSpecularColor(glm::vec3(1, 1, 1));
-  directionalLight->setDirection(glm::vec3(+1, -1, -1));
+  Light *directionalLight = new Light(LT_DIRECTIONAL);
+  directionalLight->setDirection(1.0f, -1.0f, -1.0f);
+  directionalLight->setColor(1.0f, 1.0f, 1.0f);
+  directionalLight->setDiffuseIntensity(1.0f);
+  directionalLight->setSpecularIntensity(1.0f);
   rootNode->attachLight(directionalLight);
   // create child node
   Node *cubeNode = new Node();
@@ -94,15 +93,15 @@ int main(int argc, char **argv) {
       frames = 0;
       fpsTime = 0;
     }
+    // render one frame
+    renderer->renderOneFrame(camera, rootNode);
+    // swap front and back rendering buffers
+    glfwSwapBuffers();
     // toggle cull face
     if (glfwGetKey(GLFW_KEY_LCTRL))
       glDisable(GL_CULL_FACE);
     else
       glEnable(GL_CULL_FACE);
-    // render one frame
-    renderer->renderOneFrame(camera, rootNode);
-    // swap front and back rendering buffers
-    glfwSwapBuffers();
     // apply animations
     cubeNode->rotate(timeDiff * 60, glm::vec3(1, 1, 1));
   }
