@@ -1,9 +1,11 @@
 #include "Light.h"
 
+#include <glm/ext.hpp>
+
 namespace SimpleGL {
   class LightPrivate {
   public:
-    LightPrivate(LightType type) : type(type), position(0.0f, 0.0f, 0.0f), direction(0.0f, 0.0f, 1.0f), color(1.0f, 1.0f, 1.0f), diffuseIntensity(1.0f), specularIntensity(1.0f) {
+    LightPrivate(LightType type) : type(type), position(0.0f, 0.0f, 0.0f), direction(0.0f, 0.0f, 1.0f), color(1.0f, 1.0f, 1.0f), diffuseIntensity(1.0f), specularIntensity(1.0f), radius(256.0f), recalcTransformationMatrix(false) {
     }
 
     ~LightPrivate() {
@@ -15,6 +17,9 @@ namespace SimpleGL {
     glm::vec3 color;
     float diffuseIntensity;
     float specularIntensity;
+    float radius;
+    bool recalcTransformationMatrix;
+    glm::mat4 transformationMatrix;
   };
 
   Light::Light(LightType type) : d(new LightPrivate(type)) {
@@ -34,10 +39,14 @@ namespace SimpleGL {
 
   void Light::setPosition(const glm::vec3 &position) {
     d->position = position;
+    // transformation matrix needs to be recalculated
+    d->recalcTransformationMatrix = true;
   }
 
   void Light::setPosition(const float x, const float y, const float z) {
     d->position = glm::vec3(x, y, z);
+    // transformation matrix needs to be recalculated
+    d->recalcTransformationMatrix = true;
   }
 
   const glm::vec3 &Light::position() const {
@@ -82,5 +91,24 @@ namespace SimpleGL {
 
   const float Light::specularIntensity() const {
     return d->specularIntensity;
+  }
+
+  void Light::setRadius(const float radius) {
+    d->radius = radius;
+  }
+
+  const float Light::radius() const {
+    return d->radius;
+  }
+
+  const glm::mat4 &Light::transformationMatrix() const {
+    if (d->recalcTransformationMatrix) {
+      glm::mat4 identity;
+      // calculcate transformation matrix
+      d->transformationMatrix = glm::translate(identity, d->position);
+      // reset flag
+      d->recalcTransformationMatrix = false;
+    }
+    return d->transformationMatrix;
   }
 }

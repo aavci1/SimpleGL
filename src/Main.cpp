@@ -56,20 +56,28 @@ int main(int argc, char **argv) {
   Renderer *renderer = new Renderer(width, height);
   // create camera
   Camera *camera = new Camera();
-  camera->setPosition(0, 170, 250);
+  camera->setPosition(0, 170, 300);
   camera->lookAt(0, 100, 0);
   camera->setAspectRatio(float(width) / float(height));
   // create root node
   Node *rootNode = new Node();
   rootNode->attachMesh(new Plane(glm::vec2(1000, 1000), glm::vec2(10, 10)));
-  // create lightNode
+  // create a directional light
   Light *directionalLight = new Light(LT_DIRECTIONAL);
   directionalLight->setDirection(1.0f, -1.0f, -1.0f);
   directionalLight->setColor(1.0f, 1.0f, 1.0f);
   directionalLight->setDiffuseIntensity(1.0f);
   directionalLight->setSpecularIntensity(1.0f);
   rootNode->attachLight(directionalLight);
-  // create child node
+  // create a point light
+  Light *pointLight = new Light(LT_POINT);
+  pointLight->setPosition(0.0f, 200.0f, 0.0f);
+  pointLight->setColor(1.0f, 0.0f, 1.0f);
+  pointLight->setDiffuseIntensity(1.0f);
+  pointLight->setSpecularIntensity(0.0f);
+  pointLight->setRadius(512.0f);
+  rootNode->attachLight(pointLight);
+ // create child node
   Node *cubeNode = new Node();
   cubeNode->setPosition(0.0f, 100.0f, 0.0f);
   cubeNode->attachMesh(new Cube(glm::vec3(50.0f)));
@@ -104,6 +112,7 @@ int main(int argc, char **argv) {
       glEnable(GL_CULL_FACE);
     // apply animations
     cubeNode->rotate(timeDiff * 60, glm::vec3(1, 1, 1));
+    pointLight->setPosition(sinf(time) * 200.0f, 100.f, cosf(time) * 200.0f);
   }
   // clean up
   glfwTerminate();

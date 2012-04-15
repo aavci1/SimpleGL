@@ -61,4 +61,7 @@ namespace SimpleGL {
     delete[] vertices;
     delete[] indices;
   }
+
+  Sphere::~Sphere() {
+  }
 }

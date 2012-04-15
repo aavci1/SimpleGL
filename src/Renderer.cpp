@@ -6,8 +6,9 @@
 #include "GBuffer.h"
 #include "Light.h"
 #include "Node.h"
-#include "Quad.h"
 #include "Program.h"
+#include "Quad.h"
+#include "Sphere.h"
 #include "Texture.h"
 #include "VertexShader.h"
 
@@ -20,13 +21,14 @@
 namespace SimpleGL {
   class RendererPrivate {
   public:
-    RendererPrivate(uint width, uint height) : width(width), height(height), gbuffer(new GBuffer(width, height)), directionalLightProgram(0), quad(new Quad()) {
+    RendererPrivate(uint width, uint height) : width(width), height(height), gbuffer(new GBuffer(width, height)), geometryProgram(0), pointLightProgram(0), directionalLightProgram(0), quad(new Quad()) {
     }
 
     ~RendererPrivate() {
       delete gbuffer;
       delete texture;
       delete geometryProgram;
+      delete pointLightProgram;
       delete directionalLightProgram;
       delete quad;
     }
@@ -72,29 +74,36 @@ namespace SimpleGL {
     int height;
     GBuffer *gbuffer;
     std::vector<Light *> lights;
-    Program *directionalLightProgram;
-    Quad *quad;
     Texture *texture;
     Program *geometryProgram;
+    Program *pointLightProgram;
+    Program *directionalLightProgram;
+    Quad *quad;
   };
 
   Renderer::Renderer(uint width, uint height) : d(new RendererPrivate(width, height)) {
-    // load directional light shader
-    d->directionalLightProgram = new Program();
-    d->directionalLightProgram->addShader(new VertexShader(d->readAll("media/deferred_directional_light_vp.glsl")));
-    d->directionalLightProgram->addShader(new FragmentShader(d->readAll("media/deferred_directional_light_fp.glsl")));
-    if (!d->directionalLightProgram->compileAndLink())
-      printf("error: can not compile shader:\n%s", d->directionalLightProgram->message().c_str());
     // load texture
     d->texture = new Texture("media/laminate.jpg");
     if (!d->texture->load())
       printf("error: can not load texture %s.", d->texture->path().c_str());
-    // load shader
+    // load geometry program
     d->geometryProgram = new Program();
-    d->geometryProgram->addShader(new VertexShader(d->readAll("media/deferred_vp.glsl")));
-    d->geometryProgram->addShader(new FragmentShader(d->readAll("media/deferred_fp.glsl")));
+    d->geometryProgram->addShader(new VertexShader(d->readAll("media/deferred_geometry_vp.glsl")));
+    d->geometryProgram->addShader(new FragmentShader(d->readAll("media/deferred_geometry_fp.glsl")));
     if (!d->geometryProgram->compileAndLink())
       printf("error: can not compile shader:\n%s", d->geometryProgram->message().c_str());
+    // load point light program
+    d->pointLightProgram = new Program();
+    d->pointLightProgram->addShader(new VertexShader(d->readAll("media/deferred_light_point_vp.glsl")));
+    d->pointLightProgram->addShader(new FragmentShader(d->readAll("media/deferred_light_point_fp.glsl")));
+    if (!d->pointLightProgram->compileAndLink())
+      printf("error: can not compile shader:\n%s", d->pointLightProgram->message().c_str());
+    // load directional light program
+    d->directionalLightProgram = new Program();
+    d->directionalLightProgram->addShader(new VertexShader(d->readAll("media/deferred_light_directional_vp.glsl")));
+    d->directionalLightProgram->addShader(new FragmentShader(d->readAll("media/deferred_light_directional_fp.glsl")));
+    if (!d->directionalLightProgram->compileAndLink())
+      printf("error: can not compile shader:\n%s", d->directionalLightProgram->message().c_str());
   }
 
   Renderer::~Renderer() {
@@ -106,10 +115,12 @@ namespace SimpleGL {
     // bind gbuffer for writing
     d->gbuffer->setWritable(true);
     // set general parameters
-    glEnable(GL_CULL_FACE);
     glEnable(GL_TEXTURE_2D);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
     // set parameters for the geometry pass
     glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
     // clear color and depth buffers
@@ -137,7 +148,36 @@ namespace SimpleGL {
     // blit gbuffer to the screen
     d->gbuffer->blit();
 #else
-    // TODO: points lights pass
+    // point lights pass
+    d->pointLightProgram->select();
+    d->pointLightProgram->setUniform("screenSize", glm::vec2(d->width, d->height));
+    d->pointLightProgram->setUniform("cameraPos", camera->position());
+    d->pointLightProgram->setUniform("colorSampler", d->gbuffer->colorSampler());
+    d->pointLightProgram->setUniform("normalSampler", d->gbuffer->normalSampler());
+    d->pointLightProgram->setUniform("positionSampler", d->gbuffer->positionSampler());
+    for (int i = 0;  i < d->lights.size(); ++i) {
+      if (d->lights.at(i)->type() == LT_POINT) {
+        if (glm::length(camera->position() - d->lights.at(i)->position()) < d->lights.at(i)->radius())
+          glCullFace(GL_FRONT);
+        else
+          glCullFace(GL_BACK);
+        // set light parameters
+        d->pointLightProgram->setUniform("sglModelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * d->lights.at(i)->transformationMatrix());
+        d->pointLightProgram->setUniform("lightPos", d->lights.at(i)->position());
+        d->pointLightProgram->setUniform("lightColor", d->lights.at(i)->color());
+        d->pointLightProgram->setUniform("lightRadius", d->lights.at(i)->radius());
+        d->pointLightProgram->setUniform("lightDiffuseIntensity", d->lights.at(i)->diffuseIntensity());
+        d->pointLightProgram->setUniform("lightSpecularIntensity", d->lights.at(i)->specularIntensity());
+        // draw a sphere
+        Sphere *sphere = new Sphere(d->lights.at(i)->radius());
+        sphere->render();
+        delete sphere;
+      }
+    }
+    // deselect shader
+    d->pointLightProgram->deselect();
+    // reset parameters
+    glCullFace(GL_BACK);
     // directional lights pass
     d->directionalLightProgram->select();
     d->directionalLightProgram->setUniform("screenSize", glm::vec2(d->width, d->height));

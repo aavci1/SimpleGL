@@ -38,6 +38,11 @@ namespace SimpleGL {
     void setSpecularIntensity(const float intensity);
     const float specularIntensity() const;
 
+    void setRadius(const float radius);
+    const float radius() const;
+
+    const glm::mat4 &transformationMatrix() const;
+
   private:
     LightPrivate *d;
   };
