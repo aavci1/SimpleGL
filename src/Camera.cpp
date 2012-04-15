@@ -53,6 +53,10 @@ namespace SimpleGL {
     d->recalcViewMatrix();
   }
 
+  const glm::vec3 &Camera::position() const {
+    return d->position;
+  }
+
   void Camera::lookAt(const glm::vec3 &lookAt) {
     d->lookAt = lookAt;
     // recalc view matrix

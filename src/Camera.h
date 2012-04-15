@@ -15,6 +15,7 @@ namespace SimpleGL {
 
     void setPosition(const glm::vec3 &position);
     void setPosition(float x, float y, float z);
+    const glm::vec3 &position() const;
 
     void lookAt(const glm::vec3 &lookAt);
     void lookAt(float x, float y, float z);
