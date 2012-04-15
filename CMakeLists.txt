@@ -7,7 +7,6 @@ add_definitions(-O2 -msse2)
 set (SOURCES
   src/Camera.cpp
   src/Cube.cpp
-  src/DeferredRenderer.cpp
   src/FragmentShader.cpp
   src/GBuffer.cpp
   src/Light.cpp

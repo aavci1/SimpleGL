@@ -1,18 +1,24 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include <glm/glm.hpp>
+#include <sys/types.h>
 
 namespace SimpleGL {
+  class RendererPrivate;
+
   class Camera;
   class Node;
 
   class Renderer {
   public:
-    Renderer();
+    Renderer(uint width, uint height);
     ~Renderer();
 
-    virtual void renderOneFrame(Camera *camera, Node *root) = 0;
+    void renderOneFrame(Camera *camera, Node *root);
+
+  private:
+    RendererPrivate *d;
   };
 }
+
 #endif // RENDERER_H

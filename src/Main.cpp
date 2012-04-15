@@ -1,9 +1,9 @@
-#include "DeferredRenderer.h"
 #include "Camera.h"
 #include "Cube.h"
 #include "Light.h"
 #include "Node.h"
 #include "Plane.h"
+#include "Renderer.h"
 #include "Sphere.h"
 
 #include <glm/glm.hpp>
@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
   int width = 0, height = 0;
   glfwGetWindowSize(&width, &height);
   // create renderer
-  Renderer *renderer = new DeferredRenderer(width, height);
+  Renderer *renderer = new Renderer(width, height);
   // create camera
   Camera *camera = new Camera();
   camera->setPosition(0, 170, 1000);
