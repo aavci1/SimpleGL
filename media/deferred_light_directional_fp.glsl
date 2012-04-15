@@ -26,15 +26,15 @@ void main() {
 	
 	vec3 lightContrib = vec3(0, 0, 0);
 	float diffuseFactor = dot(normal, -lightDir);
-	if (diffuseFactor > 0) {
-		lightContrib += lightColor * lightDiffuseIntensity * diffuseFactor;
-		
-		vec3 eyeDir = normalize(cameraPos - position);
-		vec3 reflectionDir = normalize(reflect(lightDir, normal));
-		float specularFactor = pow(dot(eyeDir, reflectionDir), specularPower);
-		if (specularFactor > 0)
-			lightContrib += lightColor * lightSpecularIntensity * specularIntensity * specularFactor;
-	}
+	if (diffuseFactor <= 0)
+		discard;
+	lightContrib += lightColor * lightDiffuseIntensity * diffuseFactor;
+	
+	vec3 eyeDir = normalize(cameraPos - position);
+	vec3 reflectionDir = normalize(reflect(lightDir, normal));
+	float specularFactor = pow(dot(eyeDir, reflectionDir), specularPower);
+	if (specularFactor > 0)
+		lightContrib += lightColor * lightSpecularIntensity * specularIntensity * specularFactor;
 
 	_color = vec4(color * lightContrib, 1.0);
 }
