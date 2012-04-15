@@ -11,20 +11,18 @@ uniform vec3 lightDir;
 uniform vec3 lightColor;
 uniform float lightDiffuseIntensity;
 uniform float lightSpecularIntensity;
-// material properties
-float specularPower;
-float specularIntensity;
 // outputs
 out vec4 _color;
 
 void main() {
 	vec2 texCoord = gl_FragCoord.xy / screenSize;
+	// get color, normal and position
 	vec3 color = texture(colorSampler, texCoord).xyz;
-	vec3 normal = normalize(texture(normalSampler, texCoord).xyz);
+	vec3 normal = texture(normalSampler, texCoord).xyz;
 	vec3 position = texture(positionSampler, texCoord).xyz;
-	// TODO: these values should come from the gbuffer
-	specularPower = 32;
-	specularIntensity = 1;
+	// get specular parameters
+	float specularIntensity = texture(normalSampler, texCoord).w;
+	float specularPower = texture(positionSampler, texCoord).w;
 	
 	vec3 lightContrib = vec3(0, 0, 0);
 	float diffuseFactor = dot(normal, -lightDir);

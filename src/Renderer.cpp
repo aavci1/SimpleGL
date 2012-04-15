@@ -57,6 +57,8 @@ namespace SimpleGL {
         geometryProgram->setUniform("sglModelMatrix", modelMatrix);
         geometryProgram->setUniform("sglModelViewProjMatrix", viewProjMatrix * modelMatrix);
         geometryProgram->setUniform("sglSampler", 0);
+        geometryProgram->setUniform("sglSpecularIntensity", 1.0f);
+        geometryProgram->setUniform("sglSpecularPower", 8.0f);
         // render the mesh
         node->meshes().at(i)->render();
         // deselect shader
@@ -131,6 +133,10 @@ namespace SimpleGL {
     // clear color buffer
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+#if 0
+    // blit gbuffer to the screen
+    d->gbuffer->blit();
+#else
     // TODO: points lights pass
     // directional lights pass
     d->directionalLightProgram->select();
@@ -154,10 +160,6 @@ namespace SimpleGL {
     d->directionalLightProgram->deselect();
     // unbind textures
     d->gbuffer->unbindTextures();
-//    // clear color buffer
-//    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-//    glClear(GL_COLOR_BUFFER_BIT);
-//    // blit gbuffer to the screen
-//    d->gbuffer->blit();
+#endif
   }
 }

@@ -2,6 +2,8 @@
 
 // uniforms
 uniform sampler2D sglSampler;
+uniform float sglSpecularIntensity;
+uniform float sglSpecularPower;
 // input
 in vec4 _worldPosition;
 in vec4 _normal;
@@ -15,7 +17,7 @@ void main(void) {
   // color of the fragment
   Color = texture2D(sglSampler, _texCoord);
   // normal of the fragment
-  Normal = _normal;
+  Normal = vec4(_normal.xyz, sglSpecularIntensity);
   // position of the fragment
-  Position = _worldPosition;
+  Position = vec4(_worldPosition.xyz, sglSpecularPower);
 }
