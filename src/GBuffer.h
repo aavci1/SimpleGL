@@ -15,9 +15,9 @@ namespace SimpleGL {
     void bindTextures();
     void unbindTextures();
 
-    const uint colorSampler() const;
-    const uint normalSampler() const;
-    const uint positionSampler() const;
+    const uint colorBuffer() const;
+    const uint normalBuffer() const;
+    const uint positionBuffer() const;
 
     void blit();
 

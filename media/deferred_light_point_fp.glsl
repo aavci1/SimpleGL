@@ -1,9 +1,9 @@
 #version 330 core
 
 // gbuffer textures
-uniform sampler2D colorSampler;
-uniform sampler2D normalSampler;
-uniform sampler2D positionSampler;
+uniform sampler2D colorBuffer;
+uniform sampler2D normalBuffer;
+uniform sampler2D positionBuffer;
 // screen size and camera position
 uniform vec2 screenSize;
 uniform vec3 cameraPos;
@@ -20,12 +20,12 @@ out vec4 _color;
 void main() {
 	vec2 texCoord = gl_FragCoord.xy / screenSize;
 	// get color, normal and position
-	vec3 color = texture(colorSampler, texCoord).xyz;
-	vec3 normal = texture(normalSampler, texCoord).xyz;
-	vec3 position = texture(positionSampler, texCoord).xyz;
+	vec3 color = texture(colorBuffer, texCoord).xyz;
+	vec3 normal = texture(normalBuffer, texCoord).xyz;
+	vec3 position = texture(positionBuffer, texCoord).xyz;
 	// get specular parameters
-	float specularIntensity = texture(colorSampler, texCoord).w;
-	float specularPower = texture(normalSampler, texCoord).w;
+	float specularIntensity = texture(colorBuffer, texCoord).w;
+	float specularPower = texture(normalBuffer, texCoord).w;
 	// discard fragment if not within radius
 	vec3 lightVector = position - lightPos;
 	if (length(lightVector) > lightRadius)

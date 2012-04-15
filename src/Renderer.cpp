@@ -152,9 +152,9 @@ namespace SimpleGL {
     d->pointLightProgram->select();
     d->pointLightProgram->setUniform("screenSize", glm::vec2(d->width, d->height));
     d->pointLightProgram->setUniform("cameraPos", camera->position());
-    d->pointLightProgram->setUniform("colorSampler", d->gbuffer->colorSampler());
-    d->pointLightProgram->setUniform("normalSampler", d->gbuffer->normalSampler());
-    d->pointLightProgram->setUniform("positionSampler", d->gbuffer->positionSampler());
+    d->pointLightProgram->setUniform("colorBuffer", d->gbuffer->colorBuffer());
+    d->pointLightProgram->setUniform("normalBuffer", d->gbuffer->normalBuffer());
+    d->pointLightProgram->setUniform("positionBuffer", d->gbuffer->positionBuffer());
     for (int i = 0;  i < d->lights.size(); ++i) {
       if (d->lights.at(i)->type() == LT_POINT) {
         if (glm::length(camera->position() - d->lights.at(i)->position()) < d->lights.at(i)->radius())
@@ -182,9 +182,9 @@ namespace SimpleGL {
     d->directionalLightProgram->select();
     d->directionalLightProgram->setUniform("screenSize", glm::vec2(d->width, d->height));
     d->directionalLightProgram->setUniform("cameraPos", camera->position());
-    d->directionalLightProgram->setUniform("colorSampler", d->gbuffer->colorSampler());
-    d->directionalLightProgram->setUniform("normalSampler", d->gbuffer->normalSampler());
-    d->directionalLightProgram->setUniform("positionSampler", d->gbuffer->positionSampler());
+    d->directionalLightProgram->setUniform("colorBuffer", d->gbuffer->colorBuffer());
+    d->directionalLightProgram->setUniform("normalBuffer", d->gbuffer->normalBuffer());
+    d->directionalLightProgram->setUniform("positionBuffer", d->gbuffer->positionBuffer());
     for (int i = 0;  i < d->lights.size(); ++i) {
       if (d->lights.at(i)->type() == LT_DIRECTIONAL) {
         // set light parameters

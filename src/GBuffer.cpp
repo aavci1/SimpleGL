@@ -73,15 +73,15 @@ namespace SimpleGL {
     glDeleteFramebuffers(1, &d->frameBuffer);
   }
 
-  const uint GBuffer::colorSampler() const {
+  const uint GBuffer::colorBuffer() const {
     return 0;
   }
 
-  const uint GBuffer::normalSampler() const {
+  const uint GBuffer::normalBuffer() const {
     return 1;
   }
 
-  const uint GBuffer::positionSampler() const {
+  const uint GBuffer::positionBuffer() const {
     return 2;
   }
 
