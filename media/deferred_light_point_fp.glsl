@@ -27,22 +27,22 @@ void main() {
 	float specularPower = texture(positionSampler, texCoord).w;
 
 	vec3 lightVector = position - lightPos;
-	float attenuation = clamp(1.0 - length(lightVector) / lightRadius, 0.0, 1.0);
 	if (length(lightVector) > lightRadius)
 		discard;
 	
 	vec3 lightDir = normalize(lightVector);
-	vec3 lightContrib = vec3(0, 0, 0);
 	float diffuseFactor = dot(normal, -lightDir);
-	if (diffuseFactor > 0) {
-		lightContrib += attenuation * lightColor * lightDiffuseIntensity * diffuseFactor;
-		
-		vec3 eyeDir = normalize(cameraPos - position);
-		vec3 reflectionDir = normalize(reflect(lightDir, normal));
-		float specularFactor = pow(dot(eyeDir, reflectionDir), specularPower);
-		if (specularFactor > 0)
-			lightContrib += lightColor * lightSpecularIntensity * specularIntensity * specularFactor;
-	}
+	if (diffuseFactor <= 0)
+		discard;
+
+	float attenuation = clamp(1.0 - length(lightVector) / lightRadius, 0.0, 1.0);
+	vec3 lightContrib = attenuation * lightColor * lightDiffuseIntensity * diffuseFactor;
+	
+	vec3 eyeDir = normalize(cameraPos - position);
+	vec3 reflectionDir = normalize(reflect(lightDir, normal));
+	float specularFactor = pow(dot(eyeDir, reflectionDir), specularPower);
+	if (specularFactor > 0)
+		lightContrib += lightColor * lightSpecularIntensity * specularIntensity * specularFactor;
 
 	_color = vec4(color * lightContrib, 1.0);
 }
