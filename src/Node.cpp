@@ -59,6 +59,12 @@ namespace SimpleGL {
     d->recalcTransformationMatrix = true;
   }
 
+  void Node::setPosition(float x, float y, float z) {
+    d->position = glm::vec3(x, y, z);
+    // transformation matrix needs to be recalculated
+    d->recalcTransformationMatrix = true;
+  }
+
   const glm::vec3 &Node::position() const {
     return d->position;
   }
@@ -69,12 +75,24 @@ namespace SimpleGL {
     d->recalcTransformationMatrix = true;
   }
 
+  void Node::setOrientation(float w, float x, float y, float z) {
+    d->orientation = glm::normalize(glm::quat(w, x, y, z));
+    // transformation matrix needs to be recalculated
+    d->recalcTransformationMatrix = true;
+  }
+
   const glm::quat &Node::orientation() const {
     return d->orientation;
   }
 
   void Node::setScale(const glm::vec3 &scale) {
     d->scale = scale;
+    // transformation matrix needs to be recalculated
+    d->recalcTransformationMatrix = true;
+  }
+
+  void Node::setScale(float x, float y, float z) {
+    d->scale = glm::vec3(x, y, z);
     // transformation matrix needs to be recalculated
     d->recalcTransformationMatrix = true;
   }

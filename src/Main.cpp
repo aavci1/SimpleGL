@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
   rootNode->attachLight(directionalLight);
   // create child node
   Node *cubeNode = new Node();
-  cubeNode->setPosition(glm::vec3(0.0f, 100.0f, 0.0f));
+  cubeNode->setPosition(0.0f, 100.0f, 0.0f);
   cubeNode->attachMesh(new Cube(glm::vec3(50.0f)));
   rootNode->attachNode(cubeNode);
   // start rendering
