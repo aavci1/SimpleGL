@@ -12,7 +12,8 @@ namespace SimpleGL {
     ~GBuffer();
 
     void setWritable(bool writable);
-    void setReadable();
+    void bindTextures();
+    void unbindTextures();
 
     const uint colorSampler() const;
     const uint normalSampler() const;

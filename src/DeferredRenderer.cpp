@@ -39,11 +39,11 @@ namespace SimpleGL {
       return std::string(buffer.str());
     }
 
-    void renderHelper(Node *node, glm::mat4 modelViewProj) {
-      modelViewProj = modelViewProj * node->transformationMatrix();
+    void renderHelper(Node *node, glm::mat4 modelMatrix, glm::mat4 viewProjMatrix) {
+      modelMatrix *= node->transformationMatrix();
       // visit child nodes
       for (int i = 0; i < node->nodes().size(); ++i)
-        renderHelper(node->nodes().at(i), modelViewProj);
+        renderHelper(node->nodes().at(i), modelMatrix, viewProjMatrix);
       // add lights to the list
       for (int i = 0; i < node->lights().size(); ++i)
         lights.push_back(node->lights().at(i));
@@ -54,7 +54,8 @@ namespace SimpleGL {
         // select shader
         geometryProgram->select();
         // update uniforms
-        geometryProgram->setUniform("sglModelViewProjMatrix", modelViewProj);
+        geometryProgram->setUniform("sglModelMatrix", modelMatrix);
+        geometryProgram->setUniform("sglModelViewProjMatrix", viewProjMatrix * modelMatrix);
         geometryProgram->setUniform("sglSampler", 0);
         // render the mesh
         node->meshes().at(i)->render();
@@ -102,33 +103,34 @@ namespace SimpleGL {
     // GEOMETRY PASS
     // bind gbuffer for writing
     d->gbuffer->setWritable(true);
-    // enable depth mask
+    // set general parameters
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_TEXTURE_2D);
+    // set parameters for the geometry pass
     glDepthMask(GL_TRUE);
-    // enable depth test
     glEnable(GL_DEPTH_TEST);
-    // disable blending
     glDisable(GL_BLEND);
     // clear color and depth buffers
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // clear lights
     d->lights.clear();
     // render scene
-    d->renderHelper(root, camera->projectionMatrix() * camera->viewMatrix());
+    d->renderHelper(root, glm::mat4(), camera->projectionMatrix() * camera->viewMatrix());
     // unbind gbuffer
     d->gbuffer->setWritable(false);
-    // LIGHTING PASS
-    // disable depth mask
+    // bind textures
+    d->gbuffer->bindTextures();
+    // set parameters for lighting pass
     glDepthMask(GL_FALSE);
-    // disable depth test
     glDisable(GL_DEPTH_TEST);
-    // bind gbuffer for reading
-    d->gbuffer->setReadable();
-    // clear color buffer
-    glClear(GL_COLOR_BUFFER_BIT);
-    // set blending
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_ONE, GL_ONE);
+    // clear color buffer
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
     // TODO: points lights pass
     // directional lights pass
     d->directionalLightProgram->select();
@@ -150,7 +152,12 @@ namespace SimpleGL {
     }
     // deselect shader
     d->directionalLightProgram->deselect();
-
+    // unbind textures
+    d->gbuffer->unbindTextures();
+//    // clear color buffer
+//    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+//    glClear(GL_COLOR_BUFFER_BIT);
+//    // blit gbuffer to the screen
 //    d->gbuffer->blit();
   }
 }

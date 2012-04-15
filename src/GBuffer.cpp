@@ -92,7 +92,7 @@ namespace SimpleGL {
       glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   }
 
-  void GBuffer::setReadable() {
+  void GBuffer::bindTextures() {
     // bind color buffer
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, d->colorBuffer);
@@ -102,6 +102,18 @@ namespace SimpleGL {
     // bind position buffer
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, d->positionBuffer);
+  }
+
+  void GBuffer::unbindTextures() {
+    // bind color buffer
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    // bind normal buffer
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    // bind position buffer
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, 0);
   }
 
   void GBuffer::blit() {

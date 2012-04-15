@@ -49,10 +49,6 @@ int main(int argc, char **argv) {
     printf("error: can not initialize glew.\n");
     return 1;
   }
-  // set color to clear background
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-  glEnable(GL_CULL_FACE);
-  glEnable(GL_TEXTURE_2D);
   // get window width and height
   int width = 0, height = 0;
   glfwGetWindowSize(&width, &height);
@@ -72,7 +68,7 @@ int main(int argc, char **argv) {
   directionalLight->setAmbientColor(glm::vec3(0, 0, 0));
   directionalLight->setDiffuseColor(glm::vec3(1, 1, 1));
   directionalLight->setSpecularColor(glm::vec3(1, 1, 1));
-  directionalLight->setDirection(glm::vec3(0, -1, 0));
+  directionalLight->setDirection(glm::vec3(+1, -1, -1));
   rootNode->attachLight(directionalLight);
   // create child node
   Node *cubeNode = new Node();
