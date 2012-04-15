@@ -24,8 +24,8 @@ void main() {
 	vec3 normal = texture(normalSampler, texCoord).xyz;
 	vec3 position = texture(positionSampler, texCoord).xyz;
 	// get specular parameters
-	float specularIntensity = texture(normalSampler, texCoord).w;
-	float specularPower = texture(positionSampler, texCoord).w;
+	float specularIntensity = texture(colorSampler, texCoord).w;
+	float specularPower = texture(normalSampler, texCoord).w;
 	// discard fragment if not within radius
 	vec3 lightVector = position - lightPos;
 	if (length(lightVector) > lightRadius)

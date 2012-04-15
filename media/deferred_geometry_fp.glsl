@@ -15,9 +15,9 @@ out vec4 Position;
 
 void main(void) {
   // color of the fragment
-  Color = texture2D(sglSampler, _texCoord);
+  Color = vec4(texture2D(sglSampler, _texCoord).xyz, sglSpecularIntensity);
   // normal of the fragment
-  Normal = vec4(_normal.xyz, sglSpecularIntensity);
+  Normal = vec4(_normal.xyz, sglSpecularPower);
   // position of the fragment
-  Position = vec4(_worldPosition.xyz, sglSpecularPower);
+  Position = _worldPosition;
 }

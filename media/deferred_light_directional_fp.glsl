@@ -23,8 +23,8 @@ void main() {
 	vec3 normal = texture(normalSampler, texCoord).xyz;
 	vec3 position = texture(positionSampler, texCoord).xyz;
 	// get specular parameters
-	float specularIntensity = texture(normalSampler, texCoord).w;
-	float specularPower = texture(positionSampler, texCoord).w;
+	float specularIntensity = texture(colorSampler, texCoord).w;
+	float specularPower = texture(normalSampler, texCoord).w;
 	// discard fragment if facing away
 	float diffuseFactor = dot(normal, -lightDir);
 	if (diffuseFactor <= 0)
