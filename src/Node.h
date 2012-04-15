@@ -25,7 +25,7 @@ namespace SimpleGL {
     void attachLight(Light *light);
     const std::vector<Light *> &lights() const;
 
-    void setPosition(const glm::vec3 &translation);
+    void setPosition(const glm::vec3 &position);
     const glm::vec3 &position() const;
 
     void setOrientation(const glm::quat &orientation);
