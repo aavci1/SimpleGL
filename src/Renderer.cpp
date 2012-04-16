@@ -110,6 +110,13 @@ namespace SimpleGL {
     delete d;
   }
 
+  void Renderer::setSize(uint width, uint height) {
+    d->width = width;
+    d->height = height;
+    delete d->gbuffer;
+    d->gbuffer = new GBuffer(width, height);
+  }
+
   void Renderer::renderOneFrame(Camera *camera, Node *root) {
     // GEOMETRY PASS
     // bind gbuffer for writing

@@ -14,14 +14,17 @@
 using namespace SimpleGL;
 
 Camera *camera;
+Renderer *renderer;
 
 void GLFWCALL resize(int width, int height) {
   //   printf("new size: %dx%d\n", width, height);
   glViewport(0, 0, (GLsizei) width, (GLsizei) height);
+  // update renderer's buffers' size
+  if (renderer)
+    renderer->setSize(width, height);
   // update perspective
   if (camera)
     camera->setAspectRatio(float(width) / float(height));
-  // TODO: update renderer buffers' size
 }
 
 int main(int argc, char **argv) {
@@ -53,9 +56,9 @@ int main(int argc, char **argv) {
   int width = 0, height = 0;
   glfwGetWindowSize(&width, &height);
   // create renderer
-  Renderer *renderer = new Renderer(width, height);
+  renderer = new Renderer(width, height);
   // create camera
-  Camera *camera = new Camera();
+  camera = new Camera();
   camera->setPosition(0, 170, 300);
   camera->lookAt(0, 100, 0);
   camera->setAspectRatio(float(width) / float(height));

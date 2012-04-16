@@ -14,6 +14,8 @@ namespace SimpleGL {
     Renderer(uint width, uint height);
     ~Renderer();
 
+    void setSize(uint width, uint height);
+
     void renderOneFrame(Camera *camera, Node *root);
 
   private:
