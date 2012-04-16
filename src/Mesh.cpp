@@ -18,6 +18,7 @@ namespace SimpleGL {
     GLuint indexBuffer;
     uint vertexCount;
     uint indexCount;
+    std::string materialName;
   };
 
   Mesh::Mesh() : d(new MeshPrivate()) {
@@ -112,6 +113,14 @@ namespace SimpleGL {
     d->indexCount = indexCount;
     // return succes
     return true;
+  }
+
+  void Mesh::setMaterialName(const std::string &materialName) {
+    d->materialName = materialName;
+  }
+
+  const std::string &Mesh::materialName() const {
+    return d->materialName;
   }
 
   bool Mesh::render() const {

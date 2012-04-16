@@ -63,16 +63,19 @@ int main(int argc, char **argv) {
   Node *rootNode = new Node();
   // create floor
   Plane *floor = new Plane(glm::vec2(1000, 1000), glm::vec2(10, 10));
+  floor->setMaterialName("Laminate");
   Node *floorNode = rootNode->createChildNode();
   floorNode->attachMesh(floor);
   // create ceiling
   Plane *ceiling = new Plane(glm::vec2(1000, 1000), glm::vec2(10, 10));
+  ceiling->setMaterialName("Ceiling");
   Node *ceilingNode = rootNode->createChildNode();
   ceilingNode->attachMesh(ceiling);
   ceilingNode->setPosition(0.0f, 200.0f, 0.0f);
   ceilingNode->roll(180);
   // create a cube
   Cube *cube = new Cube(glm::vec3(50.0f));
+  cube->setMaterialName("Ebony");
   Node *cubeNode = new Node();
   cubeNode->setPosition(0.0f, 100.0f, 0.0f);
   cubeNode->attachMesh(cube);
