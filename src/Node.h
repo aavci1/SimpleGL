@@ -16,6 +16,8 @@ namespace SimpleGL {
     Node();
     ~Node();
 
+    Node *createChildNode();
+
     void attachNode(Node *node);
     const std::vector<Node *> &nodes() const;
 

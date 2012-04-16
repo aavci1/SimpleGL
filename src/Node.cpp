@@ -29,6 +29,12 @@ namespace SimpleGL {
     delete d;
   }
 
+  Node *Node::createChildNode() {
+    Node *childNode = new Node();
+    d->nodes.push_back(childNode);
+    return childNode;
+  }
+
   void Node::attachNode(Node *node) {
     d->nodes.push_back(node);
   }
