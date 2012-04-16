@@ -7,6 +7,7 @@ add_definitions(-O2 -msse2)
 set (SOURCES
   src/Camera.cpp
   src/Cube.cpp
+  src/DirectionalLight.cpp
   src/FragmentShader.cpp
   src/GBuffer.cpp
   src/Light.cpp
@@ -14,6 +15,7 @@ set (SOURCES
   src/Mesh.cpp
   src/Node.cpp
   src/Plane.cpp
+  src/PointLight.cpp
   src/Program.cpp
   src/Quad.cpp
   src/Renderer.cpp

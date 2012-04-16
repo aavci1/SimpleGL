@@ -2,10 +2,12 @@
 
 #include "Attribute.h"
 #include "Camera.h"
+#include "DirectionalLight.h"
 #include "FragmentShader.h"
 #include "GBuffer.h"
 #include "Light.h"
 #include "Node.h"
+#include "PointLight.h"
 #include "Program.h"
 #include "Quad.h"
 #include "Sphere.h"
@@ -164,19 +166,20 @@ namespace SimpleGL {
     d->pointLightProgram->setUniform("positionBuffer", d->gbuffer->positionBuffer());
     for (int i = 0;  i < d->lights.size(); ++i) {
       if (d->lights.at(i)->type() == LT_POINT) {
-        if (glm::length(camera->position() - d->lights.at(i)->position()) < d->lights.at(i)->radius())
+        PointLight *light = static_cast<PointLight *>(d->lights.at(i));
+        if (glm::length(camera->position() - light->position()) < light->radius())
           glCullFace(GL_FRONT);
         else
           glCullFace(GL_BACK);
         // set light parameters
-        d->pointLightProgram->setUniform("sglModelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * d->lights.at(i)->transformationMatrix());
-        d->pointLightProgram->setUniform("lightPos", d->lights.at(i)->position());
-        d->pointLightProgram->setUniform("lightColor", d->lights.at(i)->color());
-        d->pointLightProgram->setUniform("lightRadius", d->lights.at(i)->radius());
-        d->pointLightProgram->setUniform("lightDiffuseIntensity", d->lights.at(i)->diffuseIntensity());
-        d->pointLightProgram->setUniform("lightSpecularIntensity", d->lights.at(i)->specularIntensity());
+        d->pointLightProgram->setUniform("sglModelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * light->transformationMatrix());
+        d->pointLightProgram->setUniform("lightPos", light->position());
+        d->pointLightProgram->setUniform("lightColor", light->color());
+        d->pointLightProgram->setUniform("lightRadius", light->radius());
+        d->pointLightProgram->setUniform("lightDiffuseIntensity", light->diffuseIntensity());
+        d->pointLightProgram->setUniform("lightSpecularIntensity", light->specularIntensity());
         // draw a sphere
-        Sphere *sphere = new Sphere(d->lights.at(i)->radius());
+        Sphere *sphere = new Sphere(light->radius());
         sphere->render();
         delete sphere;
       }
@@ -194,11 +197,12 @@ namespace SimpleGL {
     d->directionalLightProgram->setUniform("positionBuffer", d->gbuffer->positionBuffer());
     for (int i = 0;  i < d->lights.size(); ++i) {
       if (d->lights.at(i)->type() == LT_DIRECTIONAL) {
+        DirectionalLight *light = static_cast<DirectionalLight *>(d->lights.at(i));
         // set light parameters
-        d->directionalLightProgram->setUniform("lightDir", d->lights.at(i)->direction());
-        d->directionalLightProgram->setUniform("lightColor", d->lights.at(i)->color());
-        d->directionalLightProgram->setUniform("lightDiffuseIntensity", d->lights.at(i)->diffuseIntensity());
-        d->directionalLightProgram->setUniform("lightSpecularIntensity", d->lights.at(i)->specularIntensity());
+        d->directionalLightProgram->setUniform("lightDir", light->direction());
+        d->directionalLightProgram->setUniform("lightColor", light->color());
+        d->directionalLightProgram->setUniform("lightDiffuseIntensity", light->diffuseIntensity());
+        d->directionalLightProgram->setUniform("lightSpecularIntensity", light->specularIntensity());
         // render full screen quad
         d->quad->render();
       }

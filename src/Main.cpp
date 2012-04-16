@@ -1,8 +1,9 @@
 #include "Camera.h"
 #include "Cube.h"
-#include "Light.h"
+#include "DirectionalLight.h"
 #include "Node.h"
 #include "Plane.h"
+#include "PointLight.h"
 #include "Renderer.h"
 #include "Sphere.h"
 
@@ -66,18 +67,18 @@ int main(int argc, char **argv) {
   Node *rootNode = new Node();
   rootNode->attachMesh(new Plane(glm::vec2(1000, 1000), glm::vec2(10, 10)));
   // create a directional light
-  Light *directionalLight = new Light(LT_DIRECTIONAL);
-  directionalLight->setDirection(1.0f, -1.0f, -1.0f);
+  DirectionalLight *directionalLight = new DirectionalLight();
   directionalLight->setColor(1.0f, 1.0f, 1.0f);
   directionalLight->setDiffuseIntensity(1.0f);
   directionalLight->setSpecularIntensity(1.0f);
+  directionalLight->setDirection(1.0f, -1.0f, -1.0f);
   rootNode->attachLight(directionalLight);
   // create a point light
-  Light *pointLight = new Light(LT_POINT);
-  pointLight->setPosition(0.0f, 200.0f, 0.0f);
+  PointLight *pointLight = new PointLight();
   pointLight->setColor(1.0f, 0.0f, 1.0f);
   pointLight->setDiffuseIntensity(1.0f);
   pointLight->setSpecularIntensity(0.0f);
+  pointLight->setPosition(0.0f, 200.0f, 0.0f);
   pointLight->setRadius(512.0f);
   rootNode->attachLight(pointLight);
  // create child node
