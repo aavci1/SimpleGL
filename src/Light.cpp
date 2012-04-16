@@ -3,7 +3,7 @@
 namespace SimpleGL {
   class LightPrivate {
   public:
-    LightPrivate(LightType type) : type(type), color(1.0f, 1.0f, 1.0f), diffuseIntensity(1.0f), specularIntensity(1.0f), transformationMatrix(glm::mat4()) {
+    LightPrivate(LightType type) : type(type), color(1.0f, 1.0f, 1.0f), diffuseIntensity(1.0f), specularIntensity(1.0f), enabled(true) {
     }
 
     ~LightPrivate() {
@@ -13,7 +13,7 @@ namespace SimpleGL {
     glm::vec3 color;
     float diffuseIntensity;
     float specularIntensity;
-    glm::mat4 transformationMatrix;
+    bool enabled;
   };
 
   Light::Light(LightType type) : d(new LightPrivate(type)) {
@@ -55,7 +55,11 @@ namespace SimpleGL {
     return d->specularIntensity;
   }
 
-  const glm::mat4 &Light::transformationMatrix() const {
-    return d->transformationMatrix;
+  void Light::setEnabled(const bool enabled) {
+    d->enabled = enabled;
+  }
+
+  const bool Light::isEnabled() const {
+    return d->enabled;
   }
 }

@@ -30,7 +30,8 @@ namespace SimpleGL {
     void setSpecularIntensity(const float intensity);
     const float specularIntensity() const;
 
-    virtual const glm::mat4 &transformationMatrix() const;
+    void setEnabled(const bool enabled);
+    const bool isEnabled() const;
 
   private:
     LightPrivate *d;
