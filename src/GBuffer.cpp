@@ -105,13 +105,13 @@ namespace SimpleGL {
   }
 
   void GBuffer::unbindTextures() {
-    // bind color buffer
+    // unbind color buffer
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
-    // bind normal buffer
+    // unbind normal buffer
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, 0);
-    // bind position buffer
+    // unbind position buffer
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, 0);
   }
