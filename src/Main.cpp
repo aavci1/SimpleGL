@@ -57,15 +57,26 @@ int main(int argc, char **argv) {
   int width = 0, height = 0;
   glfwGetWindowSize(&width, &height);
   // create renderer
+  // WARN: if renderer is initialized further down, some strange artifacts occur
   renderer = new Renderer(width, height);
-  // create camera
-  camera = new Camera();
-  camera->setPosition(0, 170, 300);
-  camera->lookAt(0, 100, 0);
-  camera->setAspectRatio(float(width) / float(height));
   // create root node
   Node *rootNode = new Node();
-  rootNode->attachMesh(new Plane(glm::vec2(1000, 1000), glm::vec2(10, 10)));
+  // create floor
+  Plane *floor = new Plane(glm::vec2(1000, 1000), glm::vec2(10, 10));
+  Node *floorNode = rootNode->createChildNode();
+  floorNode->attachMesh(floor);
+  // create ceiling
+  Plane *ceiling = new Plane(glm::vec2(1000, 1000), glm::vec2(10, 10));
+  Node *ceilingNode = rootNode->createChildNode();
+  ceilingNode->attachMesh(ceiling);
+  ceilingNode->setPosition(0.0f, 200.0f, 0.0f);
+  ceilingNode->roll(180);
+  // create a cube
+  Cube *cube = new Cube(glm::vec3(50.0f));
+  Node *cubeNode = new Node();
+  cubeNode->setPosition(0.0f, 100.0f, 0.0f);
+  cubeNode->attachMesh(cube);
+  rootNode->attachNode(cubeNode);
   // create a directional light
   DirectionalLight *directionalLight = new DirectionalLight();
   directionalLight->setColor(1.0f, 1.0f, 1.0f);
@@ -81,11 +92,11 @@ int main(int argc, char **argv) {
   pointLight->setPosition(0.0f, 200.0f, 0.0f);
   pointLight->setRadius(512.0f);
   rootNode->attachLight(pointLight);
- // create child node
-  Node *cubeNode = new Node();
-  cubeNode->setPosition(0.0f, 100.0f, 0.0f);
-  cubeNode->attachMesh(new Cube(glm::vec3(50.0f)));
-  rootNode->attachNode(cubeNode);
+  // create camera
+  camera = new Camera();
+  camera->setPosition(0, 170, 300);
+  camera->lookAt(0, 100, 0);
+  camera->setAspectRatio(float(width) / float(height));
   // start rendering
   double time = glfwGetTime();
   float timeDiff = 0;
