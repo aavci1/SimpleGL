@@ -120,6 +120,9 @@ int main(int argc, char **argv) {
   camera->setPosition(0, 100, 900);
   camera->lookAt(0, 100, 0);
   camera->setAspectRatio(float(width) / float(height));
+  // mouse position
+  int mouseX = 0, mouseY = 0;
+  glfwGetMousePos(&mouseX, &mouseY);
   // start rendering
   double time = glfwGetTime();
   float timeDiff = 0;
@@ -143,16 +146,21 @@ int main(int argc, char **argv) {
     renderer->renderOneFrame(camera, rootNode);
     // swap front and back rendering buffers
     glfwSwapBuffers();
-    // toggle cull face
-    if (glfwGetKey(GLFW_KEY_LCTRL))
-      glDisable(GL_CULL_FACE);
-    else
-      glEnable(GL_CULL_FACE);
+    // get mouse coordinates
+    int x, y;
+    glfwGetMousePos(&x, &y);
+    // rotate camera
+    camera->pitch(-2.0f * timeDiff * (y - mouseY));
+    camera->yaw(-5.0f * timeDiff * (x - mouseX));
+    // save mouse coordinates
+    mouseX = x;
+    mouseY = y;
+    // move camera
+    // apply animations
+    cubeNode->rotate(timeDiff * 60, glm::vec3(1, 1, 1));
     // save screenshot
     if (glfwGetKey(GLFW_KEY_F8))
       renderer->saveScreenshot("screenshot.jpg");
-    // apply animations
-    cubeNode->rotate(timeDiff * 60, glm::vec3(1, 1, 1));
   }
   // clean up
   glfwTerminate();

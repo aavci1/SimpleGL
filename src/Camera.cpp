@@ -1,11 +1,9 @@
 #include "Camera.h"
 
-#include <glm/ext.hpp>
-
 namespace SimpleGL {
   class CameraPrivate {
   public:
-    CameraPrivate() : position(0, 0, 0), lookAt(0, 0, 0), up(0, 1, 0), fov(60.0f), nearClipDistance(1.0f), farClipDistance(10000.0f), aspectRatio(1.33) {
+    CameraPrivate() : position(0, 0, 0), orientation(1, 0, 0, 0), lookAt(0, 0, 0), up(0, 1, 0), fov(60.0f), nearClipDistance(1.0f), farClipDistance(10000.0f), aspectRatio(1.33) {
       recalcViewMatrix();
       recalcProjectionMatrix();
     }
@@ -14,7 +12,7 @@ namespace SimpleGL {
     }
 
     void recalcViewMatrix() {
-      viewMatrix = glm::lookAt(position, lookAt, up);
+      viewMatrix = glm::lookAt(position, orientation * (lookAt - position) + position, up);
     }
 
     void recalcProjectionMatrix() {
@@ -28,6 +26,7 @@ namespace SimpleGL {
     float aspectRatio;
 
     glm::vec3 position;
+    glm::quat orientation;
     glm::vec3 lookAt;
     glm::vec3 up;
     glm::mat4 viewMatrix;
@@ -51,6 +50,41 @@ namespace SimpleGL {
     d->position = glm::vec3(x, y, z);
     // recalc view matrix
     d->recalcViewMatrix();
+  }
+
+  void Camera::setOrientation(const glm::quat &orientation) {
+    d->orientation = glm::normalize(orientation);
+    // recalc view matrix
+    d->recalcViewMatrix();
+  }
+
+  void Camera::setOrientation(float w, float x, float y, float z) {
+    d->orientation = glm::normalize(glm::quat(w, x, y, z));
+    // recalc view matrix
+    d->recalcViewMatrix();
+  }
+
+  const glm::quat &Camera::orientation() const {
+    return d->orientation;
+  }
+
+  void Camera::rotate(float angle, const glm::vec3 &axis, TransformSpace transformSpace) {
+    if (transformSpace == TS_WORLD)
+      setOrientation(glm::angleAxis(angle, axis) * d->orientation);
+    else if (transformSpace == TS_LOCAL)
+      setOrientation(d->orientation * glm::angleAxis(angle, axis));
+  }
+
+  void Camera::pitch(float angle, TransformSpace transformSpace) {
+    rotate(angle, glm::vec3(1.0f, 0.0f, 0.0f), transformSpace);
+  }
+
+  void Camera::yaw(float angle, TransformSpace transformSpace) {
+    rotate(angle, glm::vec3(0.0f, 1.0f, 0.0f), transformSpace);
+  }
+
+  void Camera::roll(float angle, TransformSpace transformSpace) {
+    rotate(angle, glm::vec3(0.0f, 0.0f, 1.0f), transformSpace);
   }
 
   const glm::vec3 &Camera::position() const {

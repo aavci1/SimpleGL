@@ -1,9 +1,12 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include "TransformSpace.h"
+
 #include <sys/types.h>
 
 #include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 namespace SimpleGL {
   class CameraPrivate;
@@ -16,6 +19,16 @@ namespace SimpleGL {
     void setPosition(const glm::vec3 &position);
     void setPosition(float x, float y, float z);
     const glm::vec3 &position() const;
+
+    void setOrientation(const glm::quat &orientation);
+    void setOrientation(float w, float x, float y, float z);
+    const glm::quat &orientation() const;
+
+    void rotate(float angle, const glm::vec3 &axis, TransformSpace transformSpace = TS_LOCAL);
+
+    void pitch(float angle, TransformSpace transformSpace = TS_LOCAL);
+    void yaw(float angle, TransformSpace transformSpace = TS_WORLD);
+    void roll(float angle, TransformSpace transformSpace = TS_LOCAL);
 
     void lookAt(const glm::vec3 &lookAt);
     void lookAt(float x, float y, float z);
