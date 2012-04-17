@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
   // request opengl profile
   glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   // try to open the window
-  if (!glfwOpenWindow(1024, 768, 8, 8, 8, 0, 24, 0, GLFW_WINDOW)) {
+  if (!glfwOpenWindow(1920, 1080, 8, 8, 8, 0, 24, 0, GLFW_FULLSCREEN)) {
     printf("error: cannot open glfw window.\n");
     glfwTerminate();
     return 1;
@@ -101,17 +101,23 @@ int main(int argc, char **argv) {
   directionalLight->setSpecularIntensity(1.0f);
   directionalLight->setDirection(1.0f, -1.0f, -1.0f);
   rootNode->attachLight(directionalLight);
-  // create a point light
-  PointLight *pointLight = new PointLight();
-  pointLight->setColor(1.0f, 0.0f, 1.0f);
-  pointLight->setDiffuseIntensity(1.0f);
-  pointLight->setSpecularIntensity(0.0f);
-  pointLight->setPosition(0.0f, 200.0f, 0.0f);
-  pointLight->setRadius(512.0f);
-  rootNode->attachLight(pointLight);
+  // add lots of point lights
+  srand(glfwGetTime() * 1000);
+  for (int i = -5; i < 5; ++i) {
+    for (int j = -5; j < 5; ++j) {
+      // create a point light
+      PointLight *pointLight = new PointLight();
+      pointLight->setColor(float(rand()) / RAND_MAX, float(rand()) / RAND_MAX, float(rand()) / RAND_MAX);
+      pointLight->setDiffuseIntensity(1.0f);
+      pointLight->setSpecularIntensity(0.0f);
+      pointLight->setPosition(j * 200 + 100, 160.0f, i * 200 + 100);
+      pointLight->setRadius(400.0f);
+      rootNode->attachLight(pointLight);
+    }
+  }
   // create camera
   camera = new Camera();
-  camera->setPosition(0, 170, 300);
+  camera->setPosition(0, 100, 900);
   camera->lookAt(0, 100, 0);
   camera->setAspectRatio(float(width) / float(height));
   // start rendering
@@ -144,7 +150,6 @@ int main(int argc, char **argv) {
       glEnable(GL_CULL_FACE);
     // apply animations
     cubeNode->rotate(timeDiff * 60, glm::vec3(1, 1, 1));
-    pointLight->setPosition(sinf(time) * 200.0f, 100.f, cosf(time) * 200.0f);
   }
   // clean up
   glfwTerminate();
