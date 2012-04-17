@@ -1,6 +1,8 @@
 #include "Camera.h"
 #include "Cube.h"
 #include "DirectionalLight.h"
+#include "Material.h"
+#include "MaterialManager.h"
 #include "Node.h"
 #include "Plane.h"
 #include "PointLight.h"
@@ -61,6 +63,18 @@ int main(int argc, char **argv) {
   renderer = new Renderer(width, height);
   // create root node
   Node *rootNode = new Node();
+  // create laminate material
+  Material *laminateMaterial = MaterialManager::instance()->createMaterial("Laminate");
+  laminateMaterial->setProgram("media/deferred_geometry_vp.glsl", "media/deferred_geometry_fp.glsl");
+  laminateMaterial->addTexture("media/laminate.jpg");
+  // create ceramics material
+  Material *ebonyMaterial = MaterialManager::instance()->createMaterial("Ebony");
+  ebonyMaterial->setProgram("media/deferred_geometry_vp.glsl", "media/deferred_geometry_fp.glsl");
+  ebonyMaterial->addTexture("media/ebony.jpg");
+  // create ceiling material
+  Material *ceilingMaterial = MaterialManager::instance()->createMaterial("Ceiling");
+  ceilingMaterial->setProgram("media/deferred_geometry_vp.glsl", "media/deferred_geometry_fp.glsl");
+  ceilingMaterial->addTexture("media/ceiling.jpg");
   // create floor
   Plane *floor = new Plane(glm::vec2(1000, 1000), glm::vec2(10, 10));
   floor->setMaterialName("Laminate");

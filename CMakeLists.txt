@@ -12,6 +12,8 @@ set (SOURCES
   src/GBuffer.cpp
   src/Light.cpp
   src/Main.cpp
+  src/Material.cpp
+  src/MaterialManager.cpp
   src/Mesh.cpp
   src/Node.cpp
   src/Plane.cpp
@@ -22,6 +24,7 @@ set (SOURCES
   src/Shader.cpp
   src/Sphere.cpp
   src/Texture.cpp
+  src/Util.cpp
   src/VertexShader.cpp
 )
 # opengl target

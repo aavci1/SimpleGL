@@ -6,41 +6,29 @@
 #include "FragmentShader.h"
 #include "GBuffer.h"
 #include "Light.h"
+#include "Material.h"
+#include "MaterialManager.h"
 #include "Node.h"
 #include "PointLight.h"
 #include "Program.h"
 #include "Quad.h"
 #include "Sphere.h"
-#include "Texture.h"
+#include "Util.h"
 #include "VertexShader.h"
 
 #include <GL/glew.h>
 
-#include <fstream>
-#include <iostream>
-#include <sstream>
-
 namespace SimpleGL {
   class RendererPrivate {
   public:
-    RendererPrivate(uint width, uint height) : width(width), height(height), gbuffer(new GBuffer(width, height)), geometryProgram(0), pointLightProgram(0), directionalLightProgram(0), quad(new Quad()) {
+    RendererPrivate(uint width, uint height) : width(width), height(height), gbuffer(new GBuffer(width, height)), pointLightProgram(0), directionalLightProgram(0), quad(new Quad()) {
     }
 
     ~RendererPrivate() {
       delete gbuffer;
-      delete texture;
-      delete geometryProgram;
       delete pointLightProgram;
       delete directionalLightProgram;
       delete quad;
-    }
-
-    std::string readAll(const char *fileName) {
-      std::ifstream in(fileName);
-      std::stringstream buffer;
-      buffer << in.rdbuf();
-
-      return std::string(buffer.str());
     }
 
     void renderHelper(Node *node, glm::mat4 modelMatrix, glm::mat4 viewProjMatrix) {
@@ -53,22 +41,18 @@ namespace SimpleGL {
         lights.push_back(node->lights().at(i));
       // render meshes
       for (int i = 0; i < node->meshes().size(); ++i) {
-        // select texture
-        texture->select(0);
-        // select shader
-        geometryProgram->select();
+        Material *material = MaterialManager::instance()->getMaterialByName(node->meshes().at(i)->materialName());
+        if (!material)
+          continue;
+        // select program
+        material->select();
         // update uniforms
-        geometryProgram->setUniform("sglModelMatrix", modelMatrix);
-        geometryProgram->setUniform("sglModelViewProjMatrix", viewProjMatrix * modelMatrix);
-        geometryProgram->setUniform("sglSampler", 0);
-        geometryProgram->setUniform("sglSpecularIntensity", 1.0f);
-        geometryProgram->setUniform("sglSpecularPower", 8.0f);
+        material->program()->setUniform("sglModelMatrix", modelMatrix);
+        material->program()->setUniform("sglModelViewProjMatrix", viewProjMatrix * modelMatrix);
         // render the mesh
         node->meshes().at(i)->render();
         // deselect shader
-        geometryProgram->deselect();
-        // deselect texture
-        texture->deselect();
+        material->deselect();
       }
     }
 
@@ -76,34 +60,22 @@ namespace SimpleGL {
     int height;
     GBuffer *gbuffer;
     std::vector<Light *> lights;
-    Texture *texture;
-    Program *geometryProgram;
     Program *pointLightProgram;
     Program *directionalLightProgram;
     Quad *quad;
   };
 
   Renderer::Renderer(uint width, uint height) : d(new RendererPrivate(width, height)) {
-    // load texture
-    d->texture = new Texture("media/laminate.jpg");
-    if (!d->texture->load())
-      printf("error: can not load texture %s.", d->texture->path().c_str());
-    // load geometry program
-    d->geometryProgram = new Program();
-    d->geometryProgram->addShader(new VertexShader(d->readAll("media/deferred_geometry_vp.glsl")));
-    d->geometryProgram->addShader(new FragmentShader(d->readAll("media/deferred_geometry_fp.glsl")));
-    if (!d->geometryProgram->compileAndLink())
-      printf("error: can not compile shader:\n%s", d->geometryProgram->message().c_str());
     // load point light program
     d->pointLightProgram = new Program();
-    d->pointLightProgram->addShader(new VertexShader(d->readAll("media/deferred_light_point_vp.glsl")));
-    d->pointLightProgram->addShader(new FragmentShader(d->readAll("media/deferred_light_point_fp.glsl")));
+    d->pointLightProgram->addShader(new VertexShader(Util::readAll("media/deferred_light_point_vp.glsl")));
+    d->pointLightProgram->addShader(new FragmentShader(Util::readAll("media/deferred_light_point_fp.glsl")));
     if (!d->pointLightProgram->compileAndLink())
       printf("error: can not compile shader:\n%s", d->pointLightProgram->message().c_str());
     // load directional light program
     d->directionalLightProgram = new Program();
-    d->directionalLightProgram->addShader(new VertexShader(d->readAll("media/deferred_light_directional_vp.glsl")));
-    d->directionalLightProgram->addShader(new FragmentShader(d->readAll("media/deferred_light_directional_fp.glsl")));
+    d->directionalLightProgram->addShader(new VertexShader(Util::readAll("media/deferred_light_directional_vp.glsl")));
+    d->directionalLightProgram->addShader(new FragmentShader(Util::readAll("media/deferred_light_directional_fp.glsl")));
     if (!d->directionalLightProgram->compileAndLink())
       printf("error: can not compile shader:\n%s", d->directionalLightProgram->message().c_str());
   }
