@@ -18,12 +18,12 @@ namespace SimpleGL {
     Node();
     ~Node();
 
-    Node *createChildNode();
+    Node *createChildNode(const glm::vec3 &position = glm::vec3(0, 0, 0), const glm::quat &orientation = glm::quat(1, 0, 0, 0), const glm::vec3 &scale = glm::vec3(1, 1, 1));
 
     void attachNode(Node *node);
     const std::vector<Node *> &nodes() const;
 
-    void attachMesh(Mesh *mesh);
+    void attachMesh(SimpleGL::Mesh *mesh);
     const std::vector<Mesh *> &meshes() const;
 
     void attachLight(Light *light);

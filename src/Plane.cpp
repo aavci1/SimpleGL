@@ -1,6 +1,7 @@
 #include "Plane.h"
 
 #include "Attribute.h"
+#include "SubMesh.h"
 
 namespace SimpleGL {
   Plane::Plane(glm::vec2 size, glm::vec2 uvTile) : Mesh() {
@@ -13,7 +14,8 @@ namespace SimpleGL {
 
     uint indices[] = { 0, 1, 2, 0, 2, 3 };
 
-    setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, 4, 32);
-    setIndexData(indices, 6);
+    SubMesh *subMesh = createSubMesh();
+    subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, 4, 32);
+    subMesh->setIndexData(indices, 6);
   }
 }

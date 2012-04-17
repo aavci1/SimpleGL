@@ -15,6 +15,7 @@ set (SOURCES
   src/Material.cpp
   src/MaterialManager.cpp
   src/Mesh.cpp
+  src/MeshManager.cpp
   src/Node.cpp
   src/Plane.cpp
   src/PointLight.cpp
@@ -23,10 +24,11 @@ set (SOURCES
   src/Renderer.cpp
   src/Shader.cpp
   src/Sphere.cpp
+  src/SubMesh.cpp
   src/Texture.cpp
   src/Util.cpp
   src/VertexShader.cpp
 )
 # opengl target
 add_executable (SimpleGL WIN32 ${SOURCES} resources.rc)
-target_link_libraries (SimpleGL GL GLEW glfw freeimage)
+target_link_libraries (SimpleGL GL GLEW glfw freeimage assimp)

@@ -12,6 +12,7 @@
 #include "PointLight.h"
 #include "Program.h"
 #include "Quad.h"
+#include "SubMesh.h"
 #include "Sphere.h"
 #include "Util.h"
 #include "VertexShader.h"
@@ -45,18 +46,22 @@ namespace SimpleGL {
         lights.push_back(node->lights().at(i));
       // render meshes
       for (int i = 0; i < node->meshes().size(); ++i) {
-        Material *material = MaterialManager::instance()->getMaterialByName(node->meshes().at(i)->materialName());
-        if (!material)
-          continue;
-        // select program
-        material->select();
-        // update uniforms
-        material->program()->setUniform("sglModelMatrix", modelMatrix);
-        material->program()->setUniform("sglModelViewProjMatrix", viewProjMatrix * modelMatrix);
-        // render the mesh
-        node->meshes().at(i)->render();
-        // deselect shader
-        material->deselect();
+        Mesh *mesh = node->meshes().at(i);
+        for (int j = 0; j < mesh->subMeshes().size(); ++j) {
+          SubMesh *subMesh = mesh->subMeshes().at(j);
+          Material *material = MaterialManager::instance()->getMaterialByName(subMesh->materialName());
+          if (!material)
+            continue;
+          // select program
+          material->select();
+          // update uniforms
+          material->program()->setUniform("sglModelMatrix", modelMatrix);
+          material->program()->setUniform("sglModelViewProjMatrix", viewProjMatrix * modelMatrix);
+          // render the mesh
+          subMesh->render();
+          // deselect shader
+          material->deselect();
+        }
       }
     }
 

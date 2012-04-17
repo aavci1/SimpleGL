@@ -1,30 +1,26 @@
-#ifndef SUBMESH_H
-#define SUBMESH_H
-
-#include <sys/types.h>
+#ifndef MESH_H
+#define MESH_H
 
 #include <string>
+#include <vector>
 
 namespace SimpleGL {
   class MeshPrivate;
+  class SubMesh;
 
   class Mesh {
   public:
     Mesh();
     ~Mesh();
 
-    bool setVertexData(uint vertexFormat, float vertexData[], uint vertexCount, uint stride);
-    bool setIndexData(uint indexData[], uint indexCount);
+    SubMesh *createSubMesh();
+    const std::vector<SubMesh *> &subMeshes() const;
 
-    void setMaterialName(const std::string &name);
-    const std::string &materialName() const;
-
-    bool render() const;
+    void setMaterialName(const std::string &materialName);
 
   private:
     MeshPrivate *d;
   };
-  
 }
 
-#endif // SUBMESH_H
+#endif // MESH_H

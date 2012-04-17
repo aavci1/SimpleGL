@@ -10,6 +10,8 @@ namespace SimpleGL {
   public:
     Sphere(float r = 1.0f, int slices = 16, int stacks = 16);
     ~Sphere();
+
+    void render();
   };
 }
 

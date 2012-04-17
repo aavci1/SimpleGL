@@ -1,6 +1,7 @@
 #include "Sphere.h"
 
 #include "Attribute.h"
+#include "SubMesh.h"
 
 #include <math.h>
 
@@ -55,13 +56,18 @@ namespace SimpleGL {
       }
     }
     // set vertex and index data
-    setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, vertexCount, 32);
-    setIndexData(indices, indexCount);
+    SubMesh *submesh = createSubMesh();
+    submesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, vertexCount, 32);
+    submesh->setIndexData(indices, indexCount);
     // clean up
     delete[] vertices;
     delete[] indices;
   }
 
   Sphere::~Sphere() {
+  }
+
+  void Sphere::render() {
+    subMeshes().at(0)->render();
   }
 }

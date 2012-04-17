@@ -1,6 +1,7 @@
 #include "Cube.h"
 
 #include "Attribute.h"
+#include "SubMesh.h"
 
 namespace SimpleGL {
   Cube::Cube(glm::vec3 size) : Mesh() {
@@ -56,7 +57,8 @@ namespace SimpleGL {
       20, 22, 23
     };
 
-    setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, 24, 32);
-    setIndexData(indices, 36);
+    SubMesh *subMesh = createSubMesh();
+    subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, 24, 32);
+    subMesh->setIndexData(indices, 36);
   }
 }

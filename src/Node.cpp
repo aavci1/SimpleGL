@@ -29,9 +29,15 @@ namespace SimpleGL {
     delete d;
   }
 
-  Node *Node::createChildNode() {
+  Node *Node::createChildNode(const glm::vec3 &position, const glm::quat &orientation, const glm::vec3 &scale) {
     Node *childNode = new Node();
+    // set position/orientation/scale
+    childNode->setPosition(position);
+    childNode->setOrientation(orientation);
+    childNode->setScale(scale);
+    // add to the list
     d->nodes.push_back(childNode);
+    // return child node
     return childNode;
   }
 
