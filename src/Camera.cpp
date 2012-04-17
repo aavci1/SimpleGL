@@ -52,6 +52,17 @@ namespace SimpleGL {
     d->recalcViewMatrix();
   }
 
+  void Camera::moveRelative(const glm::vec3 &translation) {
+    d->position += d->orientation * translation;
+    d->lookAt += d->orientation * translation;
+    // recalc view matrix
+    d->recalcViewMatrix();
+  }
+
+  void Camera::moveRelative(float x, float y, float z) {
+    moveRelative(glm::vec3(x, y, z));
+  }
+
   void Camera::setOrientation(const glm::quat &orientation) {
     d->orientation = glm::normalize(orientation);
     // recalc view matrix

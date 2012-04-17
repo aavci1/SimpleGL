@@ -156,6 +156,17 @@ int main(int argc, char **argv) {
     mouseX = x;
     mouseY = y;
     // move camera
+    float height = camera->position().y;
+    if (glfwGetKey('W'))
+      camera->moveRelative(0.0f, 0.0f, -250.0f * timeDiff);
+    if (glfwGetKey('A'))
+      camera->moveRelative(-250.0f * timeDiff, 0.0f, 0.0f);
+    if (glfwGetKey('S'))
+      camera->moveRelative(0.0f, 0.0f, +250.0f * timeDiff);
+    if (glfwGetKey('D'))
+      camera->moveRelative(+250.0f * timeDiff, 0.0f, 0.0f);
+    // reset camera height
+    camera->setPosition(camera->position().x, height, camera->position().z);
     // apply animations
     cubeNode->rotate(timeDiff * 60, glm::vec3(1, 1, 1));
     // save screenshot

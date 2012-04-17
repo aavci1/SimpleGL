@@ -20,6 +20,9 @@ namespace SimpleGL {
     void setPosition(float x, float y, float z);
     const glm::vec3 &position() const;
 
+    void moveRelative(const glm::vec3 &translation);
+    void moveRelative(float x, float y, float z);
+
     void setOrientation(const glm::quat &orientation);
     void setOrientation(float w, float x, float y, float z);
     const glm::quat &orientation() const;
