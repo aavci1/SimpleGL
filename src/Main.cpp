@@ -148,6 +148,9 @@ int main(int argc, char **argv) {
       glDisable(GL_CULL_FACE);
     else
       glEnable(GL_CULL_FACE);
+    // save screenshot
+    if (glfwGetKey(GLFW_KEY_F8))
+      renderer->saveScreenshot("screenshot.jpg");
     // apply animations
     cubeNode->rotate(timeDiff * 60, glm::vec3(1, 1, 1));
   }

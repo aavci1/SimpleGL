@@ -18,6 +18,10 @@
 
 #include <GL/glew.h>
 
+#include <FreeImage.h>
+
+#include <algorithm>
+
 namespace SimpleGL {
   class RendererPrivate {
   public:
@@ -184,5 +188,34 @@ namespace SimpleGL {
     // unbind textures
     d->gbuffer->unbindTextures();
 #endif
+  }
+
+  bool Renderer::saveScreenshot(const std::string &path) {
+    // get file extension
+    std::string extension = path.substr(path.find_last_of(".") + 1);
+    // convert to upper case
+    std::transform(extension.begin(), extension.end(), extension.begin(), ::toupper);
+    // check if file extension supported
+    if (extension != "JPG" && extension != "JPEG" && extension != "PNG" && extension != "BMP")
+      return false;
+    // create a buffer to hold pixels
+    BYTE* buffer = new BYTE[3 * d->width * d->height];
+    // read pixels from the buffer
+    glReadPixels(0, 0, d->width, d->height, GL_BGR, GL_UNSIGNED_BYTE, buffer);
+    // convert pixels to image
+    FIBITMAP* image = FreeImage_ConvertFromRawBits(buffer, d->width, d->height, 3 * d->width, 24, 0x0000FF, 0xFF0000, 0x00FF00, false);
+    // save image depending on format
+    if (extension == "JPG" || extension == "JPEG")
+      FreeImage_Save(FIF_JPEG, image, path.c_str(), 0);
+    else if (extension == "PNG")
+      FreeImage_Save(FIF_PNG, image, path.c_str(), 0);
+    else if (extension == "BMP")
+      FreeImage_Save(FIF_BMP, image, path.c_str(), 0);
+    // delete image
+    delete image;
+    // delete buffer
+    delete[] buffer;
+    // return success
+    return true;
   }
 }

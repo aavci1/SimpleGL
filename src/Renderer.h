@@ -3,6 +3,8 @@
 
 #include <sys/types.h>
 
+#include <string>
+
 namespace SimpleGL {
   class RendererPrivate;
 
@@ -17,6 +19,8 @@ namespace SimpleGL {
     void setSize(uint width, uint height);
 
     void renderOneFrame(Camera *camera, Node *root);
+
+    bool saveScreenshot(const std::string &path);
 
   private:
     RendererPrivate *d;
