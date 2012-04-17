@@ -107,20 +107,23 @@ namespace SimpleGL {
     return d->scale;
   }
 
-  void Node::rotate(float angle, const glm::vec3 &axis) {
-    setOrientation(d->orientation * glm::quat(glm::normalize(axis) * float(angle * M_PI / 180.0f)));
+  void Node::rotate(float angle, const glm::vec3 &axis, TransformSpace transformSpace) {
+    if (transformSpace == TS_WORLD)
+      setOrientation(glm::angleAxis(angle, axis) * d->orientation);
+    else if (transformSpace == TS_LOCAL)
+      setOrientation(d->orientation * glm::angleAxis(angle, axis));
   }
 
-  void Node::pitch(float angle) {
-    setOrientation(d->orientation * glm::quat(glm::vec3(angle * M_PI / 180.0f, 0.0f, 0.0f)));
+  void Node::pitch(float angle, TransformSpace transformSpace) {
+    rotate(angle, glm::vec3(1.0f, 0.0f, 0.0f));
   }
 
-  void Node::yaw(float angle) {
-    setOrientation(d->orientation * glm::quat(glm::vec3(0.0f, angle * M_PI / 180.0f, 0.0f)));
+  void Node::yaw(float angle, TransformSpace transformSpace) {
+    rotate(angle, glm::vec3(0.0f, 1.0f, 0.0f));
   }
 
-  void Node::roll(float angle) {
-    setOrientation(d->orientation * glm::quat(glm::vec3(0.0f, 0.0f, angle * M_PI / 180.0f)));
+  void Node::roll(float angle, TransformSpace transformSpace) {
+    rotate(angle, glm::vec3(0.0f, 0.0f, 1.0f));
   }
 
   const glm::mat4 &Node::transformationMatrix() const {

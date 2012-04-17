@@ -11,6 +11,11 @@ namespace SimpleGL {
   class Mesh;
   class NodePrivate;
 
+  enum TransformSpace {
+    TS_LOCAL,
+    TS_WORLD
+  };
+
   class Node {
   public:
     Node();
@@ -39,11 +44,11 @@ namespace SimpleGL {
     void setScale(float x, float y, float z);
     const glm::vec3 &scale() const;
 
-    void rotate(float angle, const glm::vec3 &axis);
+    void rotate(float angle, const glm::vec3 &axis, TransformSpace transformSpace = TS_LOCAL);
 
-    void pitch(float angle);
-    void yaw(float angle);
-    void roll(float angle);
+    void pitch(float angle, TransformSpace transformSpace = TS_LOCAL);
+    void yaw(float angle, TransformSpace transformSpace = TS_LOCAL);
+    void roll(float angle, TransformSpace transformSpace = TS_LOCAL);
 
     const glm::mat4 &transformationMatrix() const;
 
