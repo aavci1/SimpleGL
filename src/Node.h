@@ -1,6 +1,8 @@
 #ifndef NODE_H
 #define NODE_H
 
+#include "TransformSpace.h"
+
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
@@ -10,11 +12,6 @@ namespace SimpleGL {
   class Light;
   class Mesh;
   class NodePrivate;
-
-  enum TransformSpace {
-    TS_LOCAL,
-    TS_WORLD
-  };
 
   class Node {
   public:

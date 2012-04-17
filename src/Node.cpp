@@ -115,15 +115,15 @@ namespace SimpleGL {
   }
 
   void Node::pitch(float angle, TransformSpace transformSpace) {
-    rotate(angle, glm::vec3(1.0f, 0.0f, 0.0f));
+    rotate(angle, glm::vec3(1.0f, 0.0f, 0.0f), transformSpace);
   }
 
   void Node::yaw(float angle, TransformSpace transformSpace) {
-    rotate(angle, glm::vec3(0.0f, 1.0f, 0.0f));
+    rotate(angle, glm::vec3(0.0f, 1.0f, 0.0f), transformSpace);
   }
 
   void Node::roll(float angle, TransformSpace transformSpace) {
-    rotate(angle, glm::vec3(0.0f, 0.0f, 1.0f));
+    rotate(angle, glm::vec3(0.0f, 0.0f, 1.0f), transformSpace);
   }
 
   const glm::mat4 &Node::transformationMatrix() const {
