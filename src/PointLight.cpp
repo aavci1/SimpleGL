@@ -5,13 +5,16 @@
 namespace SimpleGL {
   class PointLightPrivate {
   public:
-    PointLightPrivate() : position(0.0f, 0.0f, 0.0f), radius(256.0f), recalcTransformationMatrix(false), transformationMatrix(glm::mat4()) {
+    PointLightPrivate() : position(0.0f, 0.0f, 0.0f), attenuationRange(256.0f), attenuationConstant(0.0f), attenuationLinear(0.0f), attenuationQuadratic(1.0f), recalcTransformationMatrix(false), transformationMatrix(glm::mat4()) {
     }
     ~PointLightPrivate() {
     }
 
     glm::vec3 position;
-    float radius;
+    float attenuationRange;
+    float attenuationConstant;
+    float attenuationLinear;
+    float attenuationQuadratic;
     bool recalcTransformationMatrix;
     glm::mat4 transformationMatrix;
   };
@@ -39,12 +42,27 @@ namespace SimpleGL {
     return d->position;
   }
 
-  void PointLight::setRadius(const float radius) {
-    d->radius = radius;
+  void PointLight::setAttenuation(float range, float constant, float linear, float quadratic) {
+    d->attenuationRange = range;
+    d->attenuationConstant = constant;
+    d->attenuationLinear = linear;
+    d->attenuationQuadratic = quadratic;
   }
 
-  const float PointLight::radius() const {
-    return d->radius;
+  float PointLight::attenuationRange() const {
+    return d->attenuationRange;
+  }
+
+  float PointLight::attenuationConstant() const {
+    return d->attenuationConstant;
+  }
+
+  float PointLight::attenuationLinear() const {
+    return d->attenuationLinear;
+  }
+
+  float PointLight::attenuationQuadratic() const {
+    return d->attenuationQuadratic;
   }
 
   const glm::mat4 &PointLight::transformationMatrix() const {

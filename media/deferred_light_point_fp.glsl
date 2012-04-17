@@ -13,7 +13,10 @@ uniform float lightSpecularIntensity;
 uniform vec3 lightColor;
 // point light properties
 uniform vec3 lightPos;
-uniform float lightRadius;
+uniform float lightAttenuationRange;
+uniform float lightAttenuationConstant;
+uniform float lightAttenuationLinear;
+uniform float lightAttenuationQuadratic;
 // outputs
 out vec4 _color;
 
@@ -28,7 +31,8 @@ void main() {
 	float specularPower = texture(normalBuffer, texCoord).w;
 	// discard fragment if not within radius
 	vec3 lightVector = position - lightPos;
-	if (length(lightVector) > lightRadius)
+	float dist = length(lightVector);
+	if (dist > lightAttenuationRange)
 		discard;
 	// discard fragment if facing away
 	vec3 lightDir = normalize(lightVector);
@@ -36,9 +40,11 @@ void main() {
 	if (diffuseFactor <= 0)
 		discard;
 	// calculate attenuation
-	float attenuation = clamp(1.0 - length(lightVector) / lightRadius, 0.0, 1.0);
+	float k = dist / lightAttenuationRange;
+	float attenuation = lightAttenuationConstant + lightAttenuationLinear * k + lightAttenuationQuadratic * k * k;
+	attenuation = clamp(1.0 - attenuation, 0.0, 1.0);
 	// calculate diffuse light contribution
-	vec3 lightContrib = lightColor * lightDiffuseIntensity * diffuseFactor * attenuation;
+    vec3 lightContrib = lightColor * lightDiffuseIntensity * diffuseFactor;
 	// calculate specular light contribution
 	vec3 eyeDir = normalize(cameraPos - position);
 	vec3 reflectionDir = normalize(reflect(lightDir, normal));
@@ -46,5 +52,5 @@ void main() {
 	if (specularFactor > 0)
 		lightContrib += lightColor * lightSpecularIntensity * specularIntensity * specularFactor;
 	// calculate final color
-	_color = vec4(color * lightContrib, 1.0);
+    _color = vec4(color * lightContrib * attenuation, 1.0);
 }

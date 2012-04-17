@@ -15,8 +15,11 @@ namespace SimpleGL {
     void setPosition(const float x, const float y, const float z);
     const glm::vec3 &position() const;
 
-    void setRadius(const float radius);
-    const float radius() const;
+    void setAttenuation(float range, float constant = 0.0f, float linear = 0.0f , float quadratic = 1.0f);
+    float attenuationRange() const;
+    float attenuationConstant() const;
+    float attenuationLinear() const;
+    float attenuationQuadratic() const;
 
     const glm::mat4 &transformationMatrix() const;
 

@@ -111,7 +111,7 @@ int main(int argc, char **argv) {
       pointLight->setDiffuseIntensity(1.0f);
       pointLight->setSpecularIntensity(0.0f);
       pointLight->setPosition(j * 200 + 100, 160.0f, i * 200 + 100);
-      pointLight->setRadius(400.0f);
+      pointLight->setAttenuation(400.0f);
       rootNode->attachLight(pointLight);
     }
   }

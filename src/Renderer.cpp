@@ -143,7 +143,7 @@ namespace SimpleGL {
     for (int i = 0;  i < d->lights.size(); ++i) {
       if (d->lights.at(i)->type() == LT_POINT) {
         PointLight *light = static_cast<PointLight *>(d->lights.at(i));
-        if (glm::length(camera->position() - light->position()) < light->radius())
+        if (glm::length(camera->position() - light->position()) < light->attenuationRange())
           glCullFace(GL_FRONT);
         else
           glCullFace(GL_BACK);
@@ -151,11 +151,14 @@ namespace SimpleGL {
         d->pointLightProgram->setUniform("sglModelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * light->transformationMatrix());
         d->pointLightProgram->setUniform("lightPos", light->position());
         d->pointLightProgram->setUniform("lightColor", light->color());
-        d->pointLightProgram->setUniform("lightRadius", light->radius());
+        d->pointLightProgram->setUniform("lightAttenuationRange", light->attenuationRange());
+        d->pointLightProgram->setUniform("lightAttenuationConstant", light->attenuationConstant());
+        d->pointLightProgram->setUniform("lightAttenuationLinear", light->attenuationLinear());
+        d->pointLightProgram->setUniform("lightAttenuationQuadratic", light->attenuationQuadratic());
         d->pointLightProgram->setUniform("lightDiffuseIntensity", light->diffuseIntensity());
         d->pointLightProgram->setUniform("lightSpecularIntensity", light->specularIntensity());
         // draw a sphere
-        Sphere *sphere = new Sphere(light->radius());
+        Sphere *sphere = new Sphere(light->attenuationRange());
         sphere->render();
         delete sphere;
       }
