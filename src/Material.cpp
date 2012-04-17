@@ -67,7 +67,7 @@ namespace SimpleGL {
   bool Material::addTexture(const std::string &texturePath) {
     Texture *texture = new Texture(texturePath);
     if (!texture->load()) {
-      printf("error: can not load texture %s.", texture->path().c_str());
+      printf("error: can not load texture %s.\n", texture->path().c_str());
       // delete the texture
       delete texture;
       // return fail
