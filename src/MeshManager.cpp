@@ -1,6 +1,8 @@
 #include "MeshManager.h"
 
 #include "Attribute.h"
+#include "Material.h"
+#include "MaterialManager.h"
 #include "Mesh.h"
 #include "SubMesh.h"
 
@@ -42,12 +44,40 @@ namespace SimpleGL {
   Mesh *MeshManager::loadMesh(const std::string &path) {
     Mesh *mesh = new Mesh();
     // try loading the mesh using assimp
-    const aiScene *scene = d->importer->ReadFile(path.c_str(), aiProcessPreset_TargetRealtime_Fast | aiProcess_PreTransformVertices);
+    const aiScene *scene = d->importer->ReadFile(path.c_str(), aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_PreTransformVertices | aiProcess_FixInfacingNormals);
     // return mesh if scene cannot be loaded
     if (!scene) {
       return mesh;
     }
-    // check materials
+    // material names
+    std::map<int, std::string> materialNames;
+    // load materials
+    if (scene->HasMaterials()) {
+      // get directory of the mesh
+      std::string dir = path.substr(0, path.find_last_of("/"));
+      // Initialize the materials
+      for (unsigned int i = 0; i < scene->mNumMaterials; i++) {
+        const aiMaterial* material = scene->mMaterials[i];
+        // check diffuse texture
+        if (material->GetTextureCount(aiTextureType_DIFFUSE) <= 0)
+          continue;
+        // get texture path
+        aiString texturePath;
+        if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) != AI_SUCCESS)
+          continue;
+        // make up texture path
+        std::string texturePathString = dir + "/" + texturePath.data;
+        // create material
+        Material *mat = MaterialManager::instance()->createMaterial(texturePathString);
+        // add texture
+        mat->addTexture(texturePathString);
+        // add program
+        mat->setProgram("media/deferred_geometry_vp.glsl", "media/deferred_geometry_fp.glsl");
+        // set material index
+        materialNames[i] = texturePathString;
+      }
+    }
+    // load meshes
     if (scene->HasMeshes()) {
       for (int i = 0; i < scene->mNumMeshes; ++i) {
         const struct aiMesh *aimesh = scene->mMeshes[i];
@@ -116,6 +146,7 @@ namespace SimpleGL {
         }
         // set mesh data
         SubMesh *subMesh = mesh->createSubMesh();
+        subMesh->setMaterialName(materialNames[aimesh->mMaterialIndex]);
         subMesh->setVertexData(attributes, vertices, vertexCount, stride * 4);
         subMesh->setIndexData(indices, indexCount);
         // free resources
