@@ -3,6 +3,8 @@
 #include "DirectionalLight.h"
 #include "Material.h"
 #include "MaterialManager.h"
+#include "Mesh.h"
+#include "MeshManager.h"
 #include "Node.h"
 #include "Plane.h"
 #include "PointLight.h"
@@ -85,22 +87,14 @@ int main(int argc, char **argv) {
   ceiling->setMaterialName("Ceiling");
   Node *ceilingNode = rootNode->createChildNode();
   ceilingNode->attachMesh(ceiling);
-  ceilingNode->setPosition(0.0f, 200.0f, 0.0f);
+  ceilingNode->setPosition(0.0f, 250.0f, 0.0f);
   ceilingNode->roll(180);
-  // create a cube
-  Cube *cube = new Cube(glm::vec3(50.0f));
-  cube->setMaterialName("Ebony");
-  Node *cubeNode = new Node();
-  cubeNode->setPosition(0.0f, 100.0f, 0.0f);
-  cubeNode->attachMesh(cube);
-  rootNode->attachNode(cubeNode);
-  // create a directional light
-  DirectionalLight *directionalLight = new DirectionalLight();
-  directionalLight->setColor(1.0f, 1.0f, 1.0f);
-  directionalLight->setDiffuseIntensity(1.0f);
-  directionalLight->setSpecularIntensity(1.0f);
-  directionalLight->setDirection(1.0f, -1.0f, -1.0f);
-  rootNode->attachLight(directionalLight);
+  // load a model
+  Node *node = rootNode->createChildNode();
+  if (argc > 1) {
+    Mesh *model = MeshManager::instance()->loadMesh(argv[1]);
+    node->attachMesh(model);
+  }
   // add lots of point lights
   srand(glfwGetTime() * 1000);
   for (int i = -5; i < 5; ++i) {
@@ -111,14 +105,14 @@ int main(int argc, char **argv) {
       pointLight->setDiffuseIntensity(1.0f);
       pointLight->setSpecularIntensity(0.0f);
       pointLight->setPosition(j * 200 + 100, 160.0f, i * 200 + 100);
-      pointLight->setAttenuation(400.0f);
+      pointLight->setAttenuation(300.0f);
       rootNode->attachLight(pointLight);
     }
   }
   // create camera
   camera = new Camera();
-  camera->setPosition(0, 100, 900);
-  camera->lookAt(0, 100, 0);
+  camera->setPosition(0, 170, 150);
+  camera->lookAt(0, 130, 0);
   camera->setAspectRatio(float(width) / float(height));
   // mouse position
   int mouseX = 0, mouseY = 0;
@@ -168,7 +162,7 @@ int main(int argc, char **argv) {
     // reset camera height
     camera->setPosition(camera->position().x, height, camera->position().z);
     // apply animations
-    cubeNode->rotate(timeDiff * 60, glm::vec3(1, 1, 1));
+    node->rotate(timeDiff * 60, glm::vec3(0, 1, 0));
     // save screenshot
     if (glfwGetKey(GLFW_KEY_F8))
       renderer->saveScreenshot("screenshot.jpg");
