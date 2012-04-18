@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
       PointLight *pointLight = new PointLight();
       pointLight->setColor(float(rand()) / RAND_MAX, float(rand()) / RAND_MAX, float(rand()) / RAND_MAX);
       pointLight->setDiffuseIntensity(1.0f);
-      pointLight->setSpecularIntensity(0.0f);
+      pointLight->setSpecularIntensity(1.0f);
       pointLight->setPosition(j * 200 + 100, 160.0f, i * 200 + 100);
       pointLight->setAttenuation(300.0f);
       rootNode->attachLight(pointLight);
@@ -144,7 +144,7 @@ int main(int argc, char **argv) {
     int x, y;
     glfwGetMousePos(&x, &y);
     // rotate camera
-    camera->pitch(-2.0f * timeDiff * (y - mouseY));
+    camera->pitch(-5.0f * timeDiff * (y - mouseY));
     camera->yaw(-5.0f * timeDiff * (x - mouseX));
     // save mouse coordinates
     mouseX = x;
