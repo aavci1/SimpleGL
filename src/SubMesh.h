@@ -7,6 +7,7 @@
 
 namespace SimpleGL {
   class SubMeshPrivate;
+  class AxisAlignedBoundingBox;
 
   class SubMesh {
   public:
@@ -15,6 +16,8 @@ namespace SimpleGL {
 
     bool setVertexData(uint vertexFormat, float vertexData[], uint vertexCount, uint stride);
     bool setIndexData(uint indexData[], uint indexCount);
+
+    AxisAlignedBoundingBox &aabb() const;
 
     void setMaterialName(const std::string &name);
     const std::string &materialName() const;

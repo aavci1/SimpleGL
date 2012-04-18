@@ -5,6 +5,7 @@
 #include <vector>
 
 namespace SimpleGL {
+  class AxisAlignedBoundingBox;
   class MeshPrivate;
   class SubMesh;
 
@@ -12,6 +13,8 @@ namespace SimpleGL {
   public:
     Mesh();
     ~Mesh();
+
+    AxisAlignedBoundingBox &aabb() const;
 
     SubMesh *createSubMesh();
     const std::vector<SubMesh *> &subMeshes() const;

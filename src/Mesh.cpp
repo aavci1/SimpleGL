@@ -1,5 +1,6 @@
 #include "Mesh.h"
 
+#include "AxisAlignedBoundingBox.h"
 #include "SubMesh.h"
 
 namespace SimpleGL {
@@ -13,6 +14,7 @@ namespace SimpleGL {
         delete subMeshes[i];
     }
 
+    AxisAlignedBoundingBox aabb;
     std::vector<SubMesh *> subMeshes;
   };
 
@@ -21,6 +23,10 @@ namespace SimpleGL {
 
   Mesh::~Mesh() {
     delete d;
+  }
+
+  AxisAlignedBoundingBox &Mesh::aabb() const {
+    return d->aabb;
   }
 
   SubMesh *Mesh::createSubMesh() {
@@ -39,5 +45,4 @@ namespace SimpleGL {
     for (int i = 0; i < d->subMeshes.size(); ++i)
       d->subMeshes[i]->setMaterialName(materialName);
   }
-
 }

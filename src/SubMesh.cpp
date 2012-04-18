@@ -1,6 +1,7 @@
 #include "SubMesh.h"
 
 #include "Attribute.h"
+#include "AxisAlignedBoundingBox.h"
 
 #include <GL/glew.h>
 
@@ -18,6 +19,7 @@ namespace SimpleGL {
     GLuint indexBuffer;
     uint vertexCount;
     uint indexCount;
+    AxisAlignedBoundingBox aabb;
     std::string materialName;
   };
 
@@ -113,6 +115,10 @@ namespace SimpleGL {
     d->indexCount = indexCount;
     // return succes
     return true;
+  }
+
+  AxisAlignedBoundingBox &SubMesh::aabb() const {
+    return d->aabb;
   }
 
   void SubMesh::setMaterialName(const std::string &materialName) {

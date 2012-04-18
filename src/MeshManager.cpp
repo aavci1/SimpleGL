@@ -1,6 +1,7 @@
 #include "MeshManager.h"
 
 #include "Attribute.h"
+#include "AxisAlignedBoundingBox.h"
 #include "Material.h"
 #include "MaterialManager.h"
 #include "Mesh.h"
@@ -108,12 +109,15 @@ namespace SimpleGL {
         aiVector3D *normal = aimesh->mNormals;
         aiVector3D *texCoord = aimesh->mTextureCoords[0];
         float *vertexData = &vertices[0];
+        AxisAlignedBoundingBox aabb;
         for (size_t j = 0; j < aimesh->mNumVertices; ++j) {
           // vertex position
           if (aimesh->HasPositions()) {
             *vertexData++ = position->x;
             *vertexData++ = position->y;
             *vertexData++ = position->z;
+            // update aabb
+            aabb.merge(position->x, position->y, position->z);
             // next vertex
             position++;
           }
@@ -145,9 +149,12 @@ namespace SimpleGL {
         }
         // set mesh data
         SubMesh *subMesh = mesh->createSubMesh();
+        subMesh->aabb().merge(aabb);
         subMesh->setMaterialName(materialNames[aimesh->mMaterialIndex]);
         subMesh->setVertexData(attributes, vertices, vertexCount, stride * 4);
         subMesh->setIndexData(indices, indexCount);
+        // update mesh aabb
+        mesh->aabb().merge(aabb);
         // free resources
         delete[] vertices;
         delete[] indices;
