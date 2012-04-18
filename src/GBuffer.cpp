@@ -28,7 +28,7 @@ namespace SimpleGL {
     // generate color buffer
     glGenTextures(1, &d->colorBuffer);
     glBindTexture(GL_TEXTURE_2D, d->colorBuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, d->width, d->height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, d->width, d->height, 0, GL_RGBA, GL_FLOAT, NULL);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, d->colorBuffer, 0);
