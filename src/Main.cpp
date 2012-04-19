@@ -7,6 +7,7 @@
 #include "Node.h"
 #include "PointLight.h"
 #include "Renderer.h"
+#include "SpotLight.h"
 
 #include <glm/glm.hpp>
 
@@ -68,6 +69,9 @@ int main(int argc, char **argv) {
   // register point light material
   Material *pointLightMaterial = MaterialManager::instance()->getMaterialByLightType(LT_POINT);
   pointLightMaterial->setProgram("media/deferred_light_point_vp.glsl", "media/deferred_light_point_fp.glsl");
+  // register spot light material
+  Material *spotLightMaterial = MaterialManager::instance()->getMaterialByLightType(LT_SPOT);
+  spotLightMaterial->setProgram("media/deferred_light_spot_vp.glsl", "media/deferred_light_spot_fp.glsl");
   // create laminate material
   Material *laminateMaterial = MaterialManager::instance()->getMaterialByName("Laminate");
   laminateMaterial->setProgram("media/deferred_geometry_vp.glsl", "media/deferred_geometry_fp.glsl");
@@ -101,16 +105,18 @@ int main(int argc, char **argv) {
   }
   // add lots of point lights
   srand(glfwGetTime() * 1000);
-  for (int i = -5; i < 5; ++i) {
-    for (int j = -5; j < 5; ++j) {
+  for (int i = -7; i <= 7; ++i) {
+    for (int j = -7; j <= 7; ++j) {
       // create a point light
-      PointLight *pointLight = new PointLight();
-      pointLight->setColor(float(rand()) / RAND_MAX, float(rand()) / RAND_MAX, float(rand()) / RAND_MAX);
-      pointLight->setDiffuseIntensity(1.0f);
-      pointLight->setSpecularIntensity(1.0f);
-      pointLight->setPosition(j * 200 + 100, 160.0f, i * 200 + 100);
-      pointLight->setAttenuation(300.0f);
-      rootNode->attachLight(pointLight);
+      SpotLight *spotLight = new SpotLight();
+      spotLight->setColor(float(rand()) / RAND_MAX, float(rand()) / RAND_MAX, float(rand()) / RAND_MAX);
+      spotLight->setDiffuseIntensity(1.0f);
+      spotLight->setSpecularIntensity(1.0f);
+      spotLight->setPosition(j * 150, 250.0f, i * 150);
+      spotLight->setAttenuation(400.0f);
+      spotLight->setRadius(256.0f);
+      spotLight->pitch(-90, TS_WORLD);
+      rootNode->attachLight(spotLight);
     }
   }
   // create camera
@@ -166,7 +172,7 @@ int main(int argc, char **argv) {
     // reset camera height
     camera->setPosition(camera->position().x, height, camera->position().z);
     // apply animations
-    node->rotate(timeDiff * 60, glm::vec3(0, 1, 0));
+    node->rotate(timeDiff * 360, glm::vec3(0, 1, 0));
     // save screenshot
     if (glfwGetKey(GLFW_KEY_F8))
       renderer->saveScreenshot("screenshot.jpg");
