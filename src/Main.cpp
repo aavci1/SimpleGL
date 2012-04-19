@@ -94,34 +94,50 @@ int main(int argc, char **argv) {
   ceiling->setMaterialName("Ceiling");
   Node *ceilingNode = rootNode->createChildNode();
   ceilingNode->attachMesh(ceiling);
-  ceilingNode->setPosition(0.0f, 250.0f, 0.0f);
+  ceilingNode->setPosition(0.0f, 300.0f, 0.0f);
   ceilingNode->roll(180);
   // load a model
-  Node *node = rootNode->createChildNode();
-  if (argc > 1) {
-    Mesh *model = MeshManager::instance()->loadMesh(argv[1]);
-    node->attachMesh(model);
-    node->setScale(glm::vec3(1.0f));
-  }
+  Mesh *model = 0;
+  if (argc > 1)
+    model = MeshManager::instance()->loadMesh(argv[1]);
+  // add a directional light
+  DirectionalLight *directionalLight = new DirectionalLight();
+  directionalLight->setColor(1.0f, 1.0f, 1.0f);
+  directionalLight->setDiffuseIntensity(1.0f);
+  directionalLight->setSpecularIntensity(1.0f);
+  directionalLight->setDirection(0, -1, -1);
+  rootNode->attachLight(directionalLight);
   // add lots of point lights
   srand(glfwGetTime() * 1000);
-  for (int i = -7; i <= 7; ++i) {
-    for (int j = -7; j <= 7; ++j) {
+  for (int i = -5; i <= 5; ++i) {
+    for (int j = -5; j <= 5; ++j) {
+      Mesh *sphere = MeshManager::instance()->createSphere(10.0f);
+      sphere->setMaterialName("Ceiling");
+
+      Node *lightNode = rootNode->createChildNode(glm::vec3(j * 180, 290.0f, i * 180));
+      lightNode->attachMesh(sphere);
       // create a point light
-      SpotLight *spotLight = new SpotLight();
-      spotLight->setColor(float(rand()) / RAND_MAX, float(rand()) / RAND_MAX, float(rand()) / RAND_MAX);
-      spotLight->setDiffuseIntensity(1.0f);
-      spotLight->setSpecularIntensity(1.0f);
-      spotLight->setPosition(j * 150, 250.0f, i * 150);
-      spotLight->setAttenuation(400.0f);
-      spotLight->setRadius(256.0f);
-      spotLight->pitch(-90, TS_WORLD);
-      rootNode->attachLight(spotLight);
+      // SpotLight *light = new SpotLight();
+      PointLight *light = new PointLight();
+      light->setColor(float(rand()) / RAND_MAX, float(rand()) / RAND_MAX, float(rand()) / RAND_MAX);
+      light->setDiffuseIntensity(1.0f);
+      light->setSpecularIntensity(1.0f);
+      light->setPosition(j * 180, 290.0f, i * 180);
+      light->setAttenuation(400.0f);
+      // light->setRadius(256.0f);
+      // light->pitch(-90, TS_WORLD);
+      rootNode->attachLight(light);
+
+      if (model) {
+        Node *node = rootNode->createChildNode(glm::vec3(j * 180, 0.0f, i * 180));
+        node->yaw(180.0f);
+        node->attachMesh(model);
+      }
     }
   }
   // create camera
   camera = new Camera();
-  camera->setPosition(0, 170, 150);
+  camera->setPosition(0, 170, 1500);
   camera->lookAt(0, 130, 0);
   camera->setAspectRatio(float(width) / float(height));
   // mouse position
@@ -171,8 +187,6 @@ int main(int argc, char **argv) {
       camera->moveRelative(+250.0f * timeDiff, 0.0f, 0.0f);
     // reset camera height
     camera->setPosition(camera->position().x, height, camera->position().z);
-    // apply animations
-    node->rotate(timeDiff * 360, glm::vec3(0, 1, 0));
     // save screenshot
     if (glfwGetKey(GLFW_KEY_F8))
       renderer->saveScreenshot("screenshot.jpg");
