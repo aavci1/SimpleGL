@@ -114,7 +114,7 @@ namespace SimpleGL {
       subMesh->setIndexData(indices, 36);
     }
 
-    void createSphere(SubMesh *subMesh, float radius, int slices, int stacks) {
+    void createSphere(SubMesh *subMesh, float radius, uint slices, uint stacks) {
       // allocate the vertex buffer
       uint vertexCount = (stacks + 1) * (slices+1);
       float *vertices = new float[vertexCount * 8];
@@ -218,7 +218,7 @@ namespace SimpleGL {
     return mesh;
   }
 
-  Mesh *MeshManager::createSphere(float radius, float slices, float stacks) {
+  Mesh *MeshManager::createSphere(float radius, uint slices, uint stacks) {
     Mesh *mesh = new Mesh();
     // create a submesh
     SubMesh *subMesh = mesh->createSubMesh();
