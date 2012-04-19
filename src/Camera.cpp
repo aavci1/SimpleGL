@@ -8,7 +8,7 @@
 namespace SimpleGL {
   class CameraPrivate {
   public:
-    CameraPrivate() : position(0, 0, 0), orientation(1, 0, 0, 0), lookAt(0, 0, 0), up(0, 1, 0), fov(60.0f), nearClipDistance(1.0f), farClipDistance(5000.0f), aspectRatio(1.33) {
+    CameraPrivate() : position(0, 0, 0), orientation(1, 0, 0, 0), direction(0, 0, -1), up(0, 1, 0), fov(60.0f), nearClipDistance(1.0f), farClipDistance(5000.0f), aspectRatio(1.33) {
       recalcViewMatrix();
       recalcProjectionMatrix();
     }
@@ -17,7 +17,7 @@ namespace SimpleGL {
     }
 
     void recalcViewMatrix() {
-      viewMatrix = glm::lookAt(position, orientation * (lookAt - position) + position, up);
+      viewMatrix = glm::lookAt(position, orientation * direction + position, up);
     }
 
     void recalcProjectionMatrix() {
@@ -50,7 +50,7 @@ namespace SimpleGL {
 
     glm::vec3 position;
     glm::quat orientation;
-    glm::vec3 lookAt;
+    glm::vec3 direction;
     glm::vec3 up;
     glm::mat4 viewMatrix;
     glm::mat4 projectionMatrix;
@@ -80,7 +80,6 @@ namespace SimpleGL {
 
   void Camera::moveRelative(const glm::vec3 &translation) {
     d->position += d->orientation * translation;
-    d->lookAt += d->orientation * translation;
     // recalc view matrix
     d->recalcViewMatrix();
     d->recalcBoundingSphere();
@@ -132,17 +131,14 @@ namespace SimpleGL {
   }
 
   void Camera::lookAt(const glm::vec3 &lookAt) {
-    d->lookAt = lookAt;
+    d->direction = glm::normalize(lookAt - d->position);
     // recalc view matrix
     d->recalcViewMatrix();
     d->recalcBoundingSphere();
   }
 
   void Camera::lookAt(float x, float y, float z) {
-    d->lookAt = glm::vec3(x, y, z);
-    // recalc view matrix
-    d->recalcViewMatrix();
-    d->recalcBoundingSphere();
+    lookAt(glm::vec3(x, y, z));
   }
 
   void Camera::setFov(float fov) {
