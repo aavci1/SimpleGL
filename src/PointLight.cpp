@@ -93,6 +93,11 @@ namespace SimpleGL {
     return d->transformationMatrix;
   }
 
+  const bool PointLight::isVisibleFrom(Camera *camera) const {
+    // TODO: implement frustum culling
+    return true;
+  }
+
   void PointLight::render(Camera *camera) {
     Material *material = MaterialManager::instance()->getMaterialByLightType(type());
     // check material

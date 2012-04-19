@@ -39,6 +39,9 @@ namespace SimpleGL {
 
     const glm::mat4 &transformationMatrix() const;
 
+
+    const bool isVisibleFrom(Camera *camera) const;
+
     void render(Camera *camera);
 
   private:

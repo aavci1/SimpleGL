@@ -141,6 +141,11 @@ namespace SimpleGL {
     return d->transformationMatrix;
   }
 
+  const bool SpotLight::isVisibleFrom(Camera *camera) const {
+    // TODO: implement frustum culling
+    return true;
+  }
+
   void SpotLight::render(Camera *camera) {
     Material *material = MaterialManager::instance()->getMaterialByLightType(type());
     // check material

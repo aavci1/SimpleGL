@@ -33,14 +33,15 @@ namespace SimpleGL {
       delete gbuffer;
     }
 
-    void renderHelper(Node *node, glm::mat4 modelMatrix, glm::mat4 viewProjMatrix) {
+    void renderHelper(Camera *camera, Node *node, glm::mat4 modelMatrix, glm::mat4 viewProjMatrix) {
       modelMatrix *= node->transformationMatrix();
       // visit child nodes
       for (int i = 0; i < node->nodes().size(); ++i)
-        renderHelper(node->nodes().at(i), modelMatrix, viewProjMatrix);
+        renderHelper(camera, node->nodes().at(i), modelMatrix, viewProjMatrix);
       // add lights to the list
       for (int i = 0; i < node->lights().size(); ++i)
-        lights.push_back(node->lights().at(i));
+        if (node->lights().at(i)->isVisibleFrom(camera))
+          lights.push_back(node->lights().at(i));
       // render meshes
       for (int i = 0; i < node->meshes().size(); ++i) {
         Mesh *mesh = node->meshes().at(i);
@@ -103,7 +104,7 @@ namespace SimpleGL {
     d->lights.clear();
     glm::mat4 viewProjMatrix = camera->projectionMatrix() * camera->viewMatrix();
     // render scene
-    d->renderHelper(root, glm::mat4(), viewProjMatrix);
+    d->renderHelper(camera, root, glm::mat4(), viewProjMatrix);
     // unbind gbuffer
     d->gbuffer->setWritable(false);
     // bind textures

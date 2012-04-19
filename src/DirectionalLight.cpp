@@ -44,6 +44,10 @@ namespace SimpleGL {
     return d->direction;
   }
 
+  const bool DirectionalLight::isVisibleFrom(Camera *camera) const {
+    return true;
+  }
+
   void DirectionalLight::render(Camera *camera) {
     Program *program = MaterialManager::instance()->getMaterialByLightType(type())->program();
     // return if program is not set

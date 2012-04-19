@@ -34,6 +34,8 @@ namespace SimpleGL {
     void setEnabled(const bool enabled);
     const bool isEnabled() const;
 
+    virtual const bool isVisibleFrom(Camera *camera) const = 0;
+
     virtual void render(Camera *camera) = 0;
 
   private:

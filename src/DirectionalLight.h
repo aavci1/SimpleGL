@@ -16,6 +16,8 @@ namespace SimpleGL {
     void setDirection(const float x, const float y, const float z);
     const glm::vec3 &direction() const;
 
+    const bool isVisibleFrom(Camera *camera) const;
+
     void render(Camera *camera);
 
   private:
