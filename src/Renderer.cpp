@@ -47,7 +47,7 @@ namespace SimpleGL {
         for (int j = 0; j < mesh->subMeshes().size(); ++j) {
           SubMesh *subMesh = mesh->subMeshes().at(j);
           Material *material = MaterialManager::instance()->getMaterialByName(subMesh->materialName());
-          if (!material)
+          if (!material || !material->program())
             continue;
           // select program
           material->select();
