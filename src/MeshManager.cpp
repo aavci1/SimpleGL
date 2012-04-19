@@ -114,6 +114,95 @@ namespace SimpleGL {
       subMesh->setIndexData(indices, 36);
     }
 
+    void createCone(SubMesh *subMesh, float radius, float height, uint slices, uint stacks) {
+      // allocate the vertex buffer
+      uint vertexCount = (stacks + 1) * (slices + 1) + 1 + slices + 1;
+      float *vertices = new float[vertexCount * 8];
+      uint indexCount = 6 * stacks * (slices + 1) + 3 * slices;
+      uint *indices = new uint[indexCount];
+      // vertex pointer
+      float *pVertex = vertices;
+      // index pointer
+      uint *pIndices = indices;
+      // index of the vertice for current face
+      uint wVerticeIndex = 0 ;
+      // allocate index buffer
+      float fDeltaSegAngle = (2 * M_PI / slices);
+      // Generate the group of rings for the sphere
+      for (int ring = 0; ring <= stacks; ring++) {
+        float r0 = radius * ring / stacks;
+        float z0 = -height * ring / stacks;
+        // Generate the group of segments for the current ring
+        for(int seg = 0; seg <= slices; seg++) {
+          float x0 = r0 * sinf(seg * fDeltaSegAngle);
+          float y0 = r0 * cosf(seg * fDeltaSegAngle);
+          // add vertex position
+          *pVertex++ = x0;
+          *pVertex++ = y0;
+          *pVertex++ = z0;
+          // add vertex normal
+          glm::vec3 vNormal = glm::normalize(glm::vec3(x0, y0, height + z0));
+          *pVertex++ = vNormal.x;
+          *pVertex++ = vNormal.y;
+          *pVertex++ = vNormal.z;
+          // add texture coordinate
+          *pVertex++ = (float) seg / (float) slices * 2 + 1;
+          *pVertex++ = (float) ring / (float) stacks * 2 + 1;
+          // assign indices
+          if (ring != stacks) {
+            // each vertex (except the last) has six indices pointing to it
+            *pIndices++ = wVerticeIndex + slices + 1;
+            *pIndices++ = wVerticeIndex + slices;
+            *pIndices++ = wVerticeIndex;
+            *pIndices++ = wVerticeIndex + slices + 1;
+            *pIndices++ = wVerticeIndex;
+            *pIndices++ = wVerticeIndex + 1;
+            // next vertice
+            wVerticeIndex ++;
+          }
+        }
+      }
+      uint capCenterIndex = (stacks + 1) * (slices + 1);
+      // add vertex position
+      *pVertex++ = 0;
+      *pVertex++ = 0;
+      *pVertex++ = -height;
+      // add vertex normal
+      *pVertex++ = 0;
+      *pVertex++ = 0;
+      *pVertex++ = -1;
+      // add texture coordinate
+      *pVertex++ = 0;
+      *pVertex++ = 0;
+      for(int seg = 0; seg <= slices; seg++) {
+        float x0 = radius * sinf(seg * fDeltaSegAngle);
+        float y0 = radius * cosf(seg * fDeltaSegAngle);
+        // add vertex position
+        *pVertex++ = x0;
+        *pVertex++ = y0;
+        *pVertex++ = -height;
+        // add vertex normal
+        *pVertex++ = 0;
+        *pVertex++ = 0;
+        *pVertex++ = -1;
+        // add texture coordinate
+        *pVertex++ = sinf(seg * fDeltaSegAngle);
+        *pVertex++ = cosf(seg * fDeltaSegAngle);
+        // add indices
+        if (seg != slices) {
+          *pIndices++ = capCenterIndex;
+          *pIndices++ = capCenterIndex + seg + 1;
+          *pIndices++ = capCenterIndex + seg + 2;
+        }
+      }
+      // set vertex and index data
+      subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, vertexCount, 32);
+      subMesh->setIndexData(indices, indexCount);
+      // clean up
+      delete[] vertices;
+      delete[] indices;
+    }
+
     void createSphere(SubMesh *subMesh, float radius, uint slices, uint stacks) {
       // allocate the vertex buffer
       uint vertexCount = (stacks + 1) * (slices+1);
@@ -214,6 +303,16 @@ namespace SimpleGL {
     SubMesh *subMesh = mesh->createSubMesh();
     // fill the sub mesh
     d->createCube(subMesh, width, height, depth);
+    // return mesh
+    return mesh;
+  }
+
+  Mesh *MeshManager::createCone(float radius, float height, uint slices, uint stacks) {
+    Mesh *mesh = new Mesh();
+    // create a submesh
+    SubMesh *subMesh = mesh->createSubMesh();
+    // fill the sub mesh
+    d->createCone(subMesh, radius, height, slices, stacks);
     // return mesh
     return mesh;
   }

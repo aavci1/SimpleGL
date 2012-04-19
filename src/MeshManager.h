@@ -18,6 +18,7 @@ namespace SimpleGL {
     Mesh *createQuad(float width = 1.0f, float height = 1.0f);
     Mesh *createPlane(float width = 1.0f, float height = 1.0f, float uTile = 1.0f, float vTile = 1.0f);
     Mesh *createCube(float width = 1.0f, float height = 1.0f, float depth = 1.0f);
+    Mesh *createCone(float radius = 1.0f, float height = 1.0f, uint slices = 16, uint stacks = 16);
     Mesh *createSphere(float radius = 1.0f, uint slices = 16, uint stacks = 16);
 
     Mesh *loadMesh(const std::string &path);
