@@ -1,5 +1,4 @@
 #include "Camera.h"
-#include "Cube.h"
 #include "DirectionalLight.h"
 #include "Material.h"
 #include "MaterialManager.h"
@@ -9,7 +8,6 @@
 #include "Plane.h"
 #include "PointLight.h"
 #include "Renderer.h"
-#include "Sphere.h"
 
 #include <glm/glm.hpp>
 
@@ -94,6 +92,7 @@ int main(int argc, char **argv) {
   if (argc > 1) {
     Mesh *model = MeshManager::instance()->loadMesh(argv[1]);
     node->attachMesh(model);
+    node->setScale(glm::vec3(1.0f));
   }
   // add lots of point lights
   srand(glfwGetTime() * 1000);

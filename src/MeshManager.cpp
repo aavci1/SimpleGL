@@ -7,11 +7,13 @@
 #include "Mesh.h"
 #include "SubMesh.h"
 
-#include <assimp/assimp.hpp>
-#include <assimp/aiScene.h>
-#include <assimp/aiPostProcess.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include <map>
+
+#include <stdio.h>
 
 namespace SimpleGL {
   static MeshManager *_instance = 0;
@@ -23,6 +25,137 @@ namespace SimpleGL {
 
     ~MeshManagerPrivate() {
       delete importer;
+    }
+
+    void createQuad(SubMesh *subMesh, float width, float height) {
+      float vertices[] = {
+        -1.0f * width, -1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+         1.0f * width, -1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+         1.0f * width, +1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        -1.0f * width, +1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f
+      };
+
+      uint indices[] = {
+        0, 1, 2,
+        0, 2, 3
+      };
+      // set vertex and index data
+      subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, 24, 32);
+      subMesh->setIndexData(indices, 36);
+    }
+
+    void createSphere(SubMesh *subMesh, float radius, int slices, int stacks) {
+      // allocate the vertex buffer
+      uint vertexCount = (stacks + 1) * (slices+1);
+      float *vertices = new float[vertexCount * 8];
+      uint indexCount = 6 * stacks * (slices + 1);
+      uint *indices = new uint[indexCount];
+      // vertex pointer
+      float *pVertex = vertices;
+      // index pointer
+      uint *pIndices = indices;
+      // index of the vertice for current face
+      uint wVerticeIndex = 0 ;
+      // allocate index buffer
+      float fDeltaRingAngle = (M_PI / stacks);
+      float fDeltaSegAngle = (2 * M_PI / slices);
+      // Generate the group of rings for the sphere
+      for( int ring = 0; ring <= stacks; ring++ ) {
+        float r0 = radius * sinf (ring * fDeltaRingAngle);
+        float y0 = radius * cosf (ring * fDeltaRingAngle);
+        // Generate the group of segments for the current ring
+        for(int seg = 0; seg <= slices; seg++) {
+          float x0 = r0 * sinf(seg * fDeltaSegAngle);
+          float z0 = r0 * cosf(seg * fDeltaSegAngle);
+          // add vertex position
+          *pVertex++ = x0;
+          *pVertex++ = y0;
+          *pVertex++ = z0;
+          // add vertex normal
+          glm::vec3 vNormal = glm::normalize(glm::vec3(x0, y0, z0));
+          *pVertex++ = vNormal.x;
+          *pVertex++ = vNormal.y;
+          *pVertex++ = vNormal.z;
+          // add texture coordinate
+          *pVertex++ = (float) seg / (float) slices * 2 + 1;
+          *pVertex++ = (float) ring / (float) stacks * 2 + 1;
+          // assign indices
+          if (ring != stacks) {
+            // each vertex (except the last) has six indices pointing to it
+            *pIndices++ = wVerticeIndex + slices + 1;
+            *pIndices++ = wVerticeIndex;
+            *pIndices++ = wVerticeIndex + slices;
+            *pIndices++ = wVerticeIndex + slices + 1;
+            *pIndices++ = wVerticeIndex + 1;
+            *pIndices++ = wVerticeIndex;
+            // next vertice
+            wVerticeIndex ++;
+          }
+        }
+      }
+      // set vertex and index data
+      subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, vertexCount, 32);
+      subMesh->setIndexData(indices, indexCount);
+      // clean up
+      delete[] vertices;
+      delete[] indices;
+    }
+
+    void createCube(SubMesh *subMesh, float width, float height, float depth) {
+      float vertices[] = {
+        -1.0f * width, -1.0f * height,  1.0f * depth, 0.0f, 0.0f, +1.0f, 0.0f, 0.0f,
+         1.0f * width, -1.0f * height,  1.0f * depth, 0.0f, 0.0f, +1.0f, 1.0f, 0.0f,
+         1.0f * width,  1.0f * height,  1.0f * depth, 0.0f, 0.0f, +1.0f, 1.0f, 1.0f,
+        -1.0f * width,  1.0f * height,  1.0f * depth, 0.0f, 0.0f, +1.0f, 0.0f, 1.0f,
+
+        -1.0f * width, -1.0f * height, -1.0f * depth, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
+        -1.0f * width,  1.0f * height, -1.0f * depth, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
+         1.0f * width,  1.0f * height, -1.0f * depth, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+         1.0f * width, -1.0f * height, -1.0f * depth, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+
+        -1.0f * width,  1.0f * height, -1.0f * depth, 0.0f, +1.0f, 0.0f, 0.0f, 1.0f,
+        -1.0f * width,  1.0f * height,  1.0f * depth, 0.0f, +1.0f, 0.0f, 0.0f, 0.0f,
+         1.0f * width,  1.0f * height,  1.0f * depth, 0.0f, +1.0f, 0.0f, 1.0f, 0.0f,
+         1.0f * width,  1.0f * height, -1.0f * depth, 0.0f, +1.0f, 0.0f, 1.0f, 1.0f,
+
+        -1.0f * width, -1.0f * height, -1.0f * depth, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
+         1.0f * width, -1.0f * height, -1.0f * depth, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+         1.0f * width, -1.0f * height,  1.0f * depth, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+        -1.0f * width, -1.0f * height,  1.0f * depth, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+
+         1.0f * width, -1.0f * height, -1.0f * depth, +1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+         1.0f * width,  1.0f * height, -1.0f * depth, +1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+         1.0f * width,  1.0f * height,  1.0f * depth, +1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+         1.0f * width, -1.0f * height,  1.0f * depth, +1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+
+        -1.0f * width, -1.0f * height, -1.0f * depth, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        -1.0f * width, -1.0f * height,  1.0f * depth, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        -1.0f * width,  1.0f * height,  1.0f * depth, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+        -1.0f * width,  1.0f * height, -1.0f * depth, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f
+      };
+
+      uint indices[] = {
+        0, 1, 2,
+        0, 2, 3,
+
+        4, 5, 6,
+        4, 6, 7,
+
+        8, 9, 10,
+        8, 10, 11,
+
+        12, 13, 14,
+        12, 14, 15,
+
+        16, 17, 18,
+        16, 18, 19,
+
+        20, 21, 22,
+        20, 22, 23
+      };
+      // set vertex and index data
+      subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, 24, 32);
+      subMesh->setIndexData(indices, 36);
     }
 
     Assimp::Importer *importer;
@@ -40,6 +173,36 @@ namespace SimpleGL {
       _instance = new MeshManager();
     // return instance
     return _instance;
+  }
+
+  Mesh *MeshManager::createQuad(float width, float height) {
+    Mesh *mesh = new Mesh();
+    // create a submesh
+    SubMesh *subMesh = mesh->createSubMesh();
+    // fill the sub mesh
+    d->createQuad(subMesh, width, height);
+    // return mesh
+    return mesh;
+  }
+
+  Mesh *MeshManager::createCube(float width, float height, float depth) {
+    Mesh *mesh = new Mesh();
+    // create a submesh
+    SubMesh *subMesh = mesh->createSubMesh();
+    // fill the sub mesh
+    d->createCube(subMesh, width, height, depth);
+    // return mesh
+    return mesh;
+  }
+
+  Mesh *MeshManager::createSphere(float radius, float slices, float stacks) {
+    Mesh *mesh = new Mesh();
+    // create a submesh
+    SubMesh *subMesh = mesh->createSubMesh();
+    // fill the sub mesh
+    d->createSphere(subMesh, radius, slices, stacks);
+    // return mesh
+    return mesh;
   }
 
   Mesh *MeshManager::loadMesh(const std::string &path) {

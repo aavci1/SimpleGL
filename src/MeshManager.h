@@ -14,6 +14,10 @@ namespace SimpleGL {
 
     static MeshManager *instance();
 
+    Mesh *createQuad(float width = 1.0f, float height = 1.0f);
+    Mesh *createCube(float width = 1.0f, float height = 1.0f, float depth = 1.0f);
+    Mesh *createSphere(float radius = 1.0f, float slices = 16.0f, float stacks = 16.0f);
+
     Mesh *loadMesh(const std::string &path);
 
   private:

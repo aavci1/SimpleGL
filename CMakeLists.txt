@@ -7,7 +7,6 @@ add_definitions(-O2 -msse2)
 set (SOURCES
   src/AxisAlignedBoundingBox.cpp
   src/Camera.cpp
-  src/Cube.cpp
   src/DirectionalLight.cpp
   src/FragmentShader.cpp
   src/GBuffer.cpp
@@ -21,10 +20,8 @@ set (SOURCES
   src/Plane.cpp
   src/PointLight.cpp
   src/Program.cpp
-  src/Quad.cpp
   src/Renderer.cpp
   src/Shader.cpp
-  src/Sphere.cpp
   src/SubMesh.cpp
   src/Texture.cpp
   src/Util.cpp

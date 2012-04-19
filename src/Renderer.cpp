@@ -8,12 +8,12 @@
 #include "Light.h"
 #include "Material.h"
 #include "MaterialManager.h"
+#include "Mesh.h"
+#include "MeshManager.h"
 #include "Node.h"
 #include "PointLight.h"
 #include "Program.h"
-#include "Quad.h"
 #include "SubMesh.h"
-#include "Sphere.h"
 #include "Util.h"
 #include "VertexShader.h"
 
@@ -26,7 +26,8 @@
 namespace SimpleGL {
   class RendererPrivate {
   public:
-    RendererPrivate(uint width, uint height) : width(width), height(height), gbuffer(new GBuffer(width, height)), pointLightProgram(0), directionalLightProgram(0), quad(new Quad()) {
+    RendererPrivate(uint width, uint height) : width(width), height(height), gbuffer(new GBuffer(width, height)), pointLightProgram(0), directionalLightProgram(0) {
+      quad = MeshManager::instance()->createQuad();
     }
 
     ~RendererPrivate() {
@@ -71,7 +72,7 @@ namespace SimpleGL {
     std::vector<Light *> lights;
     Program *pointLightProgram;
     Program *directionalLightProgram;
-    Quad *quad;
+    Mesh *quad;
   };
 
   Renderer::Renderer(uint width, uint height) : d(new RendererPrivate(width, height)) {
@@ -163,8 +164,8 @@ namespace SimpleGL {
         d->pointLightProgram->setUniform("lightDiffuseIntensity", light->diffuseIntensity());
         d->pointLightProgram->setUniform("lightSpecularIntensity", light->specularIntensity());
         // draw a sphere
-        Sphere *sphere = new Sphere(light->attenuationRange());
-        sphere->render();
+        Mesh *sphere = MeshManager::instance()->createSphere(light->attenuationRange());
+        sphere->subMeshes().at(0)->render();
         delete sphere;
       }
     }
@@ -188,7 +189,7 @@ namespace SimpleGL {
         d->directionalLightProgram->setUniform("lightDiffuseIntensity", light->diffuseIntensity());
         d->directionalLightProgram->setUniform("lightSpecularIntensity", light->specularIntensity());
         // render full screen quad
-        d->quad->render();
+        d->quad->subMeshes().at(0)->render();
       }
     }
     // deselect shader
