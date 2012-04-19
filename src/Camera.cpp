@@ -8,7 +8,7 @@
 namespace SimpleGL {
   class CameraPrivate {
   public:
-    CameraPrivate() : position(0, 0, 0), orientation(1, 0, 0, 0), lookAt(0, 0, 0), up(0, 1, 0), fov(60.0f), nearClipDistance(1.0f), farClipDistance(2000.0f), aspectRatio(1.33) {
+    CameraPrivate() : position(0, 0, 0), orientation(1, 0, 0, 0), lookAt(0, 0, 0), up(0, 1, 0), fov(60.0f), nearClipDistance(1.0f), farClipDistance(5000.0f), aspectRatio(1.33) {
       recalcViewMatrix();
       recalcProjectionMatrix();
     }
@@ -42,7 +42,6 @@ namespace SimpleGL {
       // calculate the center of the sphere
       boundingSphere.setCenter(position + (lookVector * (clipDistance * 0.5f) + nearClipDistance));
     }
-
 
     float fov;
     float nearClipDistance;
