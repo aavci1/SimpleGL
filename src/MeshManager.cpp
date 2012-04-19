@@ -251,8 +251,13 @@ namespace SimpleGL {
         aiString texturePath;
         if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) != AI_SUCCESS)
           continue;
+        // remove directory part
+        std::string s(texturePath.data);
+        int index = s.find_last_of("/");
+        if (index != -1)
+          s = s.substr(index + 1);
         // make up texture path
-        std::string texturePathString = dir + "/" + texturePath.data;
+        std::string texturePathString = dir + "/" + s;
         // create material
         Material *mat = MaterialManager::instance()->createMaterial(texturePathString);
         // add texture
