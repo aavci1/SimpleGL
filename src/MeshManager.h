@@ -1,8 +1,8 @@
 #ifndef MESHMANAGER_H
 #define MESHMANAGER_H
 
+#include "Types.h"
 #include <string>
-#include <sys/types.h>
 
 namespace SimpleGL {
   class MeshManagerPrivate;

@@ -1,18 +1,11 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 
-#include <glm/glm.hpp>
+#include "Types.h"
 
 namespace SimpleGL {
   class LightPrivate;
   class Camera;
-
-  enum LightType {
-    LT_UNKNOWN,
-    LT_DIRECTIONAL,
-    LT_POINT,
-    LT_SPOT
-  };
 
   class Light {
   public:

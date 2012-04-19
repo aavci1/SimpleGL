@@ -1,12 +1,9 @@
 #include "Program.h"
 
-#include "Attribute.h"
 #include "FragmentShader.h"
 #include "VertexShader.h"
 
 #include <GL/glew.h>
-
-#include <glm/ext.hpp>
 
 #include <vector>
 

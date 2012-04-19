@@ -21,6 +21,7 @@ set (SOURCES
   src/Program.cpp
   src/Renderer.cpp
   src/Shader.cpp
+  src/Sphere.cpp
   src/SpotLight.cpp
   src/SubMesh.cpp
   src/Texture.cpp

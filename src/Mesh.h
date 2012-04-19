@@ -5,8 +5,9 @@
 #include <vector>
 
 namespace SimpleGL {
-  class AxisAlignedBoundingBox;
   class MeshPrivate;
+  class AxisAlignedBoundingBox;
+  class Camera;
   class SubMesh;
 
   class Mesh {
@@ -20,6 +21,8 @@ namespace SimpleGL {
     const std::vector<SubMesh *> &subMeshes() const;
 
     void setMaterialName(const std::string &materialName);
+
+    const bool isVisibleFrom(Camera *camera) const;
 
   private:
     MeshPrivate *d;

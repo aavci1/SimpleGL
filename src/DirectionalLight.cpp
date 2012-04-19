@@ -8,8 +8,6 @@
 #include "Program.h"
 #include "SubMesh.h"
 
-#include <glm/ext.hpp>
-
 namespace SimpleGL {
   class DirectionalLightPrivate {
   public:

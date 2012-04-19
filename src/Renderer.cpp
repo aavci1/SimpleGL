@@ -1,6 +1,5 @@
 #include "Renderer.h"
 
-#include "Attribute.h"
 #include "Camera.h"
 #include "DirectionalLight.h"
 #include "FragmentShader.h"
@@ -13,6 +12,7 @@
 #include "Node.h"
 #include "PointLight.h"
 #include "Program.h"
+#include "Sphere.h"
 #include "SubMesh.h"
 #include "Util.h"
 #include "VertexShader.h"

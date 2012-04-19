@@ -1,7 +1,7 @@
 #ifndef AXISALIGNEDBOUNDINGBOX_H
 #define AXISALIGNEDBOUNDINGBOX_H
 
-#include <glm/glm.hpp>
+#include "Types.h"
 
 namespace SimpleGL {
   class AxisAlignedBoundingBoxPrivate;

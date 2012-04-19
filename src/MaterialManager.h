@@ -1,7 +1,7 @@
 #ifndef MATERIALMANAGER_H
 #define MATERIALMANAGER_H
 
-#include "Light.h"
+#include "Types.h"
 
 #include <string>
 

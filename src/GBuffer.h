@@ -1,7 +1,7 @@
 #ifndef GBUFFER_H
 #define	GBUFFER_H
 
-#include <sys/types.h>
+#include "Types.h"
 
 namespace SimpleGL {
   class GBufferPrivate;

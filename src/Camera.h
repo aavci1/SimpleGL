@@ -1,15 +1,11 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "TransformSpace.h"
-
-#include <sys/types.h>
-
-#include <glm/glm.hpp>
-#include <glm/ext.hpp>
+#include "Types.h"
 
 namespace SimpleGL {
   class CameraPrivate;
+  class Sphere;
 
   class Camera {
   public:
@@ -43,6 +39,8 @@ namespace SimpleGL {
 
     const glm::mat4 &viewMatrix() const;
     const glm::mat4 &projectionMatrix() const;
+
+    const Sphere &boundingSphere() const;
 
   private:
     CameraPrivate *d;

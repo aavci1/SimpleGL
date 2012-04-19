@@ -2,6 +2,7 @@
 
 #include "Light.h"
 #include "Mesh.h"
+#include "Types.h"
 
 namespace SimpleGL {
   class NodePrivate {

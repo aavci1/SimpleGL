@@ -1,10 +1,9 @@
 #ifndef ROGRAM_H
 #define ROGRAM_H
 
-#include <string>
-#include <sys/types.h>
+#include "Types.h"
 
-#include <glm/glm.hpp>
+#include <string>
 
 namespace SimpleGL {
   class Shader;

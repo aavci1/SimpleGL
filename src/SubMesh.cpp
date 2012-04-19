@@ -1,6 +1,5 @@
 #include "SubMesh.h"
 
-#include "Attribute.h"
 #include "AxisAlignedBoundingBox.h"
 
 #include <GL/glew.h>

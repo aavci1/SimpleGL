@@ -1,10 +1,7 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include "TransformSpace.h"
-
-#include <glm/glm.hpp>
-#include <glm/ext.hpp>
+#include "Types.h"
 
 #include <vector>
 

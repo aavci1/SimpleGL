@@ -45,4 +45,9 @@ namespace SimpleGL {
     for (int i = 0; i < d->subMeshes.size(); ++i)
       d->subMeshes[i]->setMaterialName(materialName);
   }
+
+  const bool Mesh::isVisibleFrom(Camera *camera) const {
+    // TODO: check bounding sphere and bounding box against camera frustum
+    return true;
+  }
 }

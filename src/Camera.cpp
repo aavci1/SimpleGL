@@ -1,9 +1,14 @@
 #include "Camera.h"
 
+#include "Sphere.h"
+
+#include <cmath>
+#include <cstdio>
+
 namespace SimpleGL {
   class CameraPrivate {
   public:
-    CameraPrivate() : position(0, 0, 0), orientation(1, 0, 0, 0), lookAt(0, 0, 0), up(0, 1, 0), fov(60.0f), nearClipDistance(1.0f), farClipDistance(10000.0f), aspectRatio(1.33) {
+    CameraPrivate() : position(0, 0, 0), orientation(1, 0, 0, 0), lookAt(0, 0, 0), up(0, 1, 0), fov(60.0f), nearClipDistance(1.0f), farClipDistance(2000.0f), aspectRatio(1.33) {
       recalcViewMatrix();
       recalcProjectionMatrix();
     }
@@ -19,6 +24,25 @@ namespace SimpleGL {
       projectionMatrix = glm::perspective(fov, aspectRatio, nearClipDistance, farClipDistance);
     }
 
+    void recalcBoundingSphere() {
+      // calculate the radius of the frustum sphere
+      float clipDistance = farClipDistance - nearClipDistance;
+      // use some trig to find the height of the frustum at the far plane
+      float height = clipDistance * tan(fov * 180.0f / M_PI * 0.5f);
+      // with an aspect ratio of 1, the width will be the same
+      float width = height * aspectRatio;
+      // halfway point between near/far planes starting at the origin and extending along the z axis
+      glm::vec3 P(0.0f, 0.0f, nearClipDistance + clipDistance * 0.5f);
+      // the calculate far corner of the frustum
+      glm::vec3 Q(width, height, clipDistance);
+      // the radius becomes the length of this vector
+      boundingSphere.setRadius(glm::length(P - Q));
+      // get the look vector of the camera from the view matrix
+      glm::vec3 lookVector = glm::vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
+      // calculate the center of the sphere
+      boundingSphere.setCenter(position + (lookVector * (clipDistance * 0.5f) + nearClipDistance));
+    }
+
 
     float fov;
     float nearClipDistance;
@@ -31,6 +55,8 @@ namespace SimpleGL {
     glm::vec3 up;
     glm::mat4 viewMatrix;
     glm::mat4 projectionMatrix;
+
+    Sphere boundingSphere;
   };
 
   Camera::Camera() : d(new CameraPrivate()) {
@@ -50,6 +76,7 @@ namespace SimpleGL {
     d->position = glm::vec3(x, y, z);
     // recalc view matrix
     d->recalcViewMatrix();
+    d->recalcBoundingSphere();
   }
 
   void Camera::moveRelative(const glm::vec3 &translation) {
@@ -57,6 +84,7 @@ namespace SimpleGL {
     d->lookAt += d->orientation * translation;
     // recalc view matrix
     d->recalcViewMatrix();
+    d->recalcBoundingSphere();
   }
 
   void Camera::moveRelative(float x, float y, float z) {
@@ -67,12 +95,14 @@ namespace SimpleGL {
     d->orientation = glm::normalize(orientation);
     // recalc view matrix
     d->recalcViewMatrix();
+    d->recalcBoundingSphere();
   }
 
   void Camera::setOrientation(float w, float x, float y, float z) {
     d->orientation = glm::normalize(glm::quat(w, x, y, z));
     // recalc view matrix
     d->recalcViewMatrix();
+    d->recalcBoundingSphere();
   }
 
   const glm::quat &Camera::orientation() const {
@@ -106,36 +136,42 @@ namespace SimpleGL {
     d->lookAt = lookAt;
     // recalc view matrix
     d->recalcViewMatrix();
+    d->recalcBoundingSphere();
   }
 
   void Camera::lookAt(float x, float y, float z) {
     d->lookAt = glm::vec3(x, y, z);
     // recalc view matrix
     d->recalcViewMatrix();
+    d->recalcBoundingSphere();
   }
 
   void Camera::setFov(float fov) {
     d->fov = fov;
     // recalc projection matrix
     d->recalcProjectionMatrix();
+    d->recalcBoundingSphere();
   }
 
   void Camera::setNearClipDistance(float nearClipDistance) {
     d->nearClipDistance = nearClipDistance;
     // recalc projection matrix
     d->recalcProjectionMatrix();
+    d->recalcBoundingSphere();
   }
 
   void Camera::setFarClipDistance(float farClipDistance) {
     d->farClipDistance = farClipDistance;
     // recalc projection matrix
     d->recalcProjectionMatrix();
+    d->recalcBoundingSphere();
   }
 
   void Camera::setAspectRatio(float aspectRatio) {
     d->aspectRatio = aspectRatio;
     // recalc projection matrix
     d->recalcProjectionMatrix();
+    d->recalcBoundingSphere();
   }
 
   const glm::mat4 &Camera::viewMatrix() const {
@@ -144,5 +180,9 @@ namespace SimpleGL {
 
   const glm::mat4 &Camera::projectionMatrix() const {
     return d->projectionMatrix;
+  }
+
+  const Sphere &Camera::boundingSphere() const {
+    return d->boundingSphere;
   }
 }

@@ -2,6 +2,7 @@
 #define DIRECTIONALLIGHT_H
 
 #include "Light.h"
+#include "Types.h"
 
 namespace SimpleGL {
   class DirectionalLightPrivate;

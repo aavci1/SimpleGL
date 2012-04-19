@@ -2,9 +2,7 @@
 #define SPOTLIGHT_H
 
 #include "Light.h"
-#include "TransformSpace.h"
-
-#include <glm/ext.hpp>
+#include "Types.h"
 
 namespace SimpleGL {
   class SpotLightPrivate;

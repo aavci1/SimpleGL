@@ -1,6 +1,5 @@
 #include "MeshManager.h"
 
-#include "Attribute.h"
 #include "AxisAlignedBoundingBox.h"
 #include "Material.h"
 #include "MaterialManager.h"
