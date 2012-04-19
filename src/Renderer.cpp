@@ -45,6 +45,8 @@ namespace SimpleGL {
       // render meshes
       for (int i = 0; i < node->meshes().size(); ++i) {
         Mesh *mesh = node->meshes().at(i);
+        if (!mesh->isVisibleFrom(camera))
+          continue;
         for (int j = 0; j < mesh->subMeshes().size(); ++j) {
           SubMesh *subMesh = mesh->subMeshes().at(j);
           Material *material = MaterialManager::instance()->getMaterialByName(subMesh->materialName());
