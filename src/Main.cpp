@@ -5,7 +5,6 @@
 #include "Mesh.h"
 #include "MeshManager.h"
 #include "Node.h"
-#include "Plane.h"
 #include "PointLight.h"
 #include "Renderer.h"
 
@@ -76,12 +75,12 @@ int main(int argc, char **argv) {
   ceilingMaterial->setProgram("media/deferred_geometry_vp.glsl", "media/deferred_geometry_fp.glsl");
   ceilingMaterial->addTexture("media/ceiling.jpg");
   // create floor
-  Plane *floor = new Plane(glm::vec2(1000, 1000), glm::vec2(10, 10));
+  Mesh *floor = MeshManager::instance()->createPlane(1000, 1000, 10, 10);
   floor->setMaterialName("Laminate");
   Node *floorNode = rootNode->createChildNode();
   floorNode->attachMesh(floor);
   // create ceiling
-  Plane *ceiling = new Plane(glm::vec2(1000, 1000), glm::vec2(10, 10));
+  Mesh *ceiling = MeshManager::instance()->createPlane(1000, 1000, 10, 10);
   ceiling->setMaterialName("Ceiling");
   Node *ceilingNode = rootNode->createChildNode();
   ceilingNode->attachMesh(ceiling);

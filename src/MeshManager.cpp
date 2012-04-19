@@ -44,61 +44,17 @@ namespace SimpleGL {
       subMesh->setIndexData(indices, 36);
     }
 
-    void createSphere(SubMesh *subMesh, float radius, int slices, int stacks) {
-      // allocate the vertex buffer
-      uint vertexCount = (stacks + 1) * (slices+1);
-      float *vertices = new float[vertexCount * 8];
-      uint indexCount = 6 * stacks * (slices + 1);
-      uint *indices = new uint[indexCount];
-      // vertex pointer
-      float *pVertex = vertices;
-      // index pointer
-      uint *pIndices = indices;
-      // index of the vertice for current face
-      uint wVerticeIndex = 0 ;
-      // allocate index buffer
-      float fDeltaRingAngle = (M_PI / stacks);
-      float fDeltaSegAngle = (2 * M_PI / slices);
-      // Generate the group of rings for the sphere
-      for( int ring = 0; ring <= stacks; ring++ ) {
-        float r0 = radius * sinf (ring * fDeltaRingAngle);
-        float y0 = radius * cosf (ring * fDeltaRingAngle);
-        // Generate the group of segments for the current ring
-        for(int seg = 0; seg <= slices; seg++) {
-          float x0 = r0 * sinf(seg * fDeltaSegAngle);
-          float z0 = r0 * cosf(seg * fDeltaSegAngle);
-          // add vertex position
-          *pVertex++ = x0;
-          *pVertex++ = y0;
-          *pVertex++ = z0;
-          // add vertex normal
-          glm::vec3 vNormal = glm::normalize(glm::vec3(x0, y0, z0));
-          *pVertex++ = vNormal.x;
-          *pVertex++ = vNormal.y;
-          *pVertex++ = vNormal.z;
-          // add texture coordinate
-          *pVertex++ = (float) seg / (float) slices * 2 + 1;
-          *pVertex++ = (float) ring / (float) stacks * 2 + 1;
-          // assign indices
-          if (ring != stacks) {
-            // each vertex (except the last) has six indices pointing to it
-            *pIndices++ = wVerticeIndex + slices + 1;
-            *pIndices++ = wVerticeIndex;
-            *pIndices++ = wVerticeIndex + slices;
-            *pIndices++ = wVerticeIndex + slices + 1;
-            *pIndices++ = wVerticeIndex + 1;
-            *pIndices++ = wVerticeIndex;
-            // next vertice
-            wVerticeIndex ++;
-          }
-        }
-      }
+    void createPlane(SubMesh *subMesh, float width, float height, float uTile, float vTile) {
+      float vertices[] = {
+        -1.0f * width, 0.0f, +1.0f * height, 0.0f, 1.0f, 0.0f, -1.0f * uTile, -1.0f * vTile,
+        +1.0f * width, 0.0f, +1.0f * height, 0.0f, 1.0f, 0.0f, +1.0f * uTile, -1.0f * vTile,
+        +1.0f * width, 0.0f, -1.0f * height, 0.0f, 1.0f, 0.0f, +1.0f * uTile, +1.0f * vTile,
+        -1.0f * width, 0.0f, -1.0f * height, 0.0f, 1.0f, 0.0f, -1.0f * uTile, +1.0f * vTile
+      };
+      uint indices[] = { 0, 1, 2, 0, 2, 3 };
       // set vertex and index data
-      subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, vertexCount, 32);
-      subMesh->setIndexData(indices, indexCount);
-      // clean up
-      delete[] vertices;
-      delete[] indices;
+      subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, 4, 32);
+      subMesh->setIndexData(indices, 6);
     }
 
     void createCube(SubMesh *subMesh, float width, float height, float depth) {
@@ -158,6 +114,63 @@ namespace SimpleGL {
       subMesh->setIndexData(indices, 36);
     }
 
+    void createSphere(SubMesh *subMesh, float radius, int slices, int stacks) {
+      // allocate the vertex buffer
+      uint vertexCount = (stacks + 1) * (slices+1);
+      float *vertices = new float[vertexCount * 8];
+      uint indexCount = 6 * stacks * (slices + 1);
+      uint *indices = new uint[indexCount];
+      // vertex pointer
+      float *pVertex = vertices;
+      // index pointer
+      uint *pIndices = indices;
+      // index of the vertice for current face
+      uint wVerticeIndex = 0 ;
+      // allocate index buffer
+      float fDeltaRingAngle = (M_PI / stacks);
+      float fDeltaSegAngle = (2 * M_PI / slices);
+      // Generate the group of rings for the sphere
+      for( int ring = 0; ring <= stacks; ring++ ) {
+        float r0 = radius * sinf (ring * fDeltaRingAngle);
+        float y0 = radius * cosf (ring * fDeltaRingAngle);
+        // Generate the group of segments for the current ring
+        for(int seg = 0; seg <= slices; seg++) {
+          float x0 = r0 * sinf(seg * fDeltaSegAngle);
+          float z0 = r0 * cosf(seg * fDeltaSegAngle);
+          // add vertex position
+          *pVertex++ = x0;
+          *pVertex++ = y0;
+          *pVertex++ = z0;
+          // add vertex normal
+          glm::vec3 vNormal = glm::normalize(glm::vec3(x0, y0, z0));
+          *pVertex++ = vNormal.x;
+          *pVertex++ = vNormal.y;
+          *pVertex++ = vNormal.z;
+          // add texture coordinate
+          *pVertex++ = (float) seg / (float) slices * 2 + 1;
+          *pVertex++ = (float) ring / (float) stacks * 2 + 1;
+          // assign indices
+          if (ring != stacks) {
+            // each vertex (except the last) has six indices pointing to it
+            *pIndices++ = wVerticeIndex + slices + 1;
+            *pIndices++ = wVerticeIndex;
+            *pIndices++ = wVerticeIndex + slices;
+            *pIndices++ = wVerticeIndex + slices + 1;
+            *pIndices++ = wVerticeIndex + 1;
+            *pIndices++ = wVerticeIndex;
+            // next vertice
+            wVerticeIndex ++;
+          }
+        }
+      }
+      // set vertex and index data
+      subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, vertexCount, 32);
+      subMesh->setIndexData(indices, indexCount);
+      // clean up
+      delete[] vertices;
+      delete[] indices;
+    }
+
     Assimp::Importer *importer;
   };
 
@@ -181,6 +194,16 @@ namespace SimpleGL {
     SubMesh *subMesh = mesh->createSubMesh();
     // fill the sub mesh
     d->createQuad(subMesh, width, height);
+    // return mesh
+    return mesh;
+  }
+
+  Mesh *MeshManager::createPlane(float width, float height, float uTile, float vTile) {
+    Mesh *mesh = new Mesh();
+    // create a submesh
+    SubMesh *subMesh = mesh->createSubMesh();
+    // fill the sub mesh
+    d->createPlane(subMesh, width, height, uTile, vTile);
     // return mesh
     return mesh;
   }

@@ -17,7 +17,6 @@ set (SOURCES
   src/Mesh.cpp
   src/MeshManager.cpp
   src/Node.cpp
-  src/Plane.cpp
   src/PointLight.cpp
   src/Program.cpp
   src/Renderer.cpp
