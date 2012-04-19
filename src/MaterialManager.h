@@ -1,6 +1,8 @@
 #ifndef MATERIALMANAGER_H
 #define MATERIALMANAGER_H
 
+#include "Light.h"
+
 #include <string>
 
 namespace SimpleGL {
@@ -14,9 +16,8 @@ namespace SimpleGL {
 
     static MaterialManager *instance();
 
-    Material *createMaterial(const std::string &materialName);
-
     Material *getMaterialByName(const std::string &materialName);
+    Material *getMaterialByLightType(const LightType type);
 
   private:
     MaterialManagerPrivate *d;

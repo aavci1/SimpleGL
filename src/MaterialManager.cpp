@@ -16,9 +16,14 @@ namespace SimpleGL {
       std::map<std::string, Material*>::iterator it = materials.begin();
       for (it = materials.begin(); it != materials.end(); ++it)
         delete it->second;
+      // delete light materials
+      std::map<LightType, Material*>::iterator it2 = lightMaterials.begin();
+      for (it2 = lightMaterials.begin(); it2 != lightMaterials.end(); ++it2)
+        delete it2->second;
     }
 
     std::map<std::string, Material *> materials;
+    std::map<LightType, Material *> lightMaterials;
   };
 
   MaterialManager::MaterialManager() : d(new MaterialManagerPrivate()) {
@@ -35,15 +40,19 @@ namespace SimpleGL {
     return _instance;
   }
 
-  Material *MaterialManager::createMaterial(const std::string &materialName) {
-    Material *material = new Material(materialName);
-    // add material to the map
-    d->materials[material->name()] = material;
+  Material *MaterialManager::getMaterialByName(const std::string &materialName) {
+    // create a new material, if none exists
+    if (!d->materials[materialName])
+      d->materials[materialName] = new Material(materialName);
     // return material
-    return material;
+    return d->materials[materialName];
   }
 
-  Material *MaterialManager::getMaterialByName(const std::string &materialName) {
-    return d->materials[materialName];
+  Material *MaterialManager::getMaterialByLightType(const LightType type) {
+    // create a new material, if none exists
+    if (!d->lightMaterials[type])
+      d->lightMaterials[type] = new Material("");
+    // return material
+    return d->lightMaterials[type];
   }
 }

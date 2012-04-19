@@ -1,15 +1,27 @@
 #include "DirectionalLight.h"
 
+#include "Camera.h"
+#include "Material.h"
+#include "MaterialManager.h"
+#include "Mesh.h"
+#include "MeshManager.h"
+#include "Program.h"
+#include "SubMesh.h"
+
 #include <glm/ext.hpp>
 
 namespace SimpleGL {
   class DirectionalLightPrivate {
   public:
     DirectionalLightPrivate() : direction(0.0f, 0.0f, 1.0f) {
-    }
-    ~DirectionalLightPrivate() {
+      quad = MeshManager::instance()->createQuad();
     }
 
+    ~DirectionalLightPrivate() {
+      delete quad;
+    }
+
+    Mesh *quad;
     glm::vec3 direction;
   };
 
@@ -30,5 +42,19 @@ namespace SimpleGL {
 
   const glm::vec3 &DirectionalLight::direction() const {
     return d->direction;
+  }
+
+  void DirectionalLight::render(Camera *camera) {
+    Program *program = MaterialManager::instance()->getMaterialByLightType(type())->program();
+    // return if program is not set
+    if (!program)
+      return;
+    // set program parameters
+    program->setUniform("lightDir", d->direction);
+    program->setUniform("lightColor", color());
+    program->setUniform("lightDiffuseIntensity", diffuseIntensity());
+    program->setUniform("lightSpecularIntensity", specularIntensity());
+    // render a full screen quad
+    d->quad->subMeshes().at(0)->render();
   }
 }

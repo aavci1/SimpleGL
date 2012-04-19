@@ -1,15 +1,29 @@
 #include "PointLight.h"
 
+#include "Camera.h"
+#include "Material.h"
+#include "MaterialManager.h"
+#include "Mesh.h"
+#include "MeshManager.h"
+#include "Program.h"
+#include "SubMesh.h"
+
+#include <GL/glew.h>
+
 #include <glm/ext.hpp>
 
 namespace SimpleGL {
   class PointLightPrivate {
   public:
     PointLightPrivate() : position(0.0f, 0.0f, 0.0f), attenuationRange(256.0f), attenuationConstant(0.0f), attenuationLinear(0.0f), attenuationQuadratic(1.0f), recalcTransformationMatrix(false), transformationMatrix(glm::mat4()) {
-    }
-    ~PointLightPrivate() {
+      sphere = MeshManager::instance()->createSphere(attenuationRange, 32, 32);
     }
 
+    ~PointLightPrivate() {
+      delete sphere;
+    }
+
+    Mesh *sphere;
     glm::vec3 position;
     float attenuationRange;
     float attenuationConstant;
@@ -47,6 +61,9 @@ namespace SimpleGL {
     d->attenuationConstant = constant;
     d->attenuationLinear = linear;
     d->attenuationQuadratic = quadratic;
+    // re-create sphere
+    delete d->sphere;
+    d->sphere = MeshManager::instance()->createSphere(d->attenuationRange, 32, 32);
   }
 
   float PointLight::attenuationRange() const {
@@ -74,5 +91,31 @@ namespace SimpleGL {
       d->recalcTransformationMatrix = false;
     }
     return d->transformationMatrix;
+  }
+
+  void PointLight::render(Camera *camera) {
+    Material *material = MaterialManager::instance()->getMaterialByLightType(type());
+    // check material
+    if (!material->program())
+      return;
+    // adjust face culling
+    if (glm::length(camera->position() - d->position) < d->attenuationRange)
+      glCullFace(GL_FRONT);
+    else
+      glCullFace(GL_BACK);
+    // set program parameters
+    material->program()->setUniform("lightColor", color());
+    material->program()->setUniform("lightDiffuseIntensity", diffuseIntensity());
+    material->program()->setUniform("lightSpecularIntensity", specularIntensity());
+    material->program()->setUniform("lightPos", d->position);
+    material->program()->setUniform("lightAttenuationRange", d->attenuationRange);
+    material->program()->setUniform("lightAttenuationConstant", d->attenuationConstant);
+    material->program()->setUniform("lightAttenuationLinear", d->attenuationLinear);
+    material->program()->setUniform("lightAttenuationQuadratic", d->attenuationQuadratic);
+    material->program()->setUniform("lightMatrix", transformationMatrix());
+    // render a sphere
+    d->sphere->subMeshes().at(0)->render();
+    // reset flags
+    glCullFace(GL_BACK);
   }
 }

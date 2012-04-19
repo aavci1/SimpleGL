@@ -5,6 +5,7 @@
 
 namespace SimpleGL {
   class LightPrivate;
+  class Camera;
 
   enum LightType {
     LT_UNKNOWN,
@@ -32,6 +33,8 @@ namespace SimpleGL {
 
     void setEnabled(const bool enabled);
     const bool isEnabled() const;
+
+    virtual void render(Camera *camera) = 0;
 
   private:
     LightPrivate *d;

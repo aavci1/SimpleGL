@@ -259,7 +259,7 @@ namespace SimpleGL {
         // make up texture path
         std::string texturePathString = dir + "/" + s;
         // create material
-        Material *mat = MaterialManager::instance()->createMaterial(texturePathString);
+        Material *mat = MaterialManager::instance()->getMaterialByName(texturePathString);
         // add texture
         mat->addTexture(texturePathString);
         // add program

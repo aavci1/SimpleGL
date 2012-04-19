@@ -26,15 +26,11 @@
 namespace SimpleGL {
   class RendererPrivate {
   public:
-    RendererPrivate(uint width, uint height) : width(width), height(height), gbuffer(new GBuffer(width, height)), pointLightProgram(0), directionalLightProgram(0) {
-      quad = MeshManager::instance()->createQuad();
+    RendererPrivate(uint width, uint height) : width(width), height(height), gbuffer(new GBuffer(width, height)) {
     }
 
     ~RendererPrivate() {
       delete gbuffer;
-      delete pointLightProgram;
-      delete directionalLightProgram;
-      delete quad;
     }
 
     void renderHelper(Node *node, glm::mat4 modelMatrix, glm::mat4 viewProjMatrix) {
@@ -70,24 +66,9 @@ namespace SimpleGL {
     int height;
     GBuffer *gbuffer;
     std::vector<Light *> lights;
-    Program *pointLightProgram;
-    Program *directionalLightProgram;
-    Mesh *quad;
   };
 
   Renderer::Renderer(uint width, uint height) : d(new RendererPrivate(width, height)) {
-    // load point light program
-    d->pointLightProgram = new Program();
-    d->pointLightProgram->addShader(new VertexShader(Util::readAll("media/deferred_light_point_vp.glsl")));
-    d->pointLightProgram->addShader(new FragmentShader(Util::readAll("media/deferred_light_point_fp.glsl")));
-    if (!d->pointLightProgram->compileAndLink())
-      printf("error: can not compile shader:\n%s", d->pointLightProgram->message().c_str());
-    // load directional light program
-    d->directionalLightProgram = new Program();
-    d->directionalLightProgram->addShader(new VertexShader(Util::readAll("media/deferred_light_directional_vp.glsl")));
-    d->directionalLightProgram->addShader(new FragmentShader(Util::readAll("media/deferred_light_directional_fp.glsl")));
-    if (!d->directionalLightProgram->compileAndLink())
-      printf("error: can not compile shader:\n%s", d->directionalLightProgram->message().c_str());
   }
 
   Renderer::~Renderer() {
@@ -120,8 +101,9 @@ namespace SimpleGL {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // clear lights
     d->lights.clear();
+    glm::mat4 viewProjMatrix = camera->projectionMatrix() * camera->viewMatrix();
     // render scene
-    d->renderHelper(root, glm::mat4(), camera->projectionMatrix() * camera->viewMatrix());
+    d->renderHelper(root, glm::mat4(), viewProjMatrix);
     // unbind gbuffer
     d->gbuffer->setWritable(false);
     // bind textures
@@ -139,61 +121,24 @@ namespace SimpleGL {
     // blit gbuffer to the screen
     d->gbuffer->blit();
 #else
-    // point lights pass
-    d->pointLightProgram->select();
-    d->pointLightProgram->setUniform("screenSize", glm::vec2(d->width, d->height));
-    d->pointLightProgram->setUniform("cameraPos", camera->position());
-    d->pointLightProgram->setUniform("colorBuffer", d->gbuffer->colorBuffer());
-    d->pointLightProgram->setUniform("normalBuffer", d->gbuffer->normalBuffer());
-    d->pointLightProgram->setUniform("positionBuffer", d->gbuffer->positionBuffer());
-    for (int i = 0;  i < d->lights.size(); ++i) {
-      if (d->lights.at(i)->type() == LT_POINT) {
-        PointLight *light = static_cast<PointLight *>(d->lights.at(i));
-        if (glm::length(camera->position() - light->position()) < light->attenuationRange())
-          glCullFace(GL_FRONT);
-        else
-          glCullFace(GL_BACK);
-        // set light parameters
-        d->pointLightProgram->setUniform("sglModelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * light->transformationMatrix());
-        d->pointLightProgram->setUniform("lightPos", light->position());
-        d->pointLightProgram->setUniform("lightColor", light->color());
-        d->pointLightProgram->setUniform("lightAttenuationRange", light->attenuationRange());
-        d->pointLightProgram->setUniform("lightAttenuationConstant", light->attenuationConstant());
-        d->pointLightProgram->setUniform("lightAttenuationLinear", light->attenuationLinear());
-        d->pointLightProgram->setUniform("lightAttenuationQuadratic", light->attenuationQuadratic());
-        d->pointLightProgram->setUniform("lightDiffuseIntensity", light->diffuseIntensity());
-        d->pointLightProgram->setUniform("lightSpecularIntensity", light->specularIntensity());
-        // draw a sphere
-        Mesh *sphere = MeshManager::instance()->createSphere(light->attenuationRange());
-        sphere->subMeshes().at(0)->render();
-        delete sphere;
-      }
+    for (int type = LT_DIRECTIONAL; type <= LT_SPOT; ++type) {
+      Material *material = MaterialManager::instance()->getMaterialByLightType(LightType(type));
+      if (!material || !material->program())
+        continue;
+      material->program()->select();
+      material->program()->setUniform("screenSize", glm::vec2(d->width, d->height));
+      material->program()->setUniform("cameraPos", camera->position());
+      material->program()->setUniform("colorBuffer", d->gbuffer->colorBuffer());
+      material->program()->setUniform("normalBuffer", d->gbuffer->normalBuffer());
+      material->program()->setUniform("positionBuffer", d->gbuffer->positionBuffer());
+      material->program()->setUniform("viewProjMatrix", viewProjMatrix);
+      // render the light
+      for (int i = 0; i < d->lights.size(); ++i)
+        if (d->lights.at(i)->type() == type)
+          d->lights.at(i)->render(camera);
+      // deselect material
+      material->program()->deselect();
     }
-    // deselect shader
-    d->pointLightProgram->deselect();
-    // reset parameters
-    glCullFace(GL_BACK);
-    // directional lights pass
-    d->directionalLightProgram->select();
-    d->directionalLightProgram->setUniform("screenSize", glm::vec2(d->width, d->height));
-    d->directionalLightProgram->setUniform("cameraPos", camera->position());
-    d->directionalLightProgram->setUniform("colorBuffer", d->gbuffer->colorBuffer());
-    d->directionalLightProgram->setUniform("normalBuffer", d->gbuffer->normalBuffer());
-    d->directionalLightProgram->setUniform("positionBuffer", d->gbuffer->positionBuffer());
-    for (int i = 0;  i < d->lights.size(); ++i) {
-      if (d->lights.at(i)->type() == LT_DIRECTIONAL) {
-        DirectionalLight *light = static_cast<DirectionalLight *>(d->lights.at(i));
-        // set light parameters
-        d->directionalLightProgram->setUniform("lightDir", light->direction());
-        d->directionalLightProgram->setUniform("lightColor", light->color());
-        d->directionalLightProgram->setUniform("lightDiffuseIntensity", light->diffuseIntensity());
-        d->directionalLightProgram->setUniform("lightSpecularIntensity", light->specularIntensity());
-        // render full screen quad
-        d->quad->subMeshes().at(0)->render();
-      }
-    }
-    // deselect shader
-    d->directionalLightProgram->deselect();
     // unbind textures
     d->gbuffer->unbindTextures();
 #endif

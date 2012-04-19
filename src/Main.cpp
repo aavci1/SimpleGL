@@ -62,16 +62,22 @@ int main(int argc, char **argv) {
   renderer = new Renderer(width, height);
   // create root node
   Node *rootNode = new Node();
+  // register directional light material
+  Material *directionalLightMaterial = MaterialManager::instance()->getMaterialByLightType(LT_DIRECTIONAL);
+  directionalLightMaterial->setProgram("media/deferred_light_directional_vp.glsl", "media/deferred_light_directional_fp.glsl");
+  // register point light material
+  Material *pointLightMaterial = MaterialManager::instance()->getMaterialByLightType(LT_POINT);
+  pointLightMaterial->setProgram("media/deferred_light_point_vp.glsl", "media/deferred_light_point_fp.glsl");
   // create laminate material
-  Material *laminateMaterial = MaterialManager::instance()->createMaterial("Laminate");
+  Material *laminateMaterial = MaterialManager::instance()->getMaterialByName("Laminate");
   laminateMaterial->setProgram("media/deferred_geometry_vp.glsl", "media/deferred_geometry_fp.glsl");
   laminateMaterial->addTexture("media/laminate.jpg");
   // create ceramics material
-  Material *ebonyMaterial = MaterialManager::instance()->createMaterial("Ebony");
+  Material *ebonyMaterial = MaterialManager::instance()->getMaterialByName("Ebony");
   ebonyMaterial->setProgram("media/deferred_geometry_vp.glsl", "media/deferred_geometry_fp.glsl");
   ebonyMaterial->addTexture("media/ebony.jpg");
   // create ceiling material
-  Material *ceilingMaterial = MaterialManager::instance()->createMaterial("Ceiling");
+  Material *ceilingMaterial = MaterialManager::instance()->getMaterialByName("Ceiling");
   ceilingMaterial->setProgram("media/deferred_geometry_vp.glsl", "media/deferred_geometry_fp.glsl");
   ceilingMaterial->addTexture("media/ceiling.jpg");
   // create floor

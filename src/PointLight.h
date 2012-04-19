@@ -5,6 +5,7 @@
 
 namespace SimpleGL {
   class PointLightPrivate;
+  class Camera;
 
   class PointLight : public Light {
   public:
@@ -22,6 +23,8 @@ namespace SimpleGL {
     float attenuationQuadratic() const;
 
     const glm::mat4 &transformationMatrix() const;
+
+    void render(Camera *camera);
 
   private:
     PointLightPrivate *d;
