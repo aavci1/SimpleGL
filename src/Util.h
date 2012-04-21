@@ -9,7 +9,9 @@ namespace SimpleGL {
     Util();
 
   public:
-    static std::string readAll(const std::string &path);
+    static const std::string toString(const int number);
+    static const std::string readAll(const std::string &path);
+
   };
 }
 #endif // UTIL_H
