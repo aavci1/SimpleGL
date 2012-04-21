@@ -49,7 +49,7 @@ namespace SimpleGL {
     d->program->addShader(new FragmentShader(Util::readAll(fragmentShaderPath)));
     // try to compile and link the program
     if (!d->program->compileAndLink()) {
-      printf("error: can not compile shader:\n%s", d->program->message().c_str());
+      std::cerr << d->program->message() << std::endl;
       // delete the program
       delete d->program;
       d->program = 0;
@@ -67,7 +67,7 @@ namespace SimpleGL {
   bool Material::addTexture(const std::string &texturePath) {
     Texture *texture = new Texture(texturePath);
     if (!texture->load()) {
-      printf("error: can not load texture %s.\n", texture->path().c_str());
+      std::cerr << "error: can not load texture " << texture->path() << std::endl;
       // delete the texture
       delete texture;
       // return fail
@@ -87,7 +87,7 @@ namespace SimpleGL {
     d->program->select();
     // set samplers
     for (int i = 0; i < d->textures.size(); ++i)
-      d->program->setUniform("sglSampler", i); // TODO
+      d->program->setUniform("texture" + Util::toString(i), i);
     // set specular parameters
     d->program->setUniform("sglSpecularIntensity", 1.0f);
     d->program->setUniform("sglSpecularPower", 64.0f);

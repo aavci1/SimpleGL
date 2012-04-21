@@ -12,8 +12,6 @@
 
 #include <map>
 
-#include <stdio.h>
-
 namespace SimpleGL {
   static MeshManager *_instance = 0;
 
@@ -368,10 +366,10 @@ namespace SimpleGL {
         Material *mat = MaterialManager::instance()->getMaterialByName(name.data);
         // get diffuse maps
         std::vector<std::string> diffuseMaps= d->getTexture(material, aiTextureType_DIFFUSE);
-        for (int i = 0;  i < diffuseMaps.size(); ++i)
-          mat->addTexture(dir + "/" + diffuseMaps.at(i));
+        for (int j = 0;  j < diffuseMaps.size(); ++j)
+          mat->addTexture(dir + "/" + diffuseMaps.at(j));
         // set program
-        mat->setProgram("media/textured_vp.glsl", "media/textured_fp.glsl");
+        mat->setProgram("media/deferred_geometry_vp.glsl", "media/deferred_geometry_fp.glsl");
         // set material index
         materialNames[i] = mat->name();
       }

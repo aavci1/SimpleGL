@@ -3,7 +3,6 @@
 #include "Sphere.h"
 
 #include <cmath>
-#include <cstdio>
 
 namespace SimpleGL {
   class CameraPrivate {

@@ -20,7 +20,6 @@ Camera *camera;
 Renderer *renderer;
 
 void GLFWCALL resize(int width, int height) {
-  //   printf("new size: %dx%d\n", width, height);
   glViewport(0, 0, (GLsizei) width, (GLsizei) height);
   // update renderer's buffers' size
   if (renderer)
@@ -32,7 +31,7 @@ void GLFWCALL resize(int width, int height) {
 
 int main(int argc, char **argv) {
   if (!glfwInit()) {
-    printf("error: can not initialize glfw.\n");
+    std::cerr << "error: can not initialize glfw." << std::endl;
     return 1;
   }
   // request opengl version
@@ -42,7 +41,7 @@ int main(int argc, char **argv) {
   glfwOpenWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   // try to open the window
   if (!glfwOpenWindow(1920, 1080, 8, 8, 8, 0, 24, 0, GLFW_FULLSCREEN)) {
-    printf("error: cannot open glfw window.\n");
+    std::cerr << "error: cannot open glfw window." << std::endl;
     glfwTerminate();
     return 1;
   }
@@ -52,7 +51,7 @@ int main(int argc, char **argv) {
   glfwSetWindowSizeCallback(resize);
   // initialize glew, must be after window creation
   if (glewInit() != GLEW_OK) {
-    printf("error: can not initialize glew.\n");
+    std::cerr << "error: can not initialize glew." << std::endl;
     return 1;
   }
   // get window width and height
@@ -158,7 +157,7 @@ int main(int argc, char **argv) {
     frames++;
     // calculate fps
     if (fpsTime >= 1.0) {
-      printf("FPS: %f\n", frames / fpsTime);
+      std::cout << "FPS: " << int(frames / fpsTime) << std::endl;
       frames = 0;
       fpsTime = 0;
     }
