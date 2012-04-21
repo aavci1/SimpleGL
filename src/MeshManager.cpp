@@ -27,18 +27,14 @@ namespace SimpleGL {
     void createQuad(SubMesh *subMesh, float width, float height) {
       float vertices[] = {
         -1.0f * width, -1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-        1.0f * width, -1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f * width, +1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        +1.0f * width, -1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+        +1.0f * width, +1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
         -1.0f * width, +1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f
       };
-
-      uint indices[] = {
-        0, 1, 2,
-        0, 2, 3
-      };
+      uint indices[] = { 0, 1, 2, 0, 2, 3 };
       // set vertex and index data
-      subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, 24, 32);
-      subMesh->setIndexData(indices, 36);
+      subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, 4, 32);
+      subMesh->setIndexData(indices, 6);
     }
 
     void createPlane(SubMesh *subMesh, float width, float height, float uTile, float vTile) {
