@@ -29,8 +29,8 @@ namespace SimpleGL {
     void createQuad(SubMesh *subMesh, float width, float height) {
       float vertices[] = {
         -1.0f * width, -1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-         1.0f * width, -1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-         1.0f * width, +1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        1.0f * width, -1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f * width, +1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
         -1.0f * width, +1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f
       };
 
@@ -59,29 +59,29 @@ namespace SimpleGL {
     void createCube(SubMesh *subMesh, float width, float height, float depth) {
       float vertices[] = {
         -1.0f * width, -1.0f * height,  1.0f * depth, 0.0f, 0.0f, +1.0f, 0.0f, 0.0f,
-         1.0f * width, -1.0f * height,  1.0f * depth, 0.0f, 0.0f, +1.0f, 1.0f, 0.0f,
-         1.0f * width,  1.0f * height,  1.0f * depth, 0.0f, 0.0f, +1.0f, 1.0f, 1.0f,
+        1.0f * width, -1.0f * height,  1.0f * depth, 0.0f, 0.0f, +1.0f, 1.0f, 0.0f,
+        1.0f * width,  1.0f * height,  1.0f * depth, 0.0f, 0.0f, +1.0f, 1.0f, 1.0f,
         -1.0f * width,  1.0f * height,  1.0f * depth, 0.0f, 0.0f, +1.0f, 0.0f, 1.0f,
 
         -1.0f * width, -1.0f * height, -1.0f * depth, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
         -1.0f * width,  1.0f * height, -1.0f * depth, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-         1.0f * width,  1.0f * height, -1.0f * depth, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
-         1.0f * width, -1.0f * height, -1.0f * depth, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+        1.0f * width,  1.0f * height, -1.0f * depth, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+        1.0f * width, -1.0f * height, -1.0f * depth, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
 
         -1.0f * width,  1.0f * height, -1.0f * depth, 0.0f, +1.0f, 0.0f, 0.0f, 1.0f,
         -1.0f * width,  1.0f * height,  1.0f * depth, 0.0f, +1.0f, 0.0f, 0.0f, 0.0f,
-         1.0f * width,  1.0f * height,  1.0f * depth, 0.0f, +1.0f, 0.0f, 1.0f, 0.0f,
-         1.0f * width,  1.0f * height, -1.0f * depth, 0.0f, +1.0f, 0.0f, 1.0f, 1.0f,
+        1.0f * width,  1.0f * height,  1.0f * depth, 0.0f, +1.0f, 0.0f, 1.0f, 0.0f,
+        1.0f * width,  1.0f * height, -1.0f * depth, 0.0f, +1.0f, 0.0f, 1.0f, 1.0f,
 
         -1.0f * width, -1.0f * height, -1.0f * depth, 0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-         1.0f * width, -1.0f * height, -1.0f * depth, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
-         1.0f * width, -1.0f * height,  1.0f * depth, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+        1.0f * width, -1.0f * height, -1.0f * depth, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+        1.0f * width, -1.0f * height,  1.0f * depth, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
         -1.0f * width, -1.0f * height,  1.0f * depth, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
 
-         1.0f * width, -1.0f * height, -1.0f * depth, +1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-         1.0f * width,  1.0f * height, -1.0f * depth, +1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-         1.0f * width,  1.0f * height,  1.0f * depth, +1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-         1.0f * width, -1.0f * height,  1.0f * depth, +1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        1.0f * width, -1.0f * height, -1.0f * depth, +1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        1.0f * width,  1.0f * height, -1.0f * depth, +1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+        1.0f * width,  1.0f * height,  1.0f * depth, +1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        1.0f * width, -1.0f * height,  1.0f * depth, +1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 
         -1.0f * width, -1.0f * height, -1.0f * depth, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
         -1.0f * width, -1.0f * height,  1.0f * depth, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
@@ -259,6 +259,26 @@ namespace SimpleGL {
       delete[] indices;
     }
 
+    std::vector<std::string> getTexture(const aiMaterial *material, aiTextureType type) {
+      std::vector<std::string> textures;
+      // get textures
+      for (int i = 0; i < material->GetTextureCount(type); ++i) {
+        // get texture path
+        aiString aistr;
+        if (material->GetTexture(type, i, &aistr) != AI_SUCCESS)
+          continue;
+        // convert to regular string
+        std::string texturePath = std::string(aistr.data);
+        // remove directory part
+        int index = texturePath.find_last_of("/");
+        if (index != -1)
+          texturePath = texturePath.substr(index + 1);
+        // add to list
+        textures.push_back(texturePath);
+      }
+      return textures;
+    }
+
     Assimp::Importer *importer;
   };
 
@@ -342,28 +362,18 @@ namespace SimpleGL {
       // Initialize the materials
       for (unsigned int i = 0; i < scene->mNumMaterials; i++) {
         const aiMaterial* material = scene->mMaterials[i];
-        // check diffuse texture
-        if (material->GetTextureCount(aiTextureType_DIFFUSE) <= 0)
-          continue;
-        // get texture path
-        aiString texturePath;
-        if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) != AI_SUCCESS)
-          continue;
-        // remove directory part
-        std::string s(texturePath.data);
-        int index = s.find_last_of("/");
-        if (index != -1)
-          s = s.substr(index + 1);
-        // make up texture path
-        std::string texturePathString = dir + "/" + s;
+        aiString name;
+        material->Get(AI_MATKEY_NAME, name);
         // create material
-        Material *mat = MaterialManager::instance()->getMaterialByName(texturePathString);
-        // add texture
-        mat->addTexture(texturePathString);
-        // add program
-        mat->setProgram("media/deferred_geometry_vp.glsl", "media/deferred_geometry_fp.glsl");
+        Material *mat = MaterialManager::instance()->getMaterialByName(name.data);
+        // get diffuse maps
+        std::vector<std::string> diffuseMaps= d->getTexture(material, aiTextureType_DIFFUSE);
+        for (int i = 0;  i < diffuseMaps.size(); ++i)
+          mat->addTexture(dir + "/" + diffuseMaps.at(i));
+        // set program
+        mat->setProgram("media/textured_vp.glsl", "media/textured_fp.glsl");
         // set material index
-        materialNames[i] = texturePathString;
+        materialNames[i] = mat->name();
       }
     }
     // load meshes
