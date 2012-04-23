@@ -365,7 +365,7 @@ namespace SimpleGL {
         for (int j = 0;  j < diffuseMaps.size(); ++j)
           mat->addTexture(dir + "/" + diffuseMaps.at(j));
         // set program
-        mat->setProgram("media/deferred_geometry_vp.glsl", "media/deferred_geometry_fp.glsl");
+        mat->setProgram("media/textured.vert", "media/textured.frag");
         // set material index
         materialNames[i] = mat->name();
       }

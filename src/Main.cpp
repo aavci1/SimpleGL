@@ -64,24 +64,24 @@ int main(int argc, char **argv) {
   Node *rootNode = new Node();
   // register directional light material
   Material *directionalLightMaterial = MaterialManager::instance()->getMaterialByLightType(LT_DIRECTIONAL);
-  directionalLightMaterial->setProgram("media/deferred_light_directional_vp.glsl", "media/deferred_light_directional_fp.glsl");
+  directionalLightMaterial->setProgram("media/directionalLight.vert", "media/directionalLight.frag");
   // register point light material
   Material *pointLightMaterial = MaterialManager::instance()->getMaterialByLightType(LT_POINT);
-  pointLightMaterial->setProgram("media/deferred_light_point_vp.glsl", "media/deferred_light_point_fp.glsl");
+  pointLightMaterial->setProgram("media/pointLight.vert", "media/pointLight.frag");
   // register spot light material
   Material *spotLightMaterial = MaterialManager::instance()->getMaterialByLightType(LT_SPOT);
-  spotLightMaterial->setProgram("media/deferred_light_spot_vp.glsl", "media/deferred_light_spot_fp.glsl");
+  spotLightMaterial->setProgram("media/spotLight.vert", "media/spotLight.frag");
   // create laminate material
   Material *laminateMaterial = MaterialManager::instance()->getMaterialByName("Laminate");
-  laminateMaterial->setProgram("media/deferred_geometry_vp.glsl", "media/deferred_geometry_fp.glsl");
+  laminateMaterial->setProgram("media/textured.vert", "media/textured.frag");
   laminateMaterial->addTexture("media/laminate.jpg");
   // create ceramics material
   Material *ebonyMaterial = MaterialManager::instance()->getMaterialByName("Ebony");
-  ebonyMaterial->setProgram("media/deferred_geometry_vp.glsl", "media/deferred_geometry_fp.glsl");
+  ebonyMaterial->setProgram("media/textured.vert", "media/textured.frag");
   ebonyMaterial->addTexture("media/ebony.jpg");
   // create ceiling material
   Material *ceilingMaterial = MaterialManager::instance()->getMaterialByName("Ceiling");
-  ceilingMaterial->setProgram("media/deferred_geometry_vp.glsl", "media/deferred_geometry_fp.glsl");
+  ceilingMaterial->setProgram("media/textured.vert", "media/textured.frag");
   ceilingMaterial->addTexture("media/ceiling.jpg");
   // create floor
   Mesh *floor = MeshManager::instance()->createPlane(1000, 1000, 10, 10);
