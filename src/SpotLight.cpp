@@ -15,7 +15,7 @@
 namespace SimpleGL {
   class SpotLightPrivate {
   public:
-    SpotLightPrivate() : position(0.0f, 0.0f, 0.0f), orientation(1, 0, 0, 0), radius(256.0f), attenuationRange(256.0f), attenuationConstant(0.0f), attenuationLinear(0.0f), attenuationQuadratic(1.0f), recalcTransformationMatrix(false), transformationMatrix(glm::mat4()) {
+    SpotLightPrivate() : position(0.0f, 0.0f, 0.0f), orientation(1, 0, 0, 0), direction(0, 0, -1), radius(256.0f), attenuationRange(256.0f), attenuationConstant(0.0f), attenuationLinear(0.0f), attenuationQuadratic(1.0f), recalcTransformationMatrix(false), transformationMatrix(glm::mat4()) {
       cone = MeshManager::instance()->createCone(radius, attenuationRange);
     }
 
@@ -25,6 +25,7 @@ namespace SimpleGL {
 
     Mesh *cone;
     glm::vec3 position;
+    glm::vec3 direction;
     glm::quat orientation;
     float radius;
     float attenuationRange;
@@ -35,7 +36,7 @@ namespace SimpleGL {
     glm::mat4 transformationMatrix;
   };
 
-  SpotLight::SpotLight() : Light(LT_POINT), d(new SpotLightPrivate()) {
+  SpotLight::SpotLight() : Light(LT_SPOT), d(new SpotLightPrivate()) {
   }
 
   SpotLight::~SpotLight() {
@@ -152,7 +153,10 @@ namespace SimpleGL {
     if (!material || !material->program())
       return;
     // adjust face culling
-    if (glm::length(camera->position() - d->position) < d->attenuationRange)
+    glm::vec3 direction = d->orientation * d->direction;
+    float cos = d->attenuationRange / sqrtf(d->radius * d->radius + d->attenuationRange * d->attenuationRange);
+    glm::vec3 cameraDir = glm::normalize(camera->position() - d->position);
+    if (glm::dot(cameraDir, direction) >= cos)
       glCullFace(GL_FRONT);
     else
       glCullFace(GL_BACK);
@@ -161,8 +165,8 @@ namespace SimpleGL {
     material->program()->setUniform("lightDiffuseIntensity", diffuseIntensity());
     material->program()->setUniform("lightSpecularIntensity", specularIntensity());
     material->program()->setUniform("lightPos", d->position);
-    // material->program()->setUniform("lightDir", d->direction);
-    material->program()->setUniform("lightRadius", d->radius);
+    material->program()->setUniform("lightDirection", direction);
+    material->program()->setUniform("lightAngleCos", cos);
     material->program()->setUniform("lightMatrix", transformationMatrix());
     material->program()->setUniform("lightAttenuationRange", d->attenuationRange);
     material->program()->setUniform("lightAttenuationConstant", d->attenuationConstant);
