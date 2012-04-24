@@ -27,7 +27,7 @@ void main() {
 	vec2 texCoord = gl_FragCoord.xy / screenSize;
 	// get color, normal and position
 	vec3 color = texture(colorBuffer, texCoord).xyz;
-	vec3 normal = texture(normalBuffer, texCoord).xyz;
+	vec3 normal = (texture(normalBuffer, texCoord).xyz - 0.5) * 2.0;
 	vec3 position = texture(positionBuffer, texCoord).xyz;
 	// get specular parameters
 	float specularIntensity = texture(colorBuffer, texCoord).w;
