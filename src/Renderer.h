@@ -9,7 +9,7 @@ namespace SimpleGL {
   class RendererPrivate;
 
   class Camera;
-  class Node;
+  class SceneNode;
 
   class Renderer {
   public:
@@ -18,7 +18,7 @@ namespace SimpleGL {
 
     void setSize(uint width, uint height);
 
-    void renderOneFrame(Camera *camera, Node *root);
+    void renderOneFrame(Camera *camera, SceneNode *root);
 
     bool saveScreenshot(const std::string &path);
 

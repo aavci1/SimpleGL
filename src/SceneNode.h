@@ -1,5 +1,5 @@
-#ifndef NODE_H
-#define NODE_H
+#ifndef SCENENODE_H
+#define SCENENODE_H
 
 #include "Types.h"
 
@@ -8,22 +8,22 @@
 namespace SimpleGL {
   class Light;
   class Mesh;
-  class NodePrivate;
+  class SceneNodePrivate;
 
-  class Node {
+  class SceneNode {
   public:
-    Node();
-    ~Node();
+    SceneNode();
+    ~SceneNode();
 
-    Node *createChildNode(const glm::vec3 &position = glm::vec3(0, 0, 0), const glm::quat &orientation = glm::quat(1, 0, 0, 0), const glm::vec3 &scale = glm::vec3(1, 1, 1));
+    SceneNode *createChildNode(const glm::vec3 &position = glm::vec3(0, 0, 0), const glm::quat &orientation = glm::quat(1, 0, 0, 0), const glm::vec3 &scale = glm::vec3(1, 1, 1));
 
-    void attachNode(Node *node);
-    const std::vector<Node *> &nodes() const;
+    void attach(SceneNode *node);
+    const std::vector<SceneNode *> &nodes() const;
 
-    void attachMesh(SimpleGL::Mesh *mesh);
+    void attach(SimpleGL::Mesh *mesh);
     const std::vector<Mesh *> &meshes() const;
 
-    void attachLight(Light *light);
+    void attach(Light *light);
     const std::vector<Light *> &lights() const;
 
     void setPosition(const glm::vec3 &position);
@@ -47,8 +47,8 @@ namespace SimpleGL {
     const glm::mat4 &transformationMatrix() const;
 
   private:
-    NodePrivate *d;
+    SceneNodePrivate *d;
   };
 }
 
-#endif // NODE_H
+#endif // SCENENODE_H

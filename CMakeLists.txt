@@ -16,10 +16,10 @@ set (SOURCES
   src/MaterialManager.cpp
   src/Mesh.cpp
   src/MeshManager.cpp
-  src/Node.cpp
   src/PointLight.cpp
   src/Program.cpp
   src/Renderer.cpp
+  src/SceneNode.cpp
   src/Shader.cpp
   src/Sphere.cpp
   src/SpotLight.cpp

@@ -4,7 +4,7 @@
 #include "MaterialManager.h"
 #include "Mesh.h"
 #include "MeshManager.h"
-#include "Node.h"
+#include "SceneNode.h"
 #include "PointLight.h"
 #include "Renderer.h"
 #include "SpotLight.h"
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
   // WARN: if renderer is initialized further down, some strange artifacts occur
   renderer = new Renderer(width, height);
   // create root node
-  Node *rootNode = new Node();
+  SceneNode *rootNode = new SceneNode();
   // register directional light material
   Material *directionalLightMaterial = MaterialManager::instance()->getMaterialByLightType(LT_DIRECTIONAL);
   directionalLightMaterial->setProgram("media/directionalLight.vert", "media/directionalLight.frag");
@@ -86,13 +86,13 @@ int main(int argc, char **argv) {
   // create floor
   Mesh *floor = MeshManager::instance()->createPlane(1000, 1000, 10, 10);
   floor->setMaterialName("Laminate");
-  Node *floorNode = rootNode->createChildNode();
-  floorNode->attachMesh(floor);
+  SceneNode *floorNode = rootNode->createChildNode();
+  floorNode->attach(floor);
   // create ceiling
   Mesh *ceiling = MeshManager::instance()->createPlane(1000, 1000, 10, 10);
   ceiling->setMaterialName("Ceiling");
-  Node *ceilingNode = rootNode->createChildNode();
-  ceilingNode->attachMesh(ceiling);
+  SceneNode *ceilingNode = rootNode->createChildNode();
+  ceilingNode->attach(ceiling);
   ceilingNode->setPosition(0.0f, 300.0f, 0.0f);
   ceilingNode->roll(180);
   // load a model
@@ -105,7 +105,7 @@ int main(int argc, char **argv) {
   directionalLight->setDiffuseIntensity(1.0f);
   directionalLight->setSpecularIntensity(1.0f);
   directionalLight->setDirection(0, -1, -1);
-  rootNode->attachLight(directionalLight);
+  rootNode->attach(directionalLight);
   // add lots of point lights
   srand(glfwGetTime() * 1000);
   for (int i = -5; i <= 5; ++i) {
@@ -113,8 +113,8 @@ int main(int argc, char **argv) {
       Mesh *sphere = MeshManager::instance()->createSphere(10.0f);
       sphere->setMaterialName("Ceiling");
 
-      Node *lightNode = rootNode->createChildNode(glm::vec3(j * 180, 290.0f, i * 180));
-      lightNode->attachMesh(sphere);
+      SceneNode *lightNode = rootNode->createChildNode(glm::vec3(j * 180, 290.0f, i * 180));
+      lightNode->attach(sphere);
 
       // create a light
       PointLight *light = new PointLight();
@@ -127,12 +127,12 @@ int main(int argc, char **argv) {
       light->setSpecularIntensity(1.0f);
       light->setPosition(j * 180, 290.0f, i * 180);
       light->setAttenuation(400.0f);
-      rootNode->attachLight(light);
+      rootNode->attach(light);
 
       if (model) {
-        Node *node = rootNode->createChildNode(glm::vec3(j * 180, 0.0f, i * 180));
+        SceneNode *node = rootNode->createChildNode(glm::vec3(j * 180, 0.0f, i * 180));
         node->yaw(180.0f);
-        node->attachMesh(model);
+        node->attach(model);
       }
     }
   }

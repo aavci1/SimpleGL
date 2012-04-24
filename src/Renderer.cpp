@@ -9,7 +9,7 @@
 #include "MaterialManager.h"
 #include "Mesh.h"
 #include "MeshManager.h"
-#include "Node.h"
+#include "SceneNode.h"
 #include "PointLight.h"
 #include "Program.h"
 #include "Sphere.h"
@@ -33,7 +33,7 @@ namespace SimpleGL {
       delete gbuffer;
     }
 
-    void renderHelper(Camera *camera, Node *node, glm::mat4 modelMatrix, glm::mat4 viewProjMatrix) {
+    void renderHelper(Camera *camera, SceneNode *node, glm::mat4 modelMatrix, glm::mat4 viewProjMatrix) {
       modelMatrix *= node->transformationMatrix();
       // visit child nodes
       for (int i = 0; i < node->nodes().size(); ++i)
@@ -85,7 +85,7 @@ namespace SimpleGL {
     d->gbuffer = new GBuffer(width, height);
   }
 
-  void Renderer::renderOneFrame(Camera *camera, Node *root) {
+  void Renderer::renderOneFrame(Camera *camera, SceneNode *root) {
     // GEOMETRY PASS
     // bind gbuffer for writing
     d->gbuffer->setWritable(true);

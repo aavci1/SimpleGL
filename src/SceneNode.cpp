@@ -1,19 +1,19 @@
-#include "Node.h"
+#include "SceneNode.h"
 
 #include "Light.h"
 #include "Mesh.h"
 #include "Types.h"
 
 namespace SimpleGL {
-  class NodePrivate {
+  class SceneNodePrivate {
   public:
-    NodePrivate() : position(0, 0, 0), orientation(1, 0, 0, 0), scale(1, 1, 1), recalcTransformationMatrix(false) {
+    SceneNodePrivate() : position(0, 0, 0), orientation(1, 0, 0, 0), scale(1, 1, 1), recalcTransformationMatrix(false) {
     }
 
-    ~NodePrivate() {
+    ~SceneNodePrivate() {
     }
 
-    std::vector<Node *> nodes;
+    std::vector<SceneNode *> nodes;
     std::vector<Mesh *> meshes;
     std::vector<Light *> lights;
     glm::vec3 position;
@@ -23,15 +23,15 @@ namespace SimpleGL {
     glm::mat4 transformationMatrix;
   };
 
-  Node::Node() : d(new NodePrivate()) {
+  SceneNode::SceneNode() : d(new SceneNodePrivate()) {
   }
 
-  Node::~Node() {
+  SceneNode::~SceneNode() {
     delete d;
   }
 
-  Node *Node::createChildNode(const glm::vec3 &position, const glm::quat &orientation, const glm::vec3 &scale) {
-    Node *childNode = new Node();
+  SceneNode *SceneNode::createChildNode(const glm::vec3 &position, const glm::quat &orientation, const glm::vec3 &scale) {
+    SceneNode *childNode = new SceneNode();
     // set position/orientation/scale
     childNode->setPosition(position);
     childNode->setOrientation(orientation);
@@ -42,98 +42,98 @@ namespace SimpleGL {
     return childNode;
   }
 
-  void Node::attachNode(Node *node) {
+  void SceneNode::attach(SceneNode *node) {
     d->nodes.push_back(node);
   }
 
-  const std::vector<Node *> &Node::nodes() const {
+  const std::vector<SceneNode *> &SceneNode::nodes() const {
     return d->nodes;
   }
 
-  void Node::attachMesh(Mesh *mesh) {
+  void SceneNode::attach(Mesh *mesh) {
     d->meshes.push_back(mesh);
   }
 
-  const std::vector<Mesh *> &Node::meshes() const {
+  const std::vector<Mesh *> &SceneNode::meshes() const {
     return d->meshes;
   }
 
-  void Node::attachLight(Light *light) {
+  void SceneNode::attach(Light *light) {
     d->lights.push_back(light);
   }
 
-  const std::vector<Light *> &Node::lights() const {
+  const std::vector<Light *> &SceneNode::lights() const {
     return d->lights;
   }
 
-  void Node::setPosition(const glm::vec3 &position) {
+  void SceneNode::setPosition(const glm::vec3 &position) {
     d->position = position;
     // transformation matrix needs to be recalculated
     d->recalcTransformationMatrix = true;
   }
 
-  void Node::setPosition(float x, float y, float z) {
+  void SceneNode::setPosition(float x, float y, float z) {
     d->position = glm::vec3(x, y, z);
     // transformation matrix needs to be recalculated
     d->recalcTransformationMatrix = true;
   }
 
-  const glm::vec3 &Node::position() const {
+  const glm::vec3 &SceneNode::position() const {
     return d->position;
   }
 
-  void Node::setOrientation(const glm::quat &orientation) {
+  void SceneNode::setOrientation(const glm::quat &orientation) {
     d->orientation = glm::normalize(orientation);
     // transformation matrix needs to be recalculated
     d->recalcTransformationMatrix = true;
   }
 
-  void Node::setOrientation(float w, float x, float y, float z) {
+  void SceneNode::setOrientation(float w, float x, float y, float z) {
     d->orientation = glm::normalize(glm::quat(w, x, y, z));
     // transformation matrix needs to be recalculated
     d->recalcTransformationMatrix = true;
   }
 
-  const glm::quat &Node::orientation() const {
+  const glm::quat &SceneNode::orientation() const {
     return d->orientation;
   }
 
-  void Node::setScale(const glm::vec3 &scale) {
+  void SceneNode::setScale(const glm::vec3 &scale) {
     d->scale = scale;
     // transformation matrix needs to be recalculated
     d->recalcTransformationMatrix = true;
   }
 
-  void Node::setScale(float x, float y, float z) {
+  void SceneNode::setScale(float x, float y, float z) {
     d->scale = glm::vec3(x, y, z);
     // transformation matrix needs to be recalculated
     d->recalcTransformationMatrix = true;
   }
 
-  const glm::vec3 &Node::scale() const {
+  const glm::vec3 &SceneNode::scale() const {
     return d->scale;
   }
 
-  void Node::rotate(float angle, const glm::vec3 &axis, TransformSpace transformSpace) {
+  void SceneNode::rotate(float angle, const glm::vec3 &axis, TransformSpace transformSpace) {
     if (transformSpace == TS_WORLD)
       setOrientation(glm::angleAxis(angle, axis) * d->orientation);
     else if (transformSpace == TS_LOCAL)
       setOrientation(d->orientation * glm::angleAxis(angle, axis));
   }
 
-  void Node::pitch(float angle, TransformSpace transformSpace) {
+  void SceneNode::pitch(float angle, TransformSpace transformSpace) {
     rotate(angle, glm::vec3(1.0f, 0.0f, 0.0f), transformSpace);
   }
 
-  void Node::yaw(float angle, TransformSpace transformSpace) {
+  void SceneNode::yaw(float angle, TransformSpace transformSpace) {
     rotate(angle, glm::vec3(0.0f, 1.0f, 0.0f), transformSpace);
   }
 
-  void Node::roll(float angle, TransformSpace transformSpace) {
+  void SceneNode::roll(float angle, TransformSpace transformSpace) {
     rotate(angle, glm::vec3(0.0f, 0.0f, 1.0f), transformSpace);
   }
 
-  const glm::mat4 &Node::transformationMatrix() const {
+  const glm::mat4 &SceneNode::transformationMatrix() const {
     if (d->recalcTransformationMatrix) {
       glm::mat4 identity;
       // calculcate transformation matrix
