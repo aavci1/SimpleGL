@@ -14,7 +14,8 @@ uniform float lightSpecularIntensity;
 // point light properties
 uniform vec3 lightPos;
 uniform vec3 lightDirection;
-uniform float lightAngleCos;
+uniform float lightInnerAngle;
+uniform float lightOuterAngle;
 uniform float lightAttenuationRange;
 uniform float lightAttenuationConstant;
 uniform float lightAttenuationLinear;
@@ -37,7 +38,7 @@ void main() {
 		discard;
 	// discard fragment if not within the cone
 	vec3 lightDir = normalize(position - lightPos);
-	if (dot(lightDirection, lightDir) < lightAngleCos)
+	if (dot(lightDirection, lightDir) < cos(lightInnerAngle + lightOuterAngle))
 		discard;
 	// discard fragment if facing away
 	float diffuseFactor = dot(normal, -lightDir);

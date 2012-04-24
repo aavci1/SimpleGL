@@ -15,8 +15,8 @@
 namespace SimpleGL {
   class SpotLightPrivate {
   public:
-    SpotLightPrivate() : position(0.0f, 0.0f, 0.0f), orientation(1, 0, 0, 0), direction(0, 0, -1), radius(256.0f), attenuationRange(256.0f), attenuationConstant(0.0f), attenuationLinear(0.0f), attenuationQuadratic(1.0f), recalcTransformationMatrix(false), transformationMatrix(glm::mat4()) {
-      cone = MeshManager::instance()->createCone(radius, attenuationRange);
+    SpotLightPrivate() : position(0.0f, 0.0f, 0.0f), orientation(1, 0, 0, 0), direction(0, 0, -1), innerAngle(30), outerAngle(30), attenuationRange(256.0f), attenuationConstant(0.0f), attenuationLinear(0.0f), attenuationQuadratic(1.0f), recalcTransformationMatrix(false), transformationMatrix(glm::mat4()) {
+      cone = MeshManager::instance()->createCone(tanf(innerAngle + outerAngle) * attenuationRange, attenuationRange);
     }
 
     ~SpotLightPrivate() {
@@ -25,9 +25,10 @@ namespace SimpleGL {
 
     Mesh *cone;
     glm::vec3 position;
-    glm::vec3 direction;
     glm::quat orientation;
-    float radius;
+    glm::vec3 direction;
+    float innerAngle;
+    float outerAngle;
     float attenuationRange;
     float attenuationConstant;
     float attenuationLinear;
@@ -94,15 +95,24 @@ namespace SimpleGL {
     rotate(angle, glm::vec3(0.0f, 0.0f, 1.0f), transformSpace);
   }
 
-  void SpotLight::setRadius(float radius) {
-    d->radius = radius;
-    // re-create cone
-    delete d->cone;
-    d->cone = MeshManager::instance()->createCone(d->radius, d->attenuationRange);
+
+  const float SpotLight::innerAngle() const {
+    return d->innerAngle;
   }
 
-  float SpotLight::radius() const {
-    return d->radius;
+  void SpotLight::setInnerAngle(const float angle) {
+    d->innerAngle = angle;
+  }
+
+  const float SpotLight::outerAngle() const {
+    return d->outerAngle;
+  }
+
+  void SpotLight::setOuterAngle(const float angle) {
+    d->outerAngle = angle;
+    // re-create cone
+    delete d->cone;
+    d->cone = MeshManager::instance()->createCone(tanf((d->innerAngle + d->outerAngle) * M_PI / 180) * d->attenuationRange, d->attenuationRange);
   }
 
   void SpotLight::setAttenuation(float range, float constant, float linear, float quadratic) {
@@ -112,7 +122,7 @@ namespace SimpleGL {
     d->attenuationQuadratic = quadratic;
     // re-create cone
     delete d->cone;
-    d->cone = MeshManager::instance()->createCone(d->radius, d->attenuationRange);
+    d->cone = MeshManager::instance()->createCone(tanf((d->innerAngle + d->outerAngle) * M_PI / 180) * d->attenuationRange, d->attenuationRange);
   }
 
   float SpotLight::attenuationRange() const {
@@ -154,7 +164,7 @@ namespace SimpleGL {
       return;
     // adjust face culling
     glm::vec3 direction = d->orientation * d->direction;
-    float cos = d->attenuationRange / sqrtf(d->radius * d->radius + d->attenuationRange * d->attenuationRange);
+    float cos = cosf((d->innerAngle + d->outerAngle) * M_PI / 180);
     glm::vec3 cameraDir = glm::normalize(camera->position() - d->position);
     if (glm::dot(cameraDir, direction) >= cos)
       glCullFace(GL_FRONT);
@@ -166,7 +176,8 @@ namespace SimpleGL {
     material->program()->setUniform("lightSpecularIntensity", specularIntensity());
     material->program()->setUniform("lightPos", d->position);
     material->program()->setUniform("lightDirection", direction);
-    material->program()->setUniform("lightAngleCos", cos);
+    material->program()->setUniform("lightInnerAngle", float(d->innerAngle * M_PI / 180.0f));
+    material->program()->setUniform("lightOuterAngle", float(d->outerAngle * M_PI / 180.0f));
     material->program()->setUniform("lightMatrix", transformationMatrix());
     material->program()->setUniform("lightAttenuationRange", d->attenuationRange);
     material->program()->setUniform("lightAttenuationConstant", d->attenuationConstant);

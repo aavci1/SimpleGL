@@ -26,8 +26,11 @@ namespace SimpleGL {
     void yaw(float angle, TransformSpace transformSpace = TS_WORLD);
     void roll(float angle, TransformSpace transformSpace = TS_LOCAL);
 
-    void setRadius(float radius);
-    float radius() const;
+    const float innerAngle() const;
+    void setInnerAngle(const float angle);
+
+    const float outerAngle() const;
+    void setOuterAngle(const float angle);
 
     void setAttenuation(float range, float constant = 0.0f, float linear = 0.0f , float quadratic = 1.0f);
     float attenuationRange() const;

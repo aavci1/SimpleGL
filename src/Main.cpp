@@ -115,16 +115,18 @@ int main(int argc, char **argv) {
 
       Node *lightNode = rootNode->createChildNode(glm::vec3(j * 180, 290.0f, i * 180));
       lightNode->attachMesh(sphere);
-      // create a point light
-      // SpotLight *light = new SpotLight();
+
+      // create a light
       PointLight *light = new PointLight();
+      // SpotLight *light = new SpotLight();
+      // light->setInnerAngle(10);
+      // light->setOuterAngle(5);
+      // light->pitch(-90, TS_WORLD);
       light->setColor(float(rand()) / RAND_MAX, float(rand()) / RAND_MAX, float(rand()) / RAND_MAX);
       light->setDiffuseIntensity(1.0f);
       light->setSpecularIntensity(1.0f);
       light->setPosition(j * 180, 290.0f, i * 180);
       light->setAttenuation(400.0f);
-      // light->setRadius(256.0f);
-      // light->pitch(-90, TS_WORLD);
       rootNode->attachLight(light);
 
       if (model) {
