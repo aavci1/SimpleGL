@@ -117,7 +117,7 @@ namespace SimpleGL {
     material->program()->setUniform("lightAttenuationConstant", d->attenuationConstant);
     material->program()->setUniform("lightAttenuationLinear", d->attenuationLinear);
     material->program()->setUniform("lightAttenuationQuadratic", d->attenuationQuadratic);
-    material->program()->setUniform("lightMatrix", transformationMatrix());
+    material->program()->setUniform("modelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * transformationMatrix());
     // render a sphere
     d->sphere->subMeshes().at(0)->render();
     // reset flags

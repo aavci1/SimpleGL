@@ -178,11 +178,11 @@ namespace SimpleGL {
     material->program()->setUniform("lightDirection", direction);
     material->program()->setUniform("lightInnerAngle", float(d->innerAngle * M_PI / 180.0f));
     material->program()->setUniform("lightOuterAngle", float(d->outerAngle * M_PI / 180.0f));
-    material->program()->setUniform("lightMatrix", transformationMatrix());
     material->program()->setUniform("lightAttenuationRange", d->attenuationRange);
     material->program()->setUniform("lightAttenuationConstant", d->attenuationConstant);
     material->program()->setUniform("lightAttenuationLinear", d->attenuationLinear);
     material->program()->setUniform("lightAttenuationQuadratic", d->attenuationQuadratic);
+    material->program()->setUniform("modelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * transformationMatrix());
     // render a cone
     d->cone->subMeshes().at(0)->render();
     // reset flags

@@ -129,12 +129,11 @@ namespace SimpleGL {
       if (!material || !material->program())
         continue;
       material->program()->select();
-      material->program()->setUniform("screenSize", glm::vec2(d->width, d->height));
-      material->program()->setUniform("cameraPos", camera->position());
       material->program()->setUniform("colorBuffer", d->gbuffer->colorBuffer());
       material->program()->setUniform("normalBuffer", d->gbuffer->normalBuffer());
       material->program()->setUniform("positionBuffer", d->gbuffer->positionBuffer());
-      material->program()->setUniform("viewProjMatrix", viewProjMatrix);
+      material->program()->setUniform("screenSize", glm::vec2(d->width, d->height));
+      material->program()->setUniform("cameraPos", camera->position());
       // render the light
       for (int i = 0; i < d->lights.size(); ++i)
         if (d->lights.at(i)->type() == type)
