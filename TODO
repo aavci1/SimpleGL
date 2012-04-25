@@ -1,0 +1,24 @@
+* Entity/Instance class to hold per insance properties of a mesh
+	* Material properties
+* Create a common class for entity, light and camera
+* SceneNode transformations
+	* Inherit position, orientation, scale from parent
+* Culling
+	* Lights
+		* Bounding sphere vs camera bounding sphere, bounding box vs camera frustum
+	* Meshes
+		* Bounding sphere vs camera bounding sphere, bounding box vs camera frustum
+* Animations
+	* Load animations
+	* Play animations through a timeline
+	* Hardware skinning
+* Mesh format
+	* Create a proprietary mesh format or convert collada to binary (using ebml / exi etc)
+	* Creating a simple format may be faster because we can just read the vertex data and send to the GPU
+* Tangents / Bitangents
+* Extra materials
+	* Hardware skinning
+	* Bump/normal/displacement mapping
+	* Specular maps
+	* Blended maps (terrain etc)
+* Ambient / emissive pass
