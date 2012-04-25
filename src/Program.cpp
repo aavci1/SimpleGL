@@ -57,7 +57,7 @@ namespace SimpleGL {
     glLinkProgram(d->id);
     // check link status
     GLint status;
-    glGetProgramiv (d->id, GL_LINK_STATUS, &status);
+    glGetProgramiv(d->id, GL_LINK_STATUS, &status);
     // if failed
     if (status == GL_FALSE) {
       // get error message length

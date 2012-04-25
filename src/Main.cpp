@@ -112,10 +112,8 @@ int main(int argc, char **argv) {
     for (int j = -5; j <= 5; ++j) {
       Mesh *sphere = MeshManager::instance()->createSphere(10.0f);
       sphere->setMaterialName("Ceiling");
-
       SceneNode *lightNode = rootNode->createChildNode(glm::vec3(j * 180, 290.0f, i * 180));
       lightNode->attach(sphere);
-
       // create a light
       PointLight *light = new PointLight();
       // SpotLight *light = new SpotLight();
@@ -128,7 +126,6 @@ int main(int argc, char **argv) {
       light->setPosition(j * 180, 290.0f, i * 180);
       light->setAttenuation(400.0f);
       rootNode->attach(light);
-
       if (model) {
         SceneNode *node = rootNode->createChildNode(glm::vec3(j * 180, 0.0f, i * 180));
         node->yaw(180.0f);
@@ -194,6 +191,5 @@ int main(int argc, char **argv) {
   }
   // clean up
   glfwTerminate();
-  
   return 0;
 }

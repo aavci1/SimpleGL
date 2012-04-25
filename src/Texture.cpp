@@ -63,7 +63,7 @@ namespace SimpleGL {
     d->height = FreeImage_GetHeight(dib);
     d->bitsPerPixel = FreeImage_GetBPP(dib);
     // if anything failed, return fail
-    if(imageData == NULL || d->width == 0 || d->height == 0)
+    if (imageData == NULL || d->width == 0 || d->height == 0)
       return false;
     // bind texture
     glBindTexture(GL_TEXTURE_2D, d->id);

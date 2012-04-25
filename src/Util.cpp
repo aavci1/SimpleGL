@@ -18,7 +18,6 @@ namespace SimpleGL {
     std::ifstream in(path.c_str());
     std::stringstream buffer;
     buffer << in.rdbuf();
-
     return std::string(buffer.str());
   }
 }

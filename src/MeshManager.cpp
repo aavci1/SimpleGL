@@ -82,7 +82,6 @@ namespace SimpleGL {
         -1.0f * width,  1.0f * height,  1.0f * depth, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
         -1.0f * width,  1.0f * height, -1.0f * depth, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f
       };
-
       uint indices[] = {
         0, 1, 2,
         0, 2, 3,
@@ -198,7 +197,7 @@ namespace SimpleGL {
 
     void createSphere(SubMesh *subMesh, float radius, uint slices, uint stacks) {
       // allocate the vertex buffer
-      uint vertexCount = (stacks + 1) * (slices+1);
+      uint vertexCount = (stacks + 1) * (slices + 1);
       float *vertices = new float[vertexCount * 8];
       uint indexCount = 6 * stacks * (slices + 1);
       uint *indices = new uint[indexCount];
@@ -212,9 +211,9 @@ namespace SimpleGL {
       float fDeltaRingAngle = (M_PI / stacks);
       float fDeltaSegAngle = (2 * M_PI / slices);
       // Generate the group of rings for the sphere
-      for (uint ring = 0; ring <= stacks; ring++ ) {
-        float r0 = radius * sinf (ring * fDeltaRingAngle);
-        float y0 = radius * cosf (ring * fDeltaRingAngle);
+      for (uint ring = 0; ring <= stacks; ring++) {
+        float r0 = radius * sinf(ring * fDeltaRingAngle);
+        float y0 = radius * cosf(ring * fDeltaRingAngle);
         // Generate the group of segments for the current ring
         for (uint seg = 0; seg <= slices; seg++) {
           float x0 = r0 * sinf(seg * fDeltaSegAngle);
@@ -361,7 +360,7 @@ namespace SimpleGL {
         // create material
         Material *mat = MaterialManager::instance()->getMaterialByName(name.data);
         // get diffuse maps
-        std::vector<std::string> diffuseMaps= d->getTexture(material, aiTextureType_DIFFUSE);
+        std::vector<std::string> diffuseMaps = d->getTexture(material, aiTextureType_DIFFUSE);
         for (uint j = 0;  j < diffuseMaps.size(); ++j)
           mat->addTexture(dir + "/" + diffuseMaps.at(j));
         // set program

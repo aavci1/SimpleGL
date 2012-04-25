@@ -1,5 +1,5 @@
 #ifndef GBUFFER_H
-#define	GBUFFER_H
+#define GBUFFER_H
 
 #include "Types.h"
 
