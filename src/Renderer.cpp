@@ -36,18 +36,18 @@ namespace SimpleGL {
     void renderHelper(Camera *camera, SceneNode *node, glm::mat4 modelMatrix, glm::mat4 viewProjMatrix) {
       modelMatrix *= node->transformationMatrix();
       // visit child nodes
-      for (int i = 0; i < node->nodes().size(); ++i)
+      for (uint i = 0; i < node->nodes().size(); ++i)
         renderHelper(camera, node->nodes().at(i), modelMatrix, viewProjMatrix);
       // add lights to the list
-      for (int i = 0; i < node->lights().size(); ++i)
+      for (uint i = 0; i < node->lights().size(); ++i)
         if (node->lights().at(i)->isVisibleFrom(camera))
           lights.push_back(node->lights().at(i));
       // render meshes
-      for (int i = 0; i < node->meshes().size(); ++i) {
+      for (uint i = 0; i < node->meshes().size(); ++i) {
         Mesh *mesh = node->meshes().at(i);
         if (!mesh->isVisibleFrom(camera))
           continue;
-        for (int j = 0; j < mesh->subMeshes().size(); ++j) {
+        for (uint j = 0; j < mesh->subMeshes().size(); ++j) {
           SubMesh *subMesh = mesh->subMeshes().at(j);
           Material *material = MaterialManager::instance()->getMaterialByName(subMesh->materialName());
           if (!material || !material->program())
@@ -135,7 +135,7 @@ namespace SimpleGL {
       material->program()->setUniform("screenSize", glm::vec2(d->width, d->height));
       material->program()->setUniform("cameraPos", camera->position());
       // render the light
-      for (int i = 0; i < d->lights.size(); ++i)
+      for (uint i = 0; i < d->lights.size(); ++i)
         if (d->lights.at(i)->type() == type)
           d->lights.at(i)->render(camera);
       // deselect material

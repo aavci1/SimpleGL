@@ -122,11 +122,11 @@ namespace SimpleGL {
       // allocate index buffer
       float fDeltaSegAngle = (2 * M_PI / slices);
       // Generate the group of rings for the sphere
-      for (int ring = 0; ring <= stacks; ring++) {
+      for (uint ring = 0; ring <= stacks; ring++) {
         float r0 = radius * ring / stacks;
         float z0 = -height * ring / stacks;
         // Generate the group of segments for the current ring
-        for(int seg = 0; seg <= slices; seg++) {
+        for (uint seg = 0; seg <= slices; seg++) {
           float x0 = r0 * sinf(seg * fDeltaSegAngle);
           float y0 = r0 * cosf(seg * fDeltaSegAngle);
           // add vertex position
@@ -167,7 +167,7 @@ namespace SimpleGL {
       // add texture coordinate
       *pVertex++ = 0;
       *pVertex++ = 0;
-      for(int seg = 0; seg <= slices; seg++) {
+      for (uint seg = 0; seg <= slices; seg++) {
         float x0 = radius * sinf(seg * fDeltaSegAngle);
         float y0 = radius * cosf(seg * fDeltaSegAngle);
         // add vertex position
@@ -212,11 +212,11 @@ namespace SimpleGL {
       float fDeltaRingAngle = (M_PI / stacks);
       float fDeltaSegAngle = (2 * M_PI / slices);
       // Generate the group of rings for the sphere
-      for( int ring = 0; ring <= stacks; ring++ ) {
+      for (uint ring = 0; ring <= stacks; ring++ ) {
         float r0 = radius * sinf (ring * fDeltaRingAngle);
         float y0 = radius * cosf (ring * fDeltaRingAngle);
         // Generate the group of segments for the current ring
-        for(int seg = 0; seg <= slices; seg++) {
+        for (uint seg = 0; seg <= slices; seg++) {
           float x0 = r0 * sinf(seg * fDeltaSegAngle);
           float z0 = r0 * cosf(seg * fDeltaSegAngle);
           // add vertex position
@@ -256,7 +256,7 @@ namespace SimpleGL {
     std::vector<std::string> getTexture(const aiMaterial *material, aiTextureType type) {
       std::vector<std::string> textures;
       // get textures
-      for (int i = 0; i < material->GetTextureCount(type); ++i) {
+      for (uint i = 0; i < material->GetTextureCount(type); ++i) {
         // get texture path
         aiString aistr;
         if (material->GetTexture(type, i, &aistr) != AI_SUCCESS)
@@ -362,7 +362,7 @@ namespace SimpleGL {
         Material *mat = MaterialManager::instance()->getMaterialByName(name.data);
         // get diffuse maps
         std::vector<std::string> diffuseMaps= d->getTexture(material, aiTextureType_DIFFUSE);
-        for (int j = 0;  j < diffuseMaps.size(); ++j)
+        for (uint j = 0;  j < diffuseMaps.size(); ++j)
           mat->addTexture(dir + "/" + diffuseMaps.at(j));
         // set program
         mat->setProgram("media/textured.vert", "media/textured.frag");
@@ -372,7 +372,7 @@ namespace SimpleGL {
     }
     // load meshes
     if (scene->HasMeshes()) {
-      for (int i = 0; i < scene->mNumMeshes; ++i) {
+      for (uint i = 0; i < scene->mNumMeshes; ++i) {
         const struct aiMesh *aimesh = scene->mMeshes[i];
         // primitive contains primitives other than triangles skip
         // should be use together with aiProcess_SortByPType

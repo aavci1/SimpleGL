@@ -2,7 +2,7 @@ project (SimpleGL)
 # set cmake minimum cmake version
 cmake_minimum_required (VERSION 2.8)
 # extra definitions
-add_definitions(-O2 -msse2)
+add_definitions(-O2 -msse2 -Wall)
 # add sources
 set (SOURCES
   src/AxisAlignedBoundingBox.cpp

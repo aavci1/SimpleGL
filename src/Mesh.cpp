@@ -10,7 +10,7 @@ namespace SimpleGL {
     }
 
     ~MeshPrivate() {
-      for (int i = 0; i < subMeshes.size(); ++i)
+      for (uint i = 0; i < subMeshes.size(); ++i)
         delete subMeshes[i];
     }
 
@@ -42,7 +42,7 @@ namespace SimpleGL {
   }
 
   void Mesh::setMaterialName(const std::string &materialName) {
-    for (int i = 0; i < d->subMeshes.size(); ++i)
+    for (uint i = 0; i < d->subMeshes.size(); ++i)
       d->subMeshes[i]->setMaterialName(materialName);
   }
 

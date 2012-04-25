@@ -7,7 +7,7 @@
 namespace SimpleGL {
   class CameraPrivate {
   public:
-    CameraPrivate() : position(0, 0, 0), orientation(1, 0, 0, 0), direction(0, 0, -1), up(0, 1, 0), fov(60.0f), nearClipDistance(1.0f), farClipDistance(5000.0f), aspectRatio(1.33) {
+    CameraPrivate() : fov(60.0f), nearClipDistance(1.0f), farClipDistance(5000.0f), aspectRatio(1.33), position(0, 0, 0), orientation(1, 0, 0, 0), direction(0, 0, -1), up(0, 1, 0) {
       recalcViewMatrix();
       recalcProjectionMatrix();
     }

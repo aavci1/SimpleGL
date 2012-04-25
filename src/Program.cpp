@@ -14,7 +14,7 @@ namespace SimpleGL {
     }
 
     ~ProgramPrivate() {
-      for (int i = 0; i < shaders.size(); ++i)
+      for (uint i = 0; i < shaders.size(); ++i)
         delete shaders[i];
     }
 
@@ -39,7 +39,7 @@ namespace SimpleGL {
   }
 
   bool Program::compileAndLink() {
-    for (int i = 0; i < d->shaders.size(); ++i) {
+    for (uint i = 0; i < d->shaders.size(); ++i) {
       if (!d->shaders[i]->compile()) {
         d->message = d->shaders[i]->message();
         return false;
@@ -74,7 +74,7 @@ namespace SimpleGL {
       return false;
     }
     // detach all shaders
-    for (int i = 0; i < d->shaders.size(); ++i)
+    for (uint i = 0; i < d->shaders.size(); ++i)
       glDetachShader(d->id, d->shaders[i]->id());
     // return succes
     return true;

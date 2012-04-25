@@ -15,7 +15,7 @@ namespace SimpleGL {
     }
     ~MaterialPrivate() {
       // delete textures
-      for (int i = 0; i < textures.size(); ++i)
+      for (uint i = 0; i < textures.size(); ++i)
         delete textures.at(i);
       // delete program
       delete program;
@@ -81,12 +81,12 @@ namespace SimpleGL {
 
   void Material::select() {
     // select textures
-    for (int i = 0; i < d->textures.size(); ++i)
+    for (uint i = 0; i < d->textures.size(); ++i)
       d->textures.at(i)->select(i);
     // select program
     d->program->select();
     // set samplers
-    for (int i = 0; i < d->textures.size(); ++i)
+    for (uint i = 0; i < d->textures.size(); ++i)
       d->program->setUniform("texture" + Util::toString(i), i);
     // set specular parameters
     d->program->setUniform("sglSpecularIntensity", 1.0f);
@@ -97,7 +97,7 @@ namespace SimpleGL {
     // deselect program
     d->program->deselect();
     // deselect textures
-    for (int i = 0; i < d->textures.size(); ++i)
+    for (uint i = 0; i < d->textures.size(); ++i)
       d->textures.at(i)->deselect();
   }
 }

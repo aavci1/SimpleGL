@@ -50,7 +50,7 @@ namespace SimpleGL {
     // assign data
     glBufferData(GL_ARRAY_BUFFER, stride * vertexCount, vertexData, GL_STATIC_DRAW);
     // define vertex data
-    uint offset = 0;
+    char *offset = 0;
     // vertex position
     if (vertexFormat & SGL_POSITION) {
       glEnableVertexAttribArray(SGL_POSITION);

@@ -8,7 +8,7 @@ namespace SimpleGL {
   class Shader {
   public:
     Shader();
-    ~Shader();
+    virtual ~Shader();
 
     virtual uint id() = 0;
 
