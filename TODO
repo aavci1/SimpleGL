@@ -1,24 +1,49 @@
-* Entity/Instance class to hold per insance properties of a mesh
-	* Material properties
-* Create a common class for entity, light and camera
-* SceneNode transformations
-	* Inherit position, orientation, scale from parent
-* Culling
-	* Lights
-		* Bounding sphere vs camera bounding sphere, bounding box vs camera frustum
-	* Meshes
-		* Bounding sphere vs camera bounding sphere, bounding box vs camera frustum
-* Animations
-	* Load animations
-	* Play animations through a timeline
+* Rendering
+	* Ambient
+	* Emissive
+	* Bump/Normal/Displacement/Parallax mapping
+	* Specular mapping
 	* Hardware skinning
+	* Shadow mapping
+		* Adaptive shadow map atlas
+		* Soft shadows (GPU Gems 3)
+		* Paralel split shadow
+	* Blending mutliple textures
+	* Transparent objects
+
+* Post-production effects
+	* SSAO
+	* Depth of field
+	* Motion blur
+	* Bloom
+	* HDR
+	* Cel shading
+
+* GUI / Overlays
+	* Look at gorilla for inspiration
+
+* Text Rendering
+
+* Particle Effects
+	* Emitters
+* Scene Graph
+	* Create a common base for object attachable to scene nodes
+	* Inherit transformations from parent
+	* Entity/Instance class to hold per instance properties of a mesh (material etc)
+
+* Optimizations
+	* Culling
+		* Node/Entity/Light bounding sphere vs camera bounding sphere culling
+		* Node/Entity/Light bounding box vs camera frustum culling
+	* Batching
+	* Instancing
+	* Level of detail
+	* Impostors
+
 * Mesh format
-	* Create a proprietary mesh format or convert collada to binary (using ebml / exi etc)
-	* Creating a simple format may be faster because we can just read the vertex data and send to the GPU
-* Tangents / Bitangents
-* Extra materials
-	* Hardware skinning
-	* Bump/normal/displacement mapping
-	* Specular maps
-	* Blended maps (terrain etc)
-* Ambient / emissive pass
+	* Proprietary format directly sendable to the GPU
+	* Use collada as an intermediate format
+	* Position/Normal/Tangent/Bitangent/Joint Weights/TexCoords
+	* Skeleton information
+	* Animation key frame information
+	* Level of detail
