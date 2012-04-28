@@ -344,8 +344,10 @@ namespace SimpleGL {
     // try loading the mesh using assimp
     const aiScene *scene = d->importer->ReadFile(path.c_str(), aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_PreTransformVertices | aiProcess_FixInfacingNormals);
     // return mesh if scene cannot be loaded
-    if (!scene)
+    if (!scene) {
+      std::cerr << "error: can not load model " << path << std::endl;
       return mesh;
+    }
     // material names
     std::map<int, std::string> materialNames;
     // load materials
