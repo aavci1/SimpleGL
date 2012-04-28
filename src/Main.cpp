@@ -146,6 +146,7 @@ int main(int argc, char **argv) {
   float timeDiff = 0;
   int frames = 0;
   float fpsTime = 0;
+  float verticalAngle = 0, horizontalAngle = 0;
   while (!glfwGetKey(GLFW_KEY_ESC) && glfwGetWindowParam(GLFW_OPENED)) {
     // update time
     timeDiff = glfwGetTime() - time;
@@ -168,8 +169,14 @@ int main(int argc, char **argv) {
     int x, y;
     glfwGetMousePos(&x, &y);
     // rotate camera
-    camera->pitch(-5.0f * timeDiff * (y - mouseY));
-    camera->yaw(-5.0f * timeDiff * (x - mouseX));
+    verticalAngle += -5.0f * timeDiff * (y - mouseY);
+    if (verticalAngle > 80)
+      verticalAngle = 80;
+    else if (verticalAngle < -80)
+      verticalAngle = -80;
+    horizontalAngle += -5.0f * timeDiff * (x - mouseX);
+    // set camera orientation
+    camera->setOrientation(glm::angleAxis(horizontalAngle, glm::vec3(0, 1, 0)) * glm::angleAxis(verticalAngle,  glm::vec3(1, 0, 0)));
     // save mouse coordinates
     mouseX = x;
     mouseY = y;
