@@ -86,9 +86,9 @@ namespace SimpleGL {
   }
 
   void Renderer::renderOneFrame(Camera *camera, SceneNode *root) {
-    // GEOMETRY PASS
-    // bind gbuffer for writing
-    d->gbuffer->setWritable(true);
+    // clear color buffer
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
     // set general parameters
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_CULL_FACE);
@@ -98,6 +98,9 @@ namespace SimpleGL {
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
+    // GEOMETRY PASS
+    // bind gbuffer for writing
+    d->gbuffer->setWritable(true);
     // clear color and depth buffers
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClearDepth(1.0f);
@@ -117,9 +120,6 @@ namespace SimpleGL {
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_ONE, GL_ONE);
-    // clear color buffer
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
 #if 0
     // blit gbuffer to the screen
     d->gbuffer->blit();

@@ -25,6 +25,15 @@ namespace SimpleGL {
     glGenFramebuffers(1, &d->frameBuffer);
     // bind the frame buffer
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, d->frameBuffer);
+    // generate depth buffer
+    glGenTextures(1, &d->depthBuffer);
+    glBindTexture(GL_TEXTURE_2D, d->depthBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, d->width, d->height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, d->depthBuffer, 0);
     // generate color buffer
     glGenTextures(1, &d->colorBuffer);
     glBindTexture(GL_TEXTURE_2D, d->colorBuffer);
@@ -52,11 +61,6 @@ namespace SimpleGL {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, d->positionBuffer, 0);
-    // generate depth buffer
-    glGenTextures(1, &d->depthBuffer);
-    glBindTexture(GL_TEXTURE_2D, d->depthBuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, d->width, d->height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, d->depthBuffer, 0);
     // set draw buffer
     GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
     glDrawBuffers(3, drawBuffers);
@@ -75,6 +79,8 @@ namespace SimpleGL {
     glDeleteTextures(1, &d->colorBuffer);
     // delete frame buffer
     glDeleteFramebuffers(1, &d->frameBuffer);
+    //
+    delete d;
   }
 
   const uint GBuffer::colorBuffer() const {
