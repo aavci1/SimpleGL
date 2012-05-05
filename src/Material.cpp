@@ -1,7 +1,5 @@
 #include "Material.h"
 
-#include "FragmentShader.h"
-#include "VertexShader.h"
 #include "Program.h"
 #include "Texture.h"
 #include "Util.h"
@@ -44,12 +42,12 @@ namespace SimpleGL {
       d->program = 0;
     }
     // load program
-    d->program = new Program();
-    d->program->addShader(new VertexShader(Util::readAll(vertexShaderPath)));
-    d->program->addShader(new FragmentShader(Util::readAll(fragmentShaderPath)));
+    d->program = new Program("");
+    d->program->loadShaderFromPath(ST_VERTEX, vertexShaderPath);
+    d->program->loadShaderFromPath(ST_FRAGMENT, fragmentShaderPath);
     // try to compile and link the program
-    if (!d->program->compileAndLink()) {
-      std::cerr << d->program->message() << std::endl;
+    if (!d->program->link()) {
+      std::cerr << d->program->errorMessage() << std::endl;
       // delete the program
       delete d->program;
       d->program = 0;
@@ -84,7 +82,7 @@ namespace SimpleGL {
     for (uint i = 0; i < d->textures.size(); ++i)
       d->textures.at(i)->select(i);
     // select program
-    d->program->select();
+    d->program->bind();
     // set samplers
     for (uint i = 0; i < d->textures.size(); ++i)
       d->program->setUniform("texture" + Util::toString(i), i);
@@ -95,7 +93,7 @@ namespace SimpleGL {
 
   void Material::deselect() {
     // deselect program
-    d->program->deselect();
+    d->program->unbind();
     // deselect textures
     for (uint i = 0; i < d->textures.size(); ++i)
       d->textures.at(i)->deselect();

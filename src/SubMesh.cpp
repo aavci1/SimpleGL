@@ -52,44 +52,44 @@ namespace SimpleGL {
     // define vertex data
     char *offset = 0;
     // vertex position
-    if (vertexFormat & SGL_POSITION) {
-      glEnableVertexAttribArray(SGL_POSITION);
-      glVertexAttribPointer(SGL_POSITION, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+    if (vertexFormat & AT_POSITION) {
+      glEnableVertexAttribArray(AT_POSITION);
+      glVertexAttribPointer(AT_POSITION, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
       // increase offset
       offset += 3 * sizeof(float);
     }
     // vertex normal
-    if (vertexFormat & SGL_NORMAL) {
-      glEnableVertexAttribArray(SGL_NORMAL);
-      glVertexAttribPointer(SGL_NORMAL, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+    if (vertexFormat & AT_NORMAL) {
+      glEnableVertexAttribArray(AT_NORMAL);
+      glVertexAttribPointer(AT_NORMAL, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
       // increase offset
       offset += 3 * sizeof(float);
     }
     // vertex color
-    if (vertexFormat & SGL_COLOR) {
-      glEnableVertexAttribArray(SGL_COLOR);
-      glVertexAttribPointer(SGL_COLOR, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+    if (vertexFormat & AT_COLOR) {
+      glEnableVertexAttribArray(AT_COLOR);
+      glVertexAttribPointer(AT_COLOR, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
       // increase offset
       offset += 3 * sizeof(float);
     }
     // texture coordinate 0
-    if (vertexFormat & SGL_TEXCOORD0) {
-      glEnableVertexAttribArray(SGL_TEXCOORD0);
-      glVertexAttribPointer(SGL_TEXCOORD0, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+    if (vertexFormat & AT_TEXCOORD0) {
+      glEnableVertexAttribArray(AT_TEXCOORD0);
+      glVertexAttribPointer(AT_TEXCOORD0, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
       // increase offset
       offset += 2 * sizeof(float);
     }
     // texture coordinate 1
-    if (vertexFormat & SGL_TEXCOORD1) {
-      glEnableVertexAttribArray(SGL_TEXCOORD1);
-      glVertexAttribPointer(SGL_TEXCOORD1, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+    if (vertexFormat & AT_TEXCOORD1) {
+      glEnableVertexAttribArray(AT_TEXCOORD1);
+      glVertexAttribPointer(AT_TEXCOORD1, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
       // increase offset
       offset += 2 * sizeof(float);
     }
     // texture coordinate 2
-    if (vertexFormat & SGL_TEXCOORD2) {
-      glEnableVertexAttribArray(SGL_TEXCOORD2);
-      glVertexAttribPointer(SGL_TEXCOORD2, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+    if (vertexFormat & AT_TEXCOORD2) {
+      glEnableVertexAttribArray(AT_TEXCOORD2);
+      glVertexAttribPointer(AT_TEXCOORD2, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
       // increase offset
       offset += 2 * sizeof(float);
     }

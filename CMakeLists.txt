@@ -8,7 +8,6 @@ set (SOURCES
   src/AxisAlignedBoundingBox.cpp
   src/Camera.cpp
   src/DirectionalLight.cpp
-  src/FragmentShader.cpp
   src/GBuffer.cpp
   src/Light.cpp
   src/Main.cpp
@@ -20,13 +19,11 @@ set (SOURCES
   src/Program.cpp
   src/Renderer.cpp
   src/SceneNode.cpp
-  src/Shader.cpp
   src/Sphere.cpp
   src/SpotLight.cpp
   src/SubMesh.cpp
   src/Texture.cpp
   src/Util.cpp
-  src/VertexShader.cpp
 )
 # opengl target
 add_executable (SimpleGL WIN32 ${SOURCES} resources.rc)

@@ -33,7 +33,7 @@ namespace SimpleGL {
       };
       uint indices[] = { 0, 1, 2, 0, 2, 3 };
       // set vertex and index data
-      subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, 4, 32);
+      subMesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, 4, 32);
       subMesh->setIndexData(indices, 6);
     }
 
@@ -46,7 +46,7 @@ namespace SimpleGL {
       };
       uint indices[] = { 0, 1, 2, 0, 2, 3 };
       // set vertex and index data
-      subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, 4, 32);
+      subMesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, 4, 32);
       subMesh->setIndexData(indices, 6);
     }
 
@@ -102,7 +102,7 @@ namespace SimpleGL {
         20, 22, 23
       };
       // set vertex and index data
-      subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, 24, 32);
+      subMesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, 24, 32);
       subMesh->setIndexData(indices, 36);
     }
 
@@ -188,7 +188,7 @@ namespace SimpleGL {
         }
       }
       // set vertex and index data
-      subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, vertexCount, 32);
+      subMesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, vertexCount, 32);
       subMesh->setIndexData(indices, indexCount);
       // clean up
       delete[] vertices;
@@ -245,7 +245,7 @@ namespace SimpleGL {
         }
       }
       // set vertex and index data
-      subMesh->setVertexData(SGL_POSITION | SGL_NORMAL | SGL_TEXCOORD0, vertices, vertexCount, 32);
+      subMesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, vertexCount, 32);
       subMesh->setIndexData(indices, indexCount);
       // clean up
       delete[] vertices;
@@ -384,15 +384,15 @@ namespace SimpleGL {
         uint stride = 0;
         if (aimesh->HasPositions()) {
           stride += 3;
-          attributes |= SGL_POSITION;
+          attributes |= AT_POSITION;
         }
         if (aimesh->HasNormals()) {
           stride += 3;
-          attributes |= SGL_NORMAL;
+          attributes |= AT_NORMAL;
         }
         if (aimesh->HasTextureCoords(0)) {
           stride += 2;
-          attributes |= SGL_TEXCOORD0;
+          attributes |= AT_TEXCOORD0;
         }
         uint vertexCount = aimesh->mNumVertices;
         float *vertices = new float[vertexCount * stride];

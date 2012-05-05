@@ -3,32 +3,33 @@
 
 #include "Types.h"
 
-#include <string>
-
 namespace SimpleGL {
-  class Shader;
   class ProgramPrivate;
+  class Shader;
 
   class Program {
   public:
-    Program();
+    Program(const String &name);
     ~Program();
 
-    void addShader(Shader *shader);
+    const String &name() const;
 
-    bool compileAndLink();
+    const bool loadShaderFromPath(ShaderType type, const String &path);
+    const bool loadShaderFromSource(ShaderType type, const String &source);
 
-    std::string message();
+    const bool link();
 
-    bool setUniform(std::string name, uint value);
-    bool setUniform(std::string name, int value);
-    bool setUniform(std::string name, float value);
-    bool setUniform(std::string name, const glm::vec2 &value);
-    bool setUniform(std::string name, const glm::vec3 &value);
-    bool setUniform(std::string name, const glm::mat4 &value);
+    const String &errorMessage() const;
 
-    bool select() const;
-    bool deselect() const;
+    const bool setUniform(const String &name, uint value) const;
+    const bool setUniform(const String &name, int value) const;
+    const bool setUniform(const String &name, float value) const;
+    const bool setUniform(const String &name, const Vector2f &value) const;
+    const bool setUniform(const String &name, const Vector3f &value) const;
+    const bool setUniform(const String &name, const Matrix4f &value) const;
+
+    const bool bind() const;
+    const bool unbind() const;
 
   private:
     ProgramPrivate *d;

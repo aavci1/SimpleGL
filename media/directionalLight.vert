@@ -1,8 +1,8 @@
 #version 330 core
 
 // inputs
-in vec3 sglPosition; 
+in vec3 POSITION;
 
-void main() { 
-   gl_Position = vec4(sglPosition, 1.0); 
+void main() {
+   gl_Position = vec4(POSITION, 1.0);
 }

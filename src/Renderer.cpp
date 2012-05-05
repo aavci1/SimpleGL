@@ -2,7 +2,6 @@
 
 #include "Camera.h"
 #include "DirectionalLight.h"
-#include "FragmentShader.h"
 #include "GBuffer.h"
 #include "Light.h"
 #include "Material.h"
@@ -15,7 +14,6 @@
 #include "Sphere.h"
 #include "SubMesh.h"
 #include "Util.h"
-#include "VertexShader.h"
 
 #include <GL/glew.h>
 
@@ -128,7 +126,7 @@ namespace SimpleGL {
       Material *material = MaterialManager::instance()->getMaterialByLightType(LightType(type));
       if (!material || !material->program())
         continue;
-      material->program()->select();
+      material->program()->bind();
       material->program()->setUniform("colorBuffer", d->gbuffer->colorBuffer());
       material->program()->setUniform("normalBuffer", d->gbuffer->normalBuffer());
       material->program()->setUniform("positionBuffer", d->gbuffer->positionBuffer());
@@ -139,7 +137,7 @@ namespace SimpleGL {
         if (d->lights.at(i)->type() == type)
           d->lights.at(i)->render(camera);
       // deselect material
-      material->program()->deselect();
+      material->program()->unbind();
     }
     // unbind textures
     d->gbuffer->unbindTextures();

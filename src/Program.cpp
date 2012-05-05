@@ -1,58 +1,114 @@
 #include "Program.h"
 
-#include "FragmentShader.h"
-#include "VertexShader.h"
-
 #include <GL/glew.h>
 
+#include <fstream>
+#include <iostream>
+#include <sstream>
 #include <vector>
 
 namespace SimpleGL {
   class ProgramPrivate {
   public:
-    ProgramPrivate() {
+    ProgramPrivate(const String &name) : name(name) {
     }
 
     ~ProgramPrivate() {
-      for (uint i = 0; i < shaders.size(); ++i)
-        delete shaders[i];
     }
 
+    String name;
     GLuint id;
-    std::string message;
-    std::vector<Shader *> shaders;
+    std::vector<GLuint> shaders;
+    String errorMessage;
   };
 
-  Program::Program() : d(new ProgramPrivate()) {
+  Program::Program(const String &name) : d(new ProgramPrivate(name)) {
     d->id = glCreateProgram();
   }
 
   Program::~Program() {
+    // delete shaders
+    for (uint i = 0; i < d->shaders.size(); ++i)
+      glDeleteShader(d->shaders[i]);
     // delete program
     glDeleteProgram(d->id);
     // delete data
     delete d;
   }
 
-  void Program::addShader(Shader *shader) {
-    d->shaders.push_back(shader);
+  const String &Program::name() const {
+    return d->name;
   }
 
-  bool Program::compileAndLink() {
-    for (uint i = 0; i < d->shaders.size(); ++i) {
-      if (!d->shaders[i]->compile()) {
-        d->message = d->shaders[i]->message();
-        return false;
-      }
-      glAttachShader(d->id, d->shaders[i]->id());
+  const bool Program::loadShaderFromPath(ShaderType type, const String &path) {
+    // read file
+    std::ifstream in(path.c_str());
+    std::stringstream buffer;
+    buffer << in.rdbuf();
+    // load shader from source
+    return loadShaderFromSource(type, String(buffer.str()));
+  }
+
+  const bool Program::loadShaderFromSource(ShaderType type, const String &source) {
+    GLenum shaderType;
+    if (type == ST_VERTEX)
+      shaderType = GL_VERTEX_SHADER;
+    else if (type == ST_GEOMETRY)
+      shaderType = GL_GEOMETRY_SHADER;
+    else
+      shaderType = GL_FRAGMENT_SHADER;
+    // create shader object
+    GLuint id = glCreateShader(shaderType);
+    // set shader source
+    const char *s = strdup(source.c_str());
+    glShaderSource(id, 1, &s, NULL);
+    delete s;
+    // clear error message
+    d->errorMessage = "";
+    // compile shader
+    glCompileShader(id);
+    // check compile status
+    GLint status;
+    glGetShaderiv(id, GL_COMPILE_STATUS, &status);
+    // if compilation failed
+    if (status == GL_FALSE) {
+      // get error message length
+      GLint messageLength;
+      glGetShaderiv(id, GL_INFO_LOG_LENGTH, &messageLength);
+      // create message buffer
+      GLchar *message = new GLchar[messageLength + 1];
+      glGetShaderInfoLog(id, messageLength, NULL, message);
+      // update message
+      d->errorMessage = message;
+      // clean up
+      delete[] message;
+      // delete shader object
+      glDeleteShader(id);
+      // return fail
+      return false;
     }
+    // add shader object to the list
+    d->shaders.push_back(id);
+    // return success
+    return true;
+  }
+
+  const bool Program::link() {
+    // attach shaders
+    for (uint i = 0; i < d->shaders.size(); ++i)
+      glAttachShader(d->id, d->shaders[i]);
     // bind generic vertex attributes
-    glBindAttribLocation(d->id, SGL_POSITION, "sglPosition");
-    glBindAttribLocation(d->id, SGL_NORMAL, "sglNormal");
-    glBindAttribLocation(d->id, SGL_COLOR, "sglColor");
-    glBindAttribLocation(d->id, SGL_TEXCOORD0, "sglTexCoord0");
-    glBindAttribLocation(d->id, SGL_TEXCOORD1, "sglTexCoord1");
-    glBindAttribLocation(d->id, SGL_TEXCOORD2, "sglTexCoord2");
+    glBindAttribLocation(d->id, AT_POSITION, "POSITION");
+    glBindAttribLocation(d->id, AT_NORMAL, "NORMAL");
+    glBindAttribLocation(d->id, AT_COLOR, "COLOR");
+    glBindAttribLocation(d->id, AT_TEXCOORD0, "TEXCOORD0");
+    glBindAttribLocation(d->id, AT_TEXCOORD1, "TEXCOORD1");
+    glBindAttribLocation(d->id, AT_TEXCOORD2, "TEXCOORD2");
+    glBindAttribLocation(d->id, AT_TEXCOORD3, "TEXCOORD3");
+    glBindAttribLocation(d->id, AT_TEXCOORD4, "TEXCOORD4");
+    glBindAttribLocation(d->id, AT_TEXCOORD5, "TEXCOORD5");
+    glBindAttribLocation(d->id, AT_TEXCOORD6, "TEXCOORD6");
+    glBindAttribLocation(d->id, AT_TEXCOORD7, "TEXCOORD7");
     // link the program
     glLinkProgram(d->id);
     // check link status
@@ -67,24 +123,24 @@ namespace SimpleGL {
       GLchar *message = new GLchar[messageLength + 1];
       glGetProgramInfoLog(d->id, messageLength, NULL, message);
       // update message
-      d->message = message;
+      d->errorMessage = message;
       // clean up
       delete[] message;
       // return fail
       return false;
     }
-    // detach all shaders
+    // detach shaders
     for (uint i = 0; i < d->shaders.size(); ++i)
-      glDetachShader(d->id, d->shaders[i]->id());
-    // return succes
+      glDetachShader(d->id, d->shaders[i]);
+    // return success
     return true;
   }
 
-  std::string Program::message() {
-    return d->message;
+  const String &Program::errorMessage() const {
+    return d->errorMessage;
   }
 
-  bool Program::setUniform(std::string name, uint value) {
+  const bool Program::setUniform(const String &name, uint value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -95,7 +151,7 @@ namespace SimpleGL {
     return true;
   }
 
-  bool Program::setUniform(std::string name, int value) {
+  const bool Program::setUniform(const String &name, int value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -106,7 +162,7 @@ namespace SimpleGL {
     return true;
   }
 
-  bool Program::setUniform(std::string name, float value) {
+  const bool Program::setUniform(const String &name, float value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -117,8 +173,7 @@ namespace SimpleGL {
     return true;
   }
 
-
-  bool Program::setUniform(std::string name, const glm::vec2 &value) {
+  const bool Program::setUniform(const String &name, const Vector2f &value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -129,7 +184,7 @@ namespace SimpleGL {
     return true;
   }
 
-  bool Program::setUniform(std::string name, const glm::vec3 &value) {
+  const bool Program::setUniform(const String &name, const Vector3f &value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -140,7 +195,7 @@ namespace SimpleGL {
     return true;
   }
 
-  bool Program::setUniform(std::string name, const glm::mat4 &value) {
+  const bool Program::setUniform(const String &name, const Matrix4f &value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -151,14 +206,14 @@ namespace SimpleGL {
     return true;
   }
 
-  bool Program::select() const {
+  const bool Program::bind() const {
     // select shader
     glUseProgram(d->id);
     // return succes
     return true;
   }
 
-  bool Program::deselect() const {
+  const bool Program::unbind() const {
     // deselect shader
     glUseProgram(0);
     // return succes
