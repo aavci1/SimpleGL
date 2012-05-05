@@ -1,24 +1,21 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <iostream>
-
-#include <sys/types.h>
+#include "Types.h"
 
 namespace SimpleGL {
   class TexturePrivate;
 
   class Texture {
   public:
-    Texture(std::string path);
+    Texture(const String &name, const String &path);
     ~Texture();
 
-    std::string path();
+    const String &name() const;
+    const String &path() const;
 
-    bool load();
-
-    bool select(ushort index);
-    bool deselect();
+    const bool bind(uint index) const;
+    const bool unbind() const;
 
   private:
     TexturePrivate *d;

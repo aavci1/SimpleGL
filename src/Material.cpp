@@ -63,14 +63,7 @@ namespace SimpleGL {
   }
 
   bool Material::addTexture(const std::string &texturePath) {
-    Texture *texture = new Texture(texturePath);
-    if (!texture->load()) {
-      std::cerr << "error: can not load texture " << texture->path() << std::endl;
-      // delete the texture
-      delete texture;
-      // return fail
-      return false;
-    }
+    Texture *texture = new Texture("", texturePath);
     // add texture to the list
     d->textures.push_back(texture);
     // return success
@@ -80,7 +73,7 @@ namespace SimpleGL {
   void Material::select() {
     // select textures
     for (uint i = 0; i < d->textures.size(); ++i)
-      d->textures.at(i)->select(i);
+      d->textures.at(i)->bind(i);
     // select program
     d->program->bind();
     // set samplers
@@ -96,6 +89,6 @@ namespace SimpleGL {
     d->program->unbind();
     // deselect textures
     for (uint i = 0; i < d->textures.size(); ++i)
-      d->textures.at(i)->deselect();
+      d->textures.at(i)->unbind();
   }
 }
