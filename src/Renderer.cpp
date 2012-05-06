@@ -2,7 +2,7 @@
 
 #include "Camera.h"
 #include "DirectionalLight.h"
-#include "GBuffer.h"
+#include "FrameBuffer.h"
 #include "Light.h"
 #include "Material.h"
 #include "MaterialManager.h"
@@ -24,7 +24,7 @@
 namespace SimpleGL {
   class RendererPrivate {
   public:
-    RendererPrivate(uint width, uint height) : width(width), height(height), gbuffer(new GBuffer(width, height)) {
+    RendererPrivate(uint width, uint height) : width(width), height(height), gbuffer(new FrameBuffer(width, height)) {
     }
 
     ~RendererPrivate() {
@@ -65,7 +65,7 @@ namespace SimpleGL {
 
     int width;
     int height;
-    GBuffer *gbuffer;
+    FrameBuffer *gbuffer;
     std::vector<Light *> lights;
   };
 
@@ -80,7 +80,13 @@ namespace SimpleGL {
     d->width = width;
     d->height = height;
     delete d->gbuffer;
-    d->gbuffer = new GBuffer(width, height);
+    d->gbuffer = new FrameBuffer(width, height);
+    // create color buffer
+    d->gbuffer->createColorBuffer(TF_RGBA8);
+    // create normal buffer
+    d->gbuffer->createColorBuffer(TF_RGBA16F);
+    // create position buffer
+    d->gbuffer->createColorBuffer(TF_RGBA16F);
   }
 
   void Renderer::renderOneFrame(Camera *camera, SceneNode *root) {
@@ -98,7 +104,7 @@ namespace SimpleGL {
     glDisable(GL_BLEND);
     // GEOMETRY PASS
     // bind gbuffer for writing
-    d->gbuffer->setWritable(true);
+    d->gbuffer->bind();
     // clear color and depth buffers
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClearDepth(1.0f);
@@ -109,27 +115,27 @@ namespace SimpleGL {
     // render scene
     d->renderHelper(camera, root, glm::mat4(), viewProjMatrix);
     // unbind gbuffer
-    d->gbuffer->setWritable(false);
+    d->gbuffer->unbind();
+#if 0
+    // blit gbuffer to the screen
+    d->gbuffer->blit();
+#else
     // bind textures
-    d->gbuffer->bindTextures();
+    d->gbuffer->bindColorBuffers();
     // set parameters for lighting pass
     glDepthMask(GL_FALSE);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_ONE, GL_ONE);
-#if 0
-    // blit gbuffer to the screen
-    d->gbuffer->blit();
-#else
     for (int type = LT_DIRECTIONAL; type <= LT_SPOT; ++type) {
       Material *material = MaterialManager::instance()->getMaterialByLightType(LightType(type));
       if (!material || !material->program())
         continue;
       material->program()->bind();
-      material->program()->setUniform("colorBuffer", d->gbuffer->colorBuffer());
-      material->program()->setUniform("normalBuffer", d->gbuffer->normalBuffer());
-      material->program()->setUniform("positionBuffer", d->gbuffer->positionBuffer());
+      material->program()->setUniform("colorBuffer", 0);
+      material->program()->setUniform("normalBuffer", 1);
+      material->program()->setUniform("positionBuffer", 2);
       material->program()->setUniform("screenSize", glm::vec2(d->width, d->height));
       material->program()->setUniform("cameraPos", camera->position());
       // render the light
@@ -140,7 +146,7 @@ namespace SimpleGL {
       material->program()->unbind();
     }
     // unbind textures
-    d->gbuffer->unbindTextures();
+    d->gbuffer->unbindColorBuffers();
 #endif
   }
 

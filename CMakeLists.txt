@@ -8,7 +8,7 @@ set (SOURCES
   src/AxisAlignedBoundingBox.cpp
   src/Camera.cpp
   src/DirectionalLight.cpp
-  src/GBuffer.cpp
+  src/FrameBuffer.cpp
   src/Light.cpp
   src/Main.cpp
   src/Material.cpp
