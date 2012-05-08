@@ -101,7 +101,7 @@ namespace SimpleGL {
     if (!program)
       return;
     // adjust face culling
-    Vector3f direction = parentSceneNode()->worldOrientation() * d->direction;
+    Vector3f direction = d->direction;
     float cos = cosf((d->innerAngle + d->outerAngle) * M_PI / 180);
     Vector3f cameraDir = glm::normalize(camera->parentSceneNode()->worldPosition() - parentSceneNode()->worldPosition());
     if (glm::dot(cameraDir, direction) >= cos)

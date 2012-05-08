@@ -7,6 +7,7 @@
 #include "Program.h"
 #include "Root.h"
 #include "SceneNode.h"
+#include "SpotLight.h"
 #include "Texture.h"
 #include "Viewport.h"
 #include "Window.h"
@@ -18,6 +19,11 @@ void loadMaterials() {
   if (!pointLightProgram->loadShaderFromPath(ST_VERTEX, "media/point_light_vp.glsl")) std::cerr << pointLightProgram->errorMessage() << std::endl;
   if (!pointLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/point_light_fp.glsl")) std::cerr << pointLightProgram->errorMessage() << std::endl;
   if (!pointLightProgram->link()) std::cerr << pointLightProgram->errorMessage() << std::endl;
+  // spot light program
+  Program *spotLightProgram = Root::instance()->createProgram("SpotLight");
+  if (!spotLightProgram->loadShaderFromPath(ST_VERTEX, "media/spot_light_vp.glsl")) std::cerr << spotLightProgram->errorMessage() << std::endl;
+  if (!spotLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/spot_light_fp.glsl")) std::cerr << spotLightProgram->errorMessage() << std::endl;
+  if (!spotLightProgram->link()) std::cerr << spotLightProgram->errorMessage() << std::endl;
   // directional light program
   Program *directionalLightProgram = Root::instance()->createProgram("DirectionalLight");
   if (!directionalLightProgram->loadShaderFromPath(ST_VERTEX, "media/directional_light_vp.glsl")) std::cerr << directionalLightProgram->errorMessage() << std::endl;
@@ -31,6 +37,7 @@ void loadMaterials() {
   // load textures
   Root::instance()->createTexture("Laminate", "media/laminate.jpg");
   Root::instance()->createTexture("Ceiling", "media/ceiling.jpg");
+  Root::instance()->createTexture("Ebony", "media/ebony.jpg");
   // create materials
   Material *floorMaterial = Root::instance()->createMaterial("Floor");
   floorMaterial->setProgram("Textured");
@@ -39,12 +46,17 @@ void loadMaterials() {
   Material *ceilingMaterial = Root::instance()->createMaterial("Ceiling");
   ceilingMaterial->setProgram("Textured");
   ceilingMaterial->addTexture("Ceiling");
+  // load materials
+  Material *ebonyMaterial = Root::instance()->createMaterial("Ebony");
+  ebonyMaterial->setProgram("Textured");
+  ebonyMaterial->addTexture("Ebony");
 }
 
 void createScene(int argc, char **argv) {
   // create meshes
   Root::instance()->createPlane("Plane", 1000, 1000, 10, 10);
   Root::instance()->createSphere("Sphere", 10.0f);
+  Root::instance()->createCube("Cube", 50.0f, 50.0f, 50.0f);
   // create floor object
   Instance *floor = Root::instance()->createInstance("");
   floor->setMesh("Plane");
@@ -59,15 +71,18 @@ void createScene(int argc, char **argv) {
   ceilingNode->setPosition(0.0f, 300.0f, 0.0f);
   ceilingNode->roll(180.0f);
   ceilingNode->attachObject(ceiling);
-  // load a model
-  Mesh *model = 0;
-  if (argc > 1)
-    model = Root::instance()->loadMesh("MODEL", argv[1]);
+  // create a cube
+  Instance *cube = Root::instance()->createInstance("");
+  cube->setMesh("Cube");
+  cube->setMaterial("Ebony");
+  SceneNode *cubeNode = Root::instance()->rootSceneNode()->createChildSceneNode();
+  cubeNode->setPosition(0.0f, 150.0f, 0.0f);
+  cubeNode->attachObject(cube);
   // add a directional light
   DirectionalLight *directionalLight = static_cast<DirectionalLight *>(Root::instance()->createLight(LT_DIRECTIONAL));
   directionalLight->setColor(1.0f, 1.0f, 1.0f);
   directionalLight->setDiffuseIntensity(1.0f);
-  directionalLight->setSpecularIntensity(1.0f);
+  directionalLight->setSpecularIntensity(0.0f);
   directionalLight->setDirection(0, -1, -1);
   Root::instance()->rootSceneNode()->attachObject(directionalLight);
   // create lots of point lights
@@ -84,20 +99,13 @@ void createScene(int argc, char **argv) {
       PointLight *light = static_cast<PointLight *>(Root::instance()->createLight(LT_POINT));
       // SpotLight *light = static_cast<SpotLight *>(Root::instance()->createLight(LT_SPOT));
       // light->setInnerAngle(10);
-      // light->setOuterAngle(5);
-      // light->pitch(-90, TS_WORLD);
+      // light->setOuterAngle(10);
       light->setColor(float(rand()) / RAND_MAX, float(rand()) / RAND_MAX, float(rand()) / RAND_MAX);
       light->setDiffuseIntensity(1.0f);
       light->setSpecularIntensity(1.0f);
       light->setAttenuation(400.0f);
+      lightNode->pitch(-90, TS_WORLD);
       lightNode->attachObject(light);
-      if (model) {
-        Instance *instance = Root::instance()->createInstance("");
-        instance->setMesh("MODEL");
-        SceneNode *node = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(j * 180, 0.0f, i * 180));
-        node->yaw(180.0f);
-        node->attachObject(instance);
-      }
     }
   }
 }
