@@ -5,26 +5,19 @@
 
 namespace SimpleGL {
   class PointLightPrivate;
-  class Camera;
 
   class PointLight : public Light {
   public:
     PointLight();
     ~PointLight();
 
-    void setPosition(const glm::vec3 &position);
-    void setPosition(const float x, const float y, const float z);
-    const glm::vec3 &position() const;
+    const LightType type() const;
 
-    void setAttenuation(float range, float constant = 0.0f, float linear = 0.0f , float quadratic = 1.0f);
-    float attenuationRange() const;
-    float attenuationConstant() const;
-    float attenuationLinear() const;
-    float attenuationQuadratic() const;
-
-    const glm::mat4 &transformationMatrix() const;
-
-    const bool isVisibleFrom(Camera *camera) const;
+    const float attenuationRange() const;
+    const float attenuationConstant() const;
+    const float attenuationLinear() const;
+    const float attenuationQuadratic() const;
+    void setAttenuation(const float range, const float constant = 0.0f, const float linear = 0.0f, const float quadratic = 1.0f);
 
     void render(Camera *camera);
 
@@ -32,5 +25,6 @@ namespace SimpleGL {
     PointLightPrivate *d;
   };
 }
+
 
 #endif // POINTLIGHT_H

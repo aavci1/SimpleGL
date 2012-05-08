@@ -2,22 +2,20 @@
 #define DIRECTIONALLIGHT_H
 
 #include "Light.h"
-#include "Types.h"
 
 namespace SimpleGL {
   class DirectionalLightPrivate;
-  class Camera;
 
   class DirectionalLight : public Light {
   public:
     DirectionalLight();
     ~DirectionalLight();
 
-    void setDirection(const glm::vec3 &direction);
-    void setDirection(const float x, const float y, const float z);
-    const glm::vec3 &direction() const;
+    const LightType type() const;
 
-    const bool isVisibleFrom(Camera *camera) const;
+    const Vector3f &direction() const;
+    void setDirection(const Vector3f &direction);
+    void setDirection(const float x, const float y, const float z);
 
     void render(Camera *camera);
 

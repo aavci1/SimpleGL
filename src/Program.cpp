@@ -98,17 +98,17 @@ namespace SimpleGL {
     for (uint i = 0; i < d->shaders.size(); ++i)
       glAttachShader(d->id, d->shaders[i]);
     // bind generic vertex attributes
-    glBindAttribLocation(d->id, AT_POSITION, "POSITION");
-    glBindAttribLocation(d->id, AT_NORMAL, "NORMAL");
-    glBindAttribLocation(d->id, AT_COLOR, "COLOR");
-    glBindAttribLocation(d->id, AT_TEXCOORD0, "TEXCOORD0");
-    glBindAttribLocation(d->id, AT_TEXCOORD1, "TEXCOORD1");
-    glBindAttribLocation(d->id, AT_TEXCOORD2, "TEXCOORD2");
-    glBindAttribLocation(d->id, AT_TEXCOORD3, "TEXCOORD3");
-    glBindAttribLocation(d->id, AT_TEXCOORD4, "TEXCOORD4");
-    glBindAttribLocation(d->id, AT_TEXCOORD5, "TEXCOORD5");
-    glBindAttribLocation(d->id, AT_TEXCOORD6, "TEXCOORD6");
-    glBindAttribLocation(d->id, AT_TEXCOORD7, "TEXCOORD7");
+    glBindAttribLocation(d->id, AP_POSITION, "POSITION");
+    glBindAttribLocation(d->id, AP_NORMAL, "NORMAL");
+    glBindAttribLocation(d->id, AP_COLOR, "COLOR");
+    glBindAttribLocation(d->id, AP_TEXCOORD0, "TEXCOORD0");
+    glBindAttribLocation(d->id, AP_TEXCOORD1, "TEXCOORD1");
+    glBindAttribLocation(d->id, AP_TEXCOORD2, "TEXCOORD2");
+    glBindAttribLocation(d->id, AP_TEXCOORD3, "TEXCOORD3");
+    glBindAttribLocation(d->id, AP_TEXCOORD4, "TEXCOORD4");
+    glBindAttribLocation(d->id, AP_TEXCOORD5, "TEXCOORD5");
+    glBindAttribLocation(d->id, AP_TEXCOORD6, "TEXCOORD6");
+    glBindAttribLocation(d->id, AP_TEXCOORD7, "TEXCOORD7");
     // link the program
     glLinkProgram(d->id);
     // check link status

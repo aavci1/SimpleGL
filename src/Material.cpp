@@ -1,94 +1,88 @@
 #include "Material.h"
 
 #include "Program.h"
+#include "Root.h"
 #include "Texture.h"
-#include "Util.h"
 
-#include <vector>
+#include <sstream>
 
 namespace SimpleGL {
   class MaterialPrivate {
   public:
-    MaterialPrivate(const std::string &name) : name(name), program(0) {
-    }
-    ~MaterialPrivate() {
-      // delete textures
-      for (uint i = 0; i < textures.size(); ++i)
-        delete textures.at(i);
-      // delete program
-      delete program;
+    MaterialPrivate(const String &name) : name(name), program("") {
     }
 
-    std::string name;
-    Program *program;
-    std::vector<Texture *> textures;
+    ~MaterialPrivate() {
+    }
+
+    String name;
+    String program;
+    std::vector<String> textures;
   };
 
-  Material::Material(const std::string &name) : d(new MaterialPrivate(name)) {
+  Material::Material(const String &name) : d(new MaterialPrivate(name)) {
   }
 
   Material::~Material() {
     delete d;
   }
 
-  const std::string &Material::name() const {
+  const String &Material::name() const {
     return d->name;
   }
 
-  bool Material::setProgram(const std::string &vertexShaderPath, const std::string &fragmentShaderPath) {
-    if (d->program) {
-      // delete if a program exists before
-      delete d->program;
-      d->program = 0;
-    }
-    // load program
-    d->program = new Program("");
-    d->program->loadShaderFromPath(ST_VERTEX, vertexShaderPath);
-    d->program->loadShaderFromPath(ST_FRAGMENT, fragmentShaderPath);
-    // try to compile and link the program
-    if (!d->program->link()) {
-      std::cerr << d->program->errorMessage() << std::endl;
-      // delete the program
-      delete d->program;
-      d->program = 0;
-      // return fail
-      return false;
-    }
-    // return success
-    return true;
-  }
-
-  Program *Material::program() const {
+  const String &Material::program() const {
     return d->program;
   }
 
-  bool Material::addTexture(const std::string &texturePath) {
-    Texture *texture = new Texture("", texturePath);
-    // add texture to the list
+  void Material::setProgram(const String &program) {
+    d->program = program;
+  }
+
+  const std::vector<String> &Material::textures() const {
+    return d->textures;
+  }
+
+  void Material::addTexture(const String &texture) {
     d->textures.push_back(texture);
-    // return success
-    return true;
   }
 
-  void Material::select() {
-    // select textures
-    for (uint i = 0; i < d->textures.size(); ++i)
-      d->textures.at(i)->bind(i);
-    // select program
-    d->program->bind();
-    // set samplers
-    for (uint i = 0; i < d->textures.size(); ++i)
-      d->program->setUniform("texture" + Util::toString(i), i);
+  const std::string toString(const int number) {
+    std::stringstream ss;
+    ss << number;
+    return ss.str();
+  }
+
+  void Material::bind() {
+    // bind program
+    Program *program = Root::instance()->retrieveProgram(d->program);
+    if (!program)
+      return;
+    program->bind();
+    // bind textures
+    for (uint j = 0; j < d->textures.size(); ++j) {
+      Texture *texture = Root::instance()->retrieveTexture(d->textures.at(j));
+      if (!texture)
+        continue;
+      texture->bind(j);
+      program->setUniform("texture" + toString(j), j);
+    }
     // set specular parameters
-    d->program->setUniform("sglSpecularIntensity", 1.0f);
-    d->program->setUniform("sglSpecularPower", 64.0f);
+    program->setUniform("specularIntensity", 1.0f);
+    program->setUniform("specularPower", 64.0f);
   }
 
-  void Material::deselect() {
-    // deselect program
-    d->program->unbind();
-    // deselect textures
-    for (uint i = 0; i < d->textures.size(); ++i)
-      d->textures.at(i)->unbind();
+  void Material::unbind() {
+    // unbind textures
+    for (uint j = 0; j < d->textures.size(); ++j) {
+      Texture *texture = Root::instance()->retrieveTexture(d->textures.at(j));
+      if (!texture)
+        continue;
+      texture->unbind();
+    }
+    // unbind program
+    Program *program = Root::instance()->retrieveProgram(d->program);
+    if (program)
+      program->unbind();
   }
 }

@@ -1,26 +1,30 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include <string>
+#include "Types.h"
+
+#include <vector>
 
 namespace SimpleGL {
   class MaterialPrivate;
   class Program;
+  class Texture;
 
   class Material {
   public:
-    Material(const std::string &name);
+    Material(const String &name);
     ~Material();
 
-    const std::string &name() const;
+    const String &name() const;
 
-    bool setProgram(const std::string &vertexShaderPath, const std::string &fragmentShaderPath);
-    Program *program() const;
+    const String &program() const;
+    void setProgram(const String &program);
 
-    bool addTexture(const std::string &texturePath);
+    const std::vector<String> &textures() const;
+    void addTexture(const String &texture);
 
-    void select();
-    void deselect();
+    void bind();
+    void unbind();
 
   private:
     MaterialPrivate *d;

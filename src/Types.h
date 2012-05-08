@@ -44,8 +44,22 @@ namespace SimpleGL {
     AT_CUSTOM = 0x8000
   };
 
+  enum AttributePosition {
+    AP_POSITION = 0,
+    AP_NORMAL = 1,
+    AP_COLOR = 2,
+    AP_TEXCOORD0 = 3,
+    AP_TEXCOORD1 = 4,
+    AP_TEXCOORD2 = 5,
+    AP_TEXCOORD3 = 6,
+    AP_TEXCOORD4 = 7,
+    AP_TEXCOORD5 = 8,
+    AP_TEXCOORD6 = 9,
+    AP_TEXCOORD7 = 10,
+    AP_CUSTOM = 11
+  };
+
   enum LightType {
-    LT_UNKNOWN,
     LT_DIRECTIONAL,
     LT_POINT,
     LT_SPOT
@@ -145,4 +159,4 @@ namespace SimpleGL {
 
 }
 
-#endif // TYPES_H
+#endif

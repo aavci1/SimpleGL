@@ -67,7 +67,7 @@ namespace SimpleGL {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   }
 
-  void FrameBuffer::createColorBuffer(TextureFormat textureFormat) {
+  void FrameBuffer::createTexture(TextureFormat textureFormat) {
     GLuint colorBuffer;
     // bind the frame buffer
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, d->frameBuffer);
@@ -86,18 +86,14 @@ namespace SimpleGL {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   }
 
-  const uint FrameBuffer::numColorBuffers() const {
-    return d->colorBuffers.size();
-  }
-
-  void FrameBuffer::bindColorBuffers() const {
+  void FrameBuffer::bindTextures() const {
     for (uint i = 0; i < d->colorBuffers.size(); ++i) {
       glActiveTexture(GL_TEXTURE0 + i);
       glBindTexture(GL_TEXTURE_2D, d->colorBuffers.at(i));
     }
   }
 
-  void FrameBuffer::unbindColorBuffers() const {
+  void FrameBuffer::unbindTextures() const {
     for (uint i = 0; i < d->colorBuffers.size(); ++i) {
       glActiveTexture(GL_TEXTURE0 + i);
       glBindTexture(GL_TEXTURE_2D, 0);

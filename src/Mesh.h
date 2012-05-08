@@ -1,28 +1,23 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include <string>
-#include <vector>
+#include "Renderable.h"
+#include "Types.h"
 
 namespace SimpleGL {
   class MeshPrivate;
-  class AxisAlignedBoundingBox;
-  class Camera;
-  class SubMesh;
 
-  class Mesh {
+  class Mesh : public Renderable {
   public:
-    Mesh();
+    Mesh(const String &name);
     ~Mesh();
 
-    AxisAlignedBoundingBox &aabb() const;
+    const String &name() const;
 
-    SubMesh *createSubMesh();
-    const std::vector<SubMesh *> &subMeshes() const;
+    const bool setVertexData(uint vertexFormat, float vertexData[], uint vertexCount, uint stride);
+    const bool setIndexData(uint indexData[], uint indexCount);
 
-    void setMaterialName(const std::string &materialName);
-
-    const bool isVisibleFrom(Camera *camera) const;
+    void render(Camera *camera);
 
   private:
     MeshPrivate *d;

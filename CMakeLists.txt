@@ -5,25 +5,24 @@ cmake_minimum_required (VERSION 2.8)
 add_definitions(-O2 -msse2 -Wall)
 # add sources
 set (SOURCES
-  src/AxisAlignedBoundingBox.cpp
-  src/Camera.cpp
-  src/DirectionalLight.cpp
-  src/FrameBuffer.cpp
-  src/Light.cpp
-  src/Main.cpp
-  src/Material.cpp
-  src/MaterialManager.cpp
-  src/Mesh.cpp
-  src/MeshManager.cpp
-  src/PointLight.cpp
-  src/Program.cpp
-  src/Renderer.cpp
-  src/SceneNode.cpp
-  src/Sphere.cpp
-  src/SpotLight.cpp
-  src/SubMesh.cpp
-  src/Texture.cpp
-  src/Util.cpp
+    src/Camera.cpp
+    src/DirectionalLight.cpp
+    src/FrameBuffer.cpp
+    src/Instance.cpp
+    src/Light.cpp
+	src/Main.cpp
+    src/Material.cpp
+    src/Mesh.cpp
+    src/PointLight.cpp
+    src/Program.cpp
+    src/Renderable.cpp
+    src/Root.cpp
+    src/SceneNode.cpp
+    src/SceneObject.cpp
+    src/SpotLight.cpp
+    src/Texture.cpp
+    src/Viewport.cpp
+    src/Window.cpp
 )
 # opengl target
 add_executable (SimpleGL WIN32 ${SOURCES} resources.rc)

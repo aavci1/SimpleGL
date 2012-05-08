@@ -11,14 +11,13 @@ namespace SimpleGL {
     FrameBuffer(int width, int height);
     ~FrameBuffer();
 
-    void createColorBuffer(TextureFormat textureFormat);
-    const uint numColorBuffers() const;
+    void createTexture(TextureFormat textureFormat);
 
     void bind() const;
     void unbind() const;
 
-    void bindColorBuffers() const;
-    void unbindColorBuffers() const;
+    void bindTextures() const;
+    void unbindTextures() const;
 
     void blit() const;
 

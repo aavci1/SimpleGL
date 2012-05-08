@@ -1,50 +1,34 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include "SceneObject.h"
 #include "Types.h"
 
 namespace SimpleGL {
   class CameraPrivate;
-  class Sphere;
 
-  class Camera {
+  class Camera : public SceneObject {
   public:
     Camera();
     ~Camera();
 
-    void setPosition(const glm::vec3 &position);
-    void setPosition(float x, float y, float z);
-    const glm::vec3 &position() const;
+    const float fov() const;
+    void setFov(const float fov);
 
-    void moveRelative(const glm::vec3 &translation);
-    void moveRelative(float x, float y, float z);
+    const float nearClipDistance() const;
+    void setNearClipDistance(const float nearClipDistance);
 
-    void setOrientation(const glm::quat &orientation);
-    void setOrientation(float w, float x, float y, float z);
-    const glm::quat &orientation() const;
+    const float farClipDistance() const;
+    void setFarClipDistance(const float farClipDistance);
 
-    void rotate(float angle, const glm::vec3 &axis, TransformSpace transformSpace = TS_LOCAL);
+    const float aspectRatio() const;
+    void setAspectRatio(const float aspectRatio);
 
-    void pitch(float angle, TransformSpace transformSpace = TS_LOCAL);
-    void yaw(float angle, TransformSpace transformSpace = TS_WORLD);
-    void roll(float angle, TransformSpace transformSpace = TS_LOCAL);
-
-    void lookAt(const glm::vec3 &lookAt);
-    void lookAt(float x, float y, float z);
-
-    void setFov(float fov);
-    void setNearClipDistance(float nearClipDistance);
-    void setFarClipDistance(float farClipDistance);
-    void setAspectRatio(float aspectRatio);
-
-    const glm::mat4 &viewMatrix() const;
-    const glm::mat4 &projectionMatrix() const;
-
-    const Sphere &boundingSphere() const;
+    const Matrix4f &viewMatrix() const;
+    const Matrix4f &projectionMatrix() const;
 
   private:
     CameraPrivate *d;
   };
 }
-
 #endif // CAMERA_H

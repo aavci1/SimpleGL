@@ -6,49 +6,60 @@
 #include <vector>
 
 namespace SimpleGL {
-  class Light;
-  class Mesh;
   class SceneNodePrivate;
+  class SceneObject;
 
   class SceneNode {
   public:
     SceneNode();
     ~SceneNode();
 
-    SceneNode *createChildNode(const glm::vec3 &position = glm::vec3(0, 0, 0), const glm::quat &orientation = glm::quat(1, 0, 0, 0), const glm::vec3 &scale = glm::vec3(1, 1, 1));
+    SceneNode *parentSceneNode() const;
+    void setParentSceneNode(SceneNode *node);
 
-    void attach(SceneNode *node);
-    const std::vector<SceneNode *> &nodes() const;
+    SceneNode *createChildSceneNode(Vector3f position = Vector3f(0.0f, 0.0f, 0.0f), Quaternion orientation = Quaternion(1.0f, 0.0f, 0.0f, 0.0f), Vector3f scale = Vector3f(1.0f, 1.0f, 1.0f));
 
-    void attach(SimpleGL::Mesh *mesh);
-    const std::vector<Mesh *> &meshes() const;
+    void attachNode(SceneNode *node);
+    void attachObject(SceneObject *object);
 
-    void attach(Light *light);
-    const std::vector<Light *> &lights() const;
+    const std::vector<SceneNode *> &attachedNodes() const;
+    const std::vector<SceneObject *> &attachedObjects() const;
 
-    void setPosition(const glm::vec3 &position);
+    const Vector3f &position() const;
+    void setPosition(const Vector3f &position);
     void setPosition(float x, float y, float z);
-    const glm::vec3 &position() const;
 
-    void setOrientation(const glm::quat &orientation);
+    void moveRelative(const Vector3f &translation);
+    void moveRelative(float x, float y, float z);
+
+    const Quaternion &orientation() const;
+    void setOrientation(const Quaternion &orientation);
     void setOrientation(float w, float x, float y, float z);
-    const glm::quat &orientation() const;
 
-    void setScale(const glm::vec3 &scale);
-    void setScale(float x, float y, float z);
-    const glm::vec3 &scale() const;
-
-    void rotate(float angle, const glm::vec3 &axis, TransformSpace transformSpace = TS_LOCAL);
+    void rotate(float angle, const Vector3f &axis, TransformSpace transformSpace = TS_LOCAL);
 
     void pitch(float angle, TransformSpace transformSpace = TS_LOCAL);
     void yaw(float angle, TransformSpace transformSpace = TS_LOCAL);
     void roll(float angle, TransformSpace transformSpace = TS_LOCAL);
 
-    const glm::mat4 &transformationMatrix() const;
+    const Vector3f &scale() const;
+    void setScale(const Vector3f &scale);
+    void setScale(float x, float y, float z);
+
+    const Matrix4f &transform() const;
+
+
+    const Vector3f &worldPosition() const;
+    const Quaternion &worldOrientation() const;
+    const Vector3f &worldScale() const;
+
+    const Matrix4f &worldTransform() const;
+
+    void calculateWorldTransform();
 
   private:
     SceneNodePrivate *d;
   };
-}
 
+}
 #endif // SCENENODE_H

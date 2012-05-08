@@ -1,60 +1,28 @@
 #include "Camera.h"
 
-#include "Sphere.h"
-
-#include <cmath>
+#include "SceneNode.h"
 
 namespace SimpleGL {
   class CameraPrivate {
   public:
-    CameraPrivate() : fov(60.0f), nearClipDistance(1.0f), farClipDistance(5000.0f), aspectRatio(1.33), position(0, 0, 0), orientation(1, 0, 0, 0), direction(0, 0, -1), up(0, 1, 0) {
-      recalcViewMatrix();
-      recalcProjectionMatrix();
+    CameraPrivate() : direction(0, 0, -1), fov(60.0f), aspectRatio(1.33), nearClipDistance(1.0f), farClipDistance(5000.0f), recalcViewMatrix(true), recalcProjectionMatrix(true) {
     }
 
     ~CameraPrivate() {
     }
 
-    void recalcViewMatrix() {
-      viewMatrix = glm::lookAt(position, orientation * direction + position, up);
-    }
-
-    void recalcProjectionMatrix() {
-      projectionMatrix = glm::perspective(fov, aspectRatio, nearClipDistance, farClipDistance);
-    }
-
-    void recalcBoundingSphere() {
-      // calculate the radius of the frustum sphere
-      float clipDistance = farClipDistance - nearClipDistance;
-      // use some trig to find the height of the frustum at the far plane
-      float height = clipDistance * tan(fov * 180.0f / M_PI * 0.5f);
-      // with an aspect ratio of 1, the width will be the same
-      float width = height * aspectRatio;
-      // halfway point between near/far planes starting at the origin and extending along the z axis
-      glm::vec3 P(0.0f, 0.0f, nearClipDistance + clipDistance * 0.5f);
-      // the calculate far corner of the frustum
-      glm::vec3 Q(width, height, clipDistance);
-      // the radius becomes the length of this vector
-      boundingSphere.setRadius(glm::length(P - Q));
-      // get the look vector of the camera from the view matrix
-      glm::vec3 lookVector = glm::vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
-      // calculate the center of the sphere
-      boundingSphere.setCenter(position + (lookVector * (clipDistance * 0.5f) + nearClipDistance));
-    }
+    Vector3f direction;
 
     float fov;
+    float aspectRatio;
     float nearClipDistance;
     float farClipDistance;
-    float aspectRatio;
 
-    glm::vec3 position;
-    glm::quat orientation;
-    glm::vec3 direction;
-    glm::vec3 up;
-    glm::mat4 viewMatrix;
-    glm::mat4 projectionMatrix;
+    bool recalcViewMatrix;
+    Matrix4f viewMatrix;
 
-    Sphere boundingSphere;
+    bool recalcProjectionMatrix;
+    Matrix4f projectionMatrix;
   };
 
   Camera::Camera() : d(new CameraPrivate()) {
@@ -64,119 +32,69 @@ namespace SimpleGL {
     delete d;
   }
 
-  void Camera::setPosition(const glm::vec3 &position) {
-    d->position = position;
-    // recalc view matrix
-    d->recalcViewMatrix();
+  const float Camera::fov() const {
+    return d->fov;
   }
 
-  void Camera::setPosition(float x, float y, float z) {
-    d->position = glm::vec3(x, y, z);
-    // recalc view matrix
-    d->recalcViewMatrix();
-    d->recalcBoundingSphere();
-  }
-
-  void Camera::moveRelative(const glm::vec3 &translation) {
-    d->position += d->orientation * translation;
-    // recalc view matrix
-    d->recalcViewMatrix();
-    d->recalcBoundingSphere();
-  }
-
-  void Camera::moveRelative(float x, float y, float z) {
-    moveRelative(glm::vec3(x, y, z));
-  }
-
-  void Camera::setOrientation(const glm::quat &orientation) {
-    d->orientation = glm::normalize(orientation);
-    // recalc view matrix
-    d->recalcViewMatrix();
-    d->recalcBoundingSphere();
-  }
-
-  void Camera::setOrientation(float w, float x, float y, float z) {
-    d->orientation = glm::normalize(glm::quat(w, x, y, z));
-    // recalc view matrix
-    d->recalcViewMatrix();
-    d->recalcBoundingSphere();
-  }
-
-  const glm::quat &Camera::orientation() const {
-    return d->orientation;
-  }
-
-  void Camera::rotate(float angle, const glm::vec3 &axis, TransformSpace transformSpace) {
-    if (transformSpace == TS_WORLD)
-      setOrientation(glm::angleAxis(angle, axis) * d->orientation);
-    else if (transformSpace == TS_LOCAL)
-      setOrientation(d->orientation * glm::angleAxis(angle, axis));
-  }
-
-  void Camera::pitch(float angle, TransformSpace transformSpace) {
-    rotate(angle, glm::vec3(1.0f, 0.0f, 0.0f), transformSpace);
-  }
-
-  void Camera::yaw(float angle, TransformSpace transformSpace) {
-    rotate(angle, glm::vec3(0.0f, 1.0f, 0.0f), transformSpace);
-  }
-
-  void Camera::roll(float angle, TransformSpace transformSpace) {
-    rotate(angle, glm::vec3(0.0f, 0.0f, 1.0f), transformSpace);
-  }
-
-  const glm::vec3 &Camera::position() const {
-    return d->position;
-  }
-
-  void Camera::lookAt(const glm::vec3 &lookAt) {
-    d->direction = glm::normalize(lookAt - d->position);
-    // recalc view matrix
-    d->recalcViewMatrix();
-    d->recalcBoundingSphere();
-  }
-
-  void Camera::lookAt(float x, float y, float z) {
-    lookAt(glm::vec3(x, y, z));
-  }
-
-  void Camera::setFov(float fov) {
+  void Camera::setFov(const float fov) {
     d->fov = fov;
     // recalc projection matrix
-    d->recalcProjectionMatrix();
-    d->recalcBoundingSphere();
+    d->recalcProjectionMatrix = true;
   }
 
-  void Camera::setNearClipDistance(float nearClipDistance) {
+  const float Camera::nearClipDistance() const {
+    return d->nearClipDistance;
+  }
+
+  void Camera::setNearClipDistance(const float nearClipDistance) {
     d->nearClipDistance = nearClipDistance;
     // recalc projection matrix
-    d->recalcProjectionMatrix();
-    d->recalcBoundingSphere();
+    d->recalcProjectionMatrix = true;
   }
 
-  void Camera::setFarClipDistance(float farClipDistance) {
+  const float Camera::farClipDistance() const {
+    return d->farClipDistance;
+  }
+
+  void Camera::setFarClipDistance(const float farClipDistance) {
     d->farClipDistance = farClipDistance;
     // recalc projection matrix
-    d->recalcProjectionMatrix();
-    d->recalcBoundingSphere();
+    d->recalcProjectionMatrix = true;
   }
 
-  void Camera::setAspectRatio(float aspectRatio) {
+  const float Camera::aspectRatio() const {
+    return d->aspectRatio;
+  }
+
+  void Camera::setAspectRatio(const float aspectRatio) {
     d->aspectRatio = aspectRatio;
     // recalc projection matrix
-    d->recalcProjectionMatrix();
-    d->recalcBoundingSphere();
+    d->recalcProjectionMatrix = true;
   }
 
-  const glm::mat4 &Camera::viewMatrix() const {
+  const Matrix4f &Camera::viewMatrix() const {
+    if (d->recalcViewMatrix) {
+      // calculate eye, lookAt and up vectors
+      Vector3f eye = (parentSceneNode() != 0) ? parentSceneNode()->worldPosition() : Vector3f(0.0f, 0.0f, 0.0f);
+      Vector3f lookAt = (parentSceneNode() != 0) ? parentSceneNode()->worldPosition() + parentSceneNode()->worldOrientation() * d->direction : Vector3f(0.0f, 0.0f, -1.0f);
+      Vector3f up = (parentSceneNode() != 0) ? parentSceneNode()->worldOrientation() * Vector3f(0.0f, 1.0f, 0.0f) : Vector3f(0.0f, 1.0f, 0.0f);
+      // calculate view matrix
+      d->viewMatrix = glm::lookAt(eye, lookAt, up);
+      // FIXME: dont reset flag, because parent transformation may change out of our control
+      // d->recalcViewMatrix = false;
+    }
+    // return view matrix
     return d->viewMatrix;
   }
 
-  const glm::mat4 &Camera::projectionMatrix() const {
+  const Matrix4f &Camera::projectionMatrix() const {
+    if (d->recalcProjectionMatrix) {
+      // calculate projection matrix
+      d->projectionMatrix = glm::perspective(d->fov, d->aspectRatio, d->nearClipDistance, d->farClipDistance);
+      // reset flag
+      d->recalcProjectionMatrix = false;
+    }
+    // return projection matrix
     return d->projectionMatrix;
-  }
-
-  const Sphere &Camera::boundingSphere() const {
-    return d->boundingSphere;
   }
 }
