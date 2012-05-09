@@ -39,7 +39,7 @@ void loadMaterials() {
   Root::instance()->createTexture("Ceiling", "media/ceiling.jpg");
   Root::instance()->createTexture("Ebony", "media/ebony.jpg");
   // create materials
-  Material *floorMaterial = Root::instance()->createMaterial("Floor");
+  Material *floorMaterial = Root::instance()->createMaterial("Laminate");
   floorMaterial->setProgram("Textured");
   floorMaterial->addTexture("Laminate");
   // load materials
@@ -60,7 +60,7 @@ void createScene(int argc, char **argv) {
   // create floor object
   Instance *floor = Root::instance()->createInstance("");
   floor->setMesh("Plane");
-  floor->setMaterial("Floor");
+  floor->setMaterial("Laminate");
   SceneNode *floorNode = Root::instance()->rootSceneNode()->createChildSceneNode();
   floorNode->attachObject(floor);
   // create ceiling object
@@ -71,13 +71,9 @@ void createScene(int argc, char **argv) {
   ceilingNode->setPosition(0.0f, 300.0f, 0.0f);
   ceilingNode->roll(180.0f);
   ceilingNode->attachObject(ceiling);
-  // create a cube
-  Instance *cube = Root::instance()->createInstance("");
-  cube->setMesh("Cube");
-  cube->setMaterial("Ebony");
-  SceneNode *cubeNode = Root::instance()->rootSceneNode()->createChildSceneNode();
-  cubeNode->setPosition(0.0f, 150.0f, 0.0f);
-  cubeNode->attachObject(cube);
+  // load model
+  if (argc > 1)
+    Root::instance()->loadMesh("MODEL", argv[1]);
   // add a directional light
   DirectionalLight *directionalLight = static_cast<DirectionalLight *>(Root::instance()->createLight(LT_DIRECTIONAL));
   directionalLight->setColor(1.0f, 1.0f, 1.0f);
@@ -89,12 +85,12 @@ void createScene(int argc, char **argv) {
   srand(0);
   for (int i = -5; i <= 5; ++i) {
     for (int j = -5; j <= 5; ++j) {
-      SceneNode *lightNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(j * 180, 290.0f, i * 180));
+      SceneNode *lightNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(j * 180.0f, 290.0f, i * 180.0f));
       // create a sphere instance
-      Instance *instance = Root::instance()->createInstance("");
-      instance->setMesh("Sphere");
-      instance->setMaterial("Ceiling");
-      lightNode->attachObject(instance);
+      Instance *sphereInstance = Root::instance()->createInstance("");
+      sphereInstance->setMesh("Sphere");
+      sphereInstance->setMaterial("Ceiling");
+      lightNode->attachObject(sphereInstance);
       // create a light
       PointLight *light = static_cast<PointLight *>(Root::instance()->createLight(LT_POINT));
       // SpotLight *light = static_cast<SpotLight *>(Root::instance()->createLight(LT_SPOT));
@@ -106,6 +102,15 @@ void createScene(int argc, char **argv) {
       light->setAttenuation(400.0f);
       lightNode->pitch(-90, TS_WORLD);
       lightNode->attachObject(light);
+      // create model instance
+      Instance *modelInstance = Root::instance()->createInstance("");
+      modelInstance->setMesh("MODEL");
+      SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
+      modelNode->setPosition(j * 180.0f, 0.0f, i * 180.0f);
+      modelNode->yaw(180.0f);
+      // modelNode->pitch(90.0f);
+      modelNode->setScale(20, 20, 20);
+      modelNode->attachObject(modelInstance);
     }
   }
 }

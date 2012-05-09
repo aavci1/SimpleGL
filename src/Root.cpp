@@ -225,6 +225,8 @@ namespace SimpleGL {
   }
 
   Texture *Root::createTexture(const String &name, const String &path) {
+    std::cout << "Root::createTexture(\"" << name << "\", \"" << path << "\");" << std::endl;
+
     Texture *texture = new Texture(name, path);
     // add to list
     d->textures.push_back(texture);
@@ -246,6 +248,8 @@ namespace SimpleGL {
   }
 
   Program *Root::createProgram(const String &name) {
+    std::cout << "Root::createProgram(\"" << name << "\");" << std::endl;
+
     Program *program = new Program(name);
     // add to list
     d->programs.push_back(program);
@@ -267,6 +271,8 @@ namespace SimpleGL {
   }
 
   Material *Root::createMaterial(const String &name) {
+    std::cout << "Root::createMaterial(\"" << name << "\");" << std::endl;
+
     Material *material = new Material(name);
     // add to list
     d->materials.push_back(material);
@@ -288,6 +294,8 @@ namespace SimpleGL {
   }
 
   Mesh *Root::createMesh(const String &name) {
+    std::cout << "Root::createMesh(\"" << name << "\");" << std::endl;
+
     Mesh *mesh = new Mesh(name);
     // add to list
     d->meshes.push_back(mesh);
@@ -551,67 +559,71 @@ namespace SimpleGL {
     // return mesh
     return mesh;
   }
-  std::vector<std::string> getTexture(const aiMaterial *material, aiTextureType type) {
-    std::vector<std::string> textures;
-    // get textures
-    for (uint i = 0; i < material->GetTextureCount(type); ++i) {
-      // get texture path
-      aiString aistr;
-      if (material->GetTexture(type, i, &aistr) != AI_SUCCESS)
-        continue;
-      // convert to regular string
-      std::string texturePath = std::string(aistr.data);
-      // remove directory part
-      int index = texturePath.find_last_of("/");
-      if (index != -1)
-        texturePath = texturePath.substr(index + 1);
-      // add to list
-      textures.push_back(texturePath);
-    }
-    return textures;
-  }
 
   Mesh *Root::loadMesh(const String &name, const String &path) {
-    Mesh *mesh = Root::instance()->createMesh(name);
-    // try loading the mesh using assimp
-    const aiScene *scene = d->importer->ReadFile(path.c_str(), aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_PreTransformVertices | aiProcess_FixInfacingNormals);
+    const aiScene *scene = d->importer->ReadFile(path.c_str(),
+                                                   aiProcess_CalcTangentSpace |
+                                                   aiProcess_JoinIdenticalVertices |
+                                                   aiProcess_Triangulate |
+                                                   // aiProcess_RemoveComponent |
+                                                   aiProcess_GenSmoothNormals |
+                                                   aiProcess_SplitLargeMeshes |
+                                                   aiProcess_PreTransformVertices |
+                                                   aiProcess_LimitBoneWeights |
+                                                   aiProcess_ImproveCacheLocality |
+                                                   aiProcess_RemoveRedundantMaterials |
+                                                   aiProcess_FixInfacingNormals |
+                                                   aiProcess_SortByPType |
+                                                   aiProcess_FindDegenerates |
+                                                   aiProcess_FindInvalidData |
+                                                   aiProcess_GenUVCoords |
+                                                   aiProcess_TransformUVCoords |
+                                                   aiProcess_FindInstances |
+                                                   aiProcess_OptimizeMeshes |
+                                                   aiProcess_OptimizeGraph |
+                                                   aiProcess_Debone);
     // return mesh if scene cannot be loaded
     if (!scene) {
       std::cerr << "error: can not load model " << path << std::endl;
-      return mesh;
+      return 0;
     }
-    // material names
-    std::map<int, std::string> materialNames;
-    // load materials
-    // get directory of the mesh
-    std::string dir = path.substr(0, path.find_last_of("/"));
-    // Initialize the materials
-    for (unsigned int i = 0; i < scene->mNumMaterials; i++) {
-      const aiMaterial* material = scene->mMaterials[i];
-      aiString name;
-      material->Get(AI_MATKEY_NAME, name);
-      // create material
-      Material *mat = Root::instance()->createMaterial(name.data);
-      // set program
-      mat->setProgram("Textured");
-      // get diffuse maps
-      std::vector<std::string> diffuseMaps = getTexture(material, aiTextureType_DIFFUSE);
-      for (uint j = 0;  j < diffuseMaps.size(); ++j) {
-        std::string texturePath = dir + "/" + diffuseMaps.at(j);
+    // extract base directory
+    String directory = path.substr(0, path.find_last_of("/"));
+    // import materials
+    std::map<int, String> materials;
+    for (uint i = 0; i < scene->mNumMaterials; ++i) {
+      const aiMaterial *aimaterial = scene->mMaterials[i];
+      // get material name
+      aiString ainame;
+      aimaterial->Get(AI_MATKEY_NAME, ainame);
+      // TODO: get other material properties (specular, shininess etc.)
+      //  create material
+      Material *material = Root::instance()->createMaterial(ainame.data);
+      // TODO: make program configurable
+      material->setProgram("Textured");
+      // add to list
+      materials[i] = material->name();
+      // extract diffuse maps
+      for (uint j = 0; j < aimaterial->GetTextureCount(aiTextureType_DIFFUSE); ++j) {
+        aiString aitexturepath;
+        // get texture path
+        aimaterial->GetTexture(aiTextureType_DIFFUSE, j, &aitexturepath);
+        // generate texture path
+        String texturePath = aitexturepath.data;
+        texturePath = directory + "/" + texturePath.substr(texturePath.find_last_of("/") + 1);
+        // create texture
         Root::instance()->createTexture(texturePath, texturePath);
-        mat->addTexture(texturePath);
-        std::cout << texturePath << std::endl;
+        // add texture to the material
+        material->addTexture(texturePath);
       }
-      // set material index
-      materialNames[i] = mat->name();
-      std::cout << materialNames[i] << std::endl;
     }
-    // load meshes
+    // import meshes
+    std::map<uint, Mesh *> meshes;
     for (uint i = 0; i < scene->mNumMeshes; ++i) {
       const struct aiMesh *aimesh = scene->mMeshes[i];
-      // primitive contains primitives other than triangles skip
-      // should be use together with aiProcess_SortByPType
-      if (aimesh->mPrimitiveTypes & (aiPrimitiveType_POINT | aiPrimitiveType_LINE | aiPrimitiveType_POLYGON))
+      std::cout << "Mesh: " << aimesh->mName.data << std::endl;
+      // skip meshes with non triangle primitives
+      if (aimesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE)
         continue;
       // find which attributes exist and calculate stride size
       uint attributes = 0;
@@ -628,8 +640,10 @@ namespace SimpleGL {
         stride += 2;
         attributes |= AT_TEXCOORD0;
       }
+      // get vertex count
       uint vertexCount = aimesh->mNumVertices;
       float *vertices = new float[vertexCount * stride];
+      // get index count
       uint indexCount = aimesh->mNumFaces * 3;
       uint *indices = new uint[indexCount];
       // get pointers to the position, normal and texture coordinates arrays
@@ -637,6 +651,7 @@ namespace SimpleGL {
       aiVector3D *normal = aimesh->mNormals;
       aiVector3D *texCoord = aimesh->mTextureCoords[0];
       float *vertexData = &vertices[0];
+      // extract vertex data
       for (size_t j = 0; j < aimesh->mNumVertices; ++j) {
         // vertex position
         if (aimesh->HasPositions()) {
@@ -665,6 +680,7 @@ namespace SimpleGL {
       // get pointer to the face data
       aiFace *face = aimesh->mFaces;
       uint *indexData = &indices[0];
+      // extract index data
       for (size_t j = 0; j < aimesh->mNumFaces; ++j) {
         *indexData++ = face->mIndices[0];
         *indexData++ = face->mIndices[1];
@@ -674,15 +690,17 @@ namespace SimpleGL {
       }
       // set mesh data
       Mesh *mesh = Root::instance()->createMesh(name);
-      mesh->setMaterial(materialNames[aimesh->mMaterialIndex]);
+      mesh->setMaterial(materials[aimesh->mMaterialIndex]);
       mesh->setVertexData(attributes, vertices, vertexCount, stride * 4);
       mesh->setIndexData(indices, indexCount);
       // free resources
       delete[] vertices;
       delete[] indices;
+      // add to list
+      meshes[i] = mesh;
     }
-    // return mesh
-    return mesh;
+    // return first mesh
+    return meshes.at(0);
   }
 
   const std::vector<Mesh *> &Root::meshes() const {
