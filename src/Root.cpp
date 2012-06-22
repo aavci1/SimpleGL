@@ -21,9 +21,9 @@
 
 #include <FreeImage.h>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include <assimp/assimp.hpp>
+#include <assimp/aiScene.h>
+#include <assimp/aiPostProcess.h>
 
 #include <map>
 
@@ -580,8 +580,7 @@ namespace SimpleGL {
                                                    aiProcess_TransformUVCoords |
                                                    aiProcess_FindInstances |
                                                    aiProcess_OptimizeMeshes |
-                                                   aiProcess_OptimizeGraph |
-                                                   aiProcess_Debone);
+                                                   aiProcess_OptimizeGraph);
     // return mesh if scene cannot be loaded
     if (!scene) {
       std::cerr << "error: can not load model " << path << std::endl;
