@@ -2,7 +2,7 @@ project (SimpleGL)
 # set cmake minimum cmake version
 cmake_minimum_required (VERSION 2.8)
 # extra definitions
-add_definitions(-O2 -msse2 -Wall)
+add_definitions(-O2 -msse2 -Wall -std=c++11)
 # add sources
 set (SOURCES
     src/Camera.cpp
@@ -10,7 +10,7 @@ set (SOURCES
     src/FrameBuffer.cpp
     src/Instance.cpp
     src/Light.cpp
-	src/Main.cpp
+    src/Main.cpp
     src/Material.cpp
     src/Mesh.cpp
     src/PointLight.cpp

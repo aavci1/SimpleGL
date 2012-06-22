@@ -101,16 +101,12 @@ namespace SimpleGL {
     glfwSetWindowTitle(title.c_str());
   }
 
-  bool viewportSorter(Viewport *v1, Viewport *v2) {
-    return v1->zIndex() < v2->zIndex();
-  }
-
   Viewport *Window::createViewport(Camera *camera) {
     Viewport *viewport = new Viewport(camera);
     // add to list
     d->viewports.push_back(viewport);
     // sort viewports
-    std::sort(d->viewports.begin(), d->viewports.end(), viewportSorter);
+    std::sort(d->viewports.begin(), d->viewports.end(), [](const Viewport *v1, const Viewport *v2) { return v1->zIndex() < v2->zIndex(); });
     // return viewport
     return viewport;
   }
