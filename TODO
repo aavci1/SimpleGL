@@ -18,6 +18,7 @@
 	* Bloom
 	* HDR
 	* Cel shading
+	* Glow
 
 * GUI / Overlays
 	* Look at gorilla for inspiration
@@ -46,6 +47,7 @@
 	* Position/Normal/Tangent/Bitangent/Joint Weights/TexCoords
 	* Skeleton information
 	* Animation key frame information
+	* Morph animations
 	* Level of detail
 
 * Use compressed DDS files since they are faster to load and increase performance
