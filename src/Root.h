@@ -23,9 +23,9 @@ namespace SimpleGL {
     ~Root();
 
   public:
-    static Root *initialize();
-    static Root *instance();
+    static void initialize();
     static void destroy();
+    static Root *instance();
 
     Window *createWindow(int width = 800, int height = 600, bool fullscreen = false, bool stereo = false);
     const std::vector<Window *> &windows() const;

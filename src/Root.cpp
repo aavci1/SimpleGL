@@ -21,9 +21,9 @@
 
 #include <FreeImage.h>
 
-#include <assimp/assimp.hpp>
-#include <assimp/aiScene.h>
-#include <assimp/aiPostProcess.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include <map>
 
@@ -141,19 +141,19 @@ namespace SimpleGL {
     delete d;
   }
 
-  Root *Root::initialize() {
-    return instance();
+  void Root::initialize() {
+    instance();
+  }
+
+  void Root::destroy() {
+    delete _instance;
+    _instance = 0;
   }
 
   Root *Root::instance() {
     if (_instance == 0)
       _instance = new Root();
     return _instance;
-  }
-
-  void Root::destroy() {
-    delete _instance;
-    _instance = 0;
   }
 
   Window *Root::createWindow(int width, int height, bool fullscreen, bool stereo) {
