@@ -37,11 +37,10 @@ namespace SimpleGL {
     AT_TEXCOORD1 = 0x0010,
     AT_TEXCOORD2 = 0x0020,
     AT_TEXCOORD3 = 0x0040,
-    AT_TEXCOORD4 = 0x0080,
-    AT_TEXCOORD5 = 0x0100,
-    AT_TEXCOORD6 = 0x0200,
-    AT_TEXCOORD7 = 0x0400,
-    AT_CUSTOM = 0x8000
+    AT_BONEINFO0 = 0x0080,
+    AT_BONEINFO1 = 0x0100,
+    AT_BONEINFO2 = 0x0200,
+    AT_BONEINFO3 = 0x0400
   };
 
   enum AttributePosition {
@@ -52,11 +51,14 @@ namespace SimpleGL {
     AP_TEXCOORD1 = 4,
     AP_TEXCOORD2 = 5,
     AP_TEXCOORD3 = 6,
-    AP_TEXCOORD4 = 7,
-    AP_TEXCOORD5 = 8,
-    AP_TEXCOORD6 = 9,
-    AP_TEXCOORD7 = 10,
-    AP_CUSTOM = 11
+    AP_BONEID0 = 7,
+    AP_BONEWEIGHT0 = 8,
+    AP_BONEID1 = 9,
+    AP_BONEWEIGHT1 = 10,
+    AP_BONEID2 = 11,
+    AP_BONEWEIGHT2 = 12,
+    AP_BONEID3 = 13,
+    AP_BONEWEIGHT3 = 14
   };
 
   enum LightType {

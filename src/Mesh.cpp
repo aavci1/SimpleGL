@@ -101,33 +101,57 @@ namespace SimpleGL {
       // increase offset
       offset += 2 * sizeof(float);
     }
-    // texture coordinate 4
-    if (vertexFormat & AT_TEXCOORD4) {
-      glEnableVertexAttribArray(AP_TEXCOORD4);
-      glVertexAttribPointer(AP_TEXCOORD4, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+    // bone info 0
+    if (vertexFormat & AT_BONEINFO0) {
+      // bone id
+      glEnableVertexAttribArray(AP_BONEID0);
+      glVertexAttribIPointer(AP_BONEID0, 1, GL_INT, stride, (void *)offset);
       // increase offset
-      offset += 2 * sizeof(float);
+      offset += sizeof(int);
+      // bone weight
+      glEnableVertexAttribArray(AP_BONEWEIGHT0);
+      glVertexAttribPointer(AP_BONEWEIGHT0, 1, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      // increase offset
+      offset += sizeof(false);
     }
-    // texture coordinate 5
-    if (vertexFormat & AT_TEXCOORD5) {
-      glEnableVertexAttribArray(AP_TEXCOORD5);
-      glVertexAttribPointer(AP_TEXCOORD5, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+    // bone info 1
+    if (vertexFormat & AT_BONEINFO1) {
+      // bone id
+      glEnableVertexAttribArray(AP_BONEID1);
+      glVertexAttribIPointer(AP_BONEID1, 1, GL_INT, stride, (void *)offset);
       // increase offset
-      offset += 2 * sizeof(float);
+      offset += sizeof(int);
+      // bone weight
+      glEnableVertexAttribArray(AP_BONEWEIGHT1);
+      glVertexAttribPointer(AP_BONEWEIGHT1, 1, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      // increase offset
+      offset += sizeof(false);
     }
-    // texture coordinate 6
-    if (vertexFormat & AT_TEXCOORD6) {
-      glEnableVertexAttribArray(AP_TEXCOORD6);
-      glVertexAttribPointer(AP_TEXCOORD6, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+    // bone info 2
+    if (vertexFormat & AT_BONEINFO2) {
+      // bone id
+      glEnableVertexAttribArray(AP_BONEID2);
+      glVertexAttribIPointer(AP_BONEID2, 1, GL_INT, stride, (void *)offset);
       // increase offset
-      offset += 2 * sizeof(float);
+      offset += sizeof(int);
+      // bone weight
+      glEnableVertexAttribArray(AP_BONEWEIGHT2);
+      glVertexAttribPointer(AP_BONEWEIGHT2, 1, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      // increase offset
+      offset += sizeof(false);
     }
-    // texture coordinate 7
-    if (vertexFormat & AT_TEXCOORD7) {
-      glEnableVertexAttribArray(AP_TEXCOORD7);
-      glVertexAttribPointer(AP_TEXCOORD7, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+    // bone info 3
+    if (vertexFormat & AT_BONEINFO3) {
+      // bone id
+      glEnableVertexAttribArray(AP_BONEID3);
+      glVertexAttribIPointer(AP_BONEID3, 1, GL_INT, stride, (void *)offset);
       // increase offset
-      offset += 2 * sizeof(float);
+      offset += sizeof(int);
+      // bone weight
+      glEnableVertexAttribArray(AP_BONEWEIGHT3);
+      glVertexAttribPointer(AP_BONEWEIGHT3, 1, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      // increase offset
+      offset += sizeof(false);
     }
     // unbind vertex array object
     glBindVertexArray(0);

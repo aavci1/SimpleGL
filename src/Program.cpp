@@ -105,10 +105,14 @@ namespace SimpleGL {
     glBindAttribLocation(d->id, AP_TEXCOORD1, "TEXCOORD1");
     glBindAttribLocation(d->id, AP_TEXCOORD2, "TEXCOORD2");
     glBindAttribLocation(d->id, AP_TEXCOORD3, "TEXCOORD3");
-    glBindAttribLocation(d->id, AP_TEXCOORD4, "TEXCOORD4");
-    glBindAttribLocation(d->id, AP_TEXCOORD5, "TEXCOORD5");
-    glBindAttribLocation(d->id, AP_TEXCOORD6, "TEXCOORD6");
-    glBindAttribLocation(d->id, AP_TEXCOORD7, "TEXCOORD7");
+    glBindAttribLocation(d->id, AP_BONEID0, "BONEID0");
+    glBindAttribLocation(d->id, AP_BONEID1, "BONEID1");
+    glBindAttribLocation(d->id, AP_BONEID2, "BONEID2");
+    glBindAttribLocation(d->id, AP_BONEID3, "BONEID3");
+    glBindAttribLocation(d->id, AP_BONEWEIGHT0, "BONEWEIGHT0");
+    glBindAttribLocation(d->id, AP_BONEWEIGHT1, "BONEWEIGHT1");
+    glBindAttribLocation(d->id, AP_BONEWEIGHT2, "BONEWEIGHT2");
+    glBindAttribLocation(d->id, AP_BONEWEIGHT3, "BONEWEIGHT3");
     // link the program
     glLinkProgram(d->id);
     // check link status
