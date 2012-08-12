@@ -7,7 +7,7 @@ int main(int argc, char **argv) {
   // create main window
   MainWindow main;
   // show main window
-  main.showFullScreen();
+  main.show();
   // start event loop
   return app.exec();
 }
