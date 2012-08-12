@@ -3,7 +3,7 @@
 namespace SimpleGL {
   class ViewportPrivate {
   public:
-    ViewportPrivate(Camera *camera) {
+    ViewportPrivate(Camera *camera) : camera(camera) {
     }
 
     ~ViewportPrivate() {
