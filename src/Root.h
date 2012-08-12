@@ -15,6 +15,7 @@ namespace SimpleGL {
   class Program;
   class SceneNode;
   class Texture;
+  class Viewport;
   class Window;
 
   class Root {
@@ -65,6 +66,9 @@ namespace SimpleGL {
     Instance *createInstance(const String &mesh, const String &material);
     const std::vector<Instance *> &instances() const;
 
+    void calculateWorldTransforms();
+    void renderScene(Window *window, Viewport *viewport);
+    void renderLights(Window *window, Viewport *viewport);
     void renderOneFrame(long time);
 
     const float fps() const;

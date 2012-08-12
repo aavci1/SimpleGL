@@ -710,6 +710,50 @@ namespace SimpleGL {
     return d->instances;
   }
 
+  void Root::calculateWorldTransforms() {
+    d->calculateWorldTransforms(d->sceneNodes.at(0));
+  }
+
+  void Root::renderScene(Window *window, Viewport *viewport) {
+    if (viewport == nullptr || viewport->camera() == nullptr)
+      return;
+    // get camera
+    Camera *camera = viewport->camera();
+    // render scene
+    d->render(camera, d->sceneNodes.at(0), camera->projectionMatrix() * camera->viewMatrix());
+  }
+
+  void Root::renderLights(Window *window, Viewport *viewport) {
+    if (viewport == nullptr || viewport->camera() == nullptr)
+      return;
+    // get camera
+    Camera *camera = viewport->camera();
+    // render lights
+    for (int type = LT_DIRECTIONAL; type <= LT_SPOT; ++type) {
+      Program *program = 0;
+      if (type == LT_DIRECTIONAL)
+        program = Root::instance()->retrieveProgram("DirectionalLight");
+      else if (type == LT_POINT)
+        program = Root::instance()->retrieveProgram("PointLight");
+      else if (type == LT_SPOT)
+        program = Root::instance()->retrieveProgram("SpotLight");
+      if (!program)
+        continue;
+      program->bind();
+      program->setUniform("texture0", 0);
+      program->setUniform("texture1", 1);
+      program->setUniform("texture2", 2);
+      program->setUniform("viewportSize", Vector2f(viewport->width() * window->size().x, viewport->height() * window->size().y));
+      program->setUniform("cameraPos", camera->parentSceneNode()->worldPosition());
+      // render the light
+      for (uint k = 0; k < d->lights.size(); ++k)
+        if (d->lights.at(k)->type() == type)
+          d->lights.at(k)->render(camera);
+      // deselect material
+      program->unbind();
+    }
+  }
+
   void Root::renderOneFrame(long time) {
     // calculate time since last frame
     long millis = (d->time == 0) ? 0 : (time - d->time);
@@ -723,99 +767,9 @@ namespace SimpleGL {
     glClearDepth(1.0f);
     // update scene transformations
     d->calculateWorldTransforms(d->sceneNodes.at(0));
-    // start rendering
-    for (Window *window: d->windows) {
-      // clear color and depth buffers
-      glDepthMask(GL_TRUE);
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      // bind gbuffer for writing
-      window->frameBuffer()->bind();
-      // clear color and depth buffers
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      // unbind framebuffer
-      window->frameBuffer()->unbind();
-      // render through each viewport
-      for (Viewport *viewport: window->viewports()) {
-        // calculate viewport dimension in pixels;
-        float left = viewport->left() * window->size().x;
-        float top = viewport->top() * window->size().y;
-        float width = viewport->width() * window->size().x;
-        float height = viewport->height() * window->size().y;
-        // set up viewport
-        glViewport(left, top, width, height);
-        // get viewport camera
-        Camera *camera = viewport->camera();
-        if (!camera)
-          continue;
-        // update camera's aspect ratio
-        camera->setAspectRatio(width / height);
-        // calculate view proj matrix
-        Matrix4f viewProjMatrix = camera->projectionMatrix() * camera->viewMatrix();
-        /////////////////////////////////////////////////////////////////////////////
-        ////  GEOMETRY PASS
-        /////////////////////////////////////////////////////////////////////////////
-        window->frameBuffer()->bind();
-        // enable face culling
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-        // enable depth test
-        glEnable(GL_DEPTH_TEST);
-        glDepthMask(GL_TRUE);
-        glDepthFunc(GL_LESS);
-        // disable blending
-        glDisable(GL_BLEND);
-        // render scene
-        d->render(camera, d->sceneNodes.at(0), viewProjMatrix);
-        // unbind gbuffer
-        window->frameBuffer()->unbind();
-#if 0
-        // blit the frame buffer
-        window->frameBuffer()->blit();
-#else
-        /////////////////////////////////////////////////////////////////////////////
-        ////  LIGHTING PASS
-        /////////////////////////////////////////////////////////////////////////////
-        // enable face culling
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-        // disable depth test
-        glDisable(GL_DEPTH_TEST);
-        glDepthMask(GL_FALSE);
-        // enable blending
-        glEnable(GL_BLEND);
-        glBlendEquation(GL_FUNC_ADD);
-        glBlendFunc(GL_ONE, GL_ONE);
-        // bind textures
-        window->frameBuffer()->bindTextures();
-        // render lights
-        for (int type = LT_DIRECTIONAL; type <= LT_SPOT; ++type) {
-          Program *program = 0;
-          if (type == LT_DIRECTIONAL)
-            program = Root::instance()->retrieveProgram("DirectionalLight");
-          else if (type == LT_POINT)
-            program = Root::instance()->retrieveProgram("PointLight");
-          else if (type == LT_SPOT)
-            program = Root::instance()->retrieveProgram("SpotLight");
-          if (!program)
-            continue;
-          program->bind();
-          program->setUniform("texture0", 0);
-          program->setUniform("texture1", 1);
-          program->setUniform("texture2", 2);
-          program->setUniform("viewportSize", Vector2f(width, height));
-          program->setUniform("cameraPos", camera->parentSceneNode()->worldPosition());
-          // render the light
-          for (uint k = 0; k < d->lights.size(); ++k)
-            if (d->lights.at(k)->type() == type)
-              d->lights.at(k)->render(camera);
-          // deselect material
-          program->unbind();
-        }
-        // unbind textures
-        window->frameBuffer()->unbindTextures();
-#endif
-      }
-    }
+    // update all windows
+    for (Window *window: d->windows)
+      window->update();
   }
 
   const float Root::fps() const {

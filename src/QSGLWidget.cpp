@@ -133,7 +133,7 @@ void QSGLWidget::resizeGL(int width, int height) {
 }
 
 void QSGLWidget::paintGL() {
-  Root::instance()->renderOneFrame(100);
+  d->window->update();
 }
 
 void QSGLWidget::keyPressEvent(QKeyEvent *e) {

@@ -16,14 +16,14 @@ namespace SimpleGL {
     Window(int width, int height);
     ~Window();
 
-    FrameBuffer *frameBuffer() const;
-
     const Vector2i &size() const;
     void setSize(const Vector2i &size);
     void setSize(const int width, const int height);
 
     const std::vector<Viewport *> &viewports() const;
     Viewport *createViewport(Camera *camera);
+
+    void update();
 
   private:
     WindowPrivate *d;
