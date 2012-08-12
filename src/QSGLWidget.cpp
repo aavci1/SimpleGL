@@ -14,11 +14,14 @@
 #include "Viewport.h"
 #include "Window.h"
 
+#include <QWheelEvent>
+
 using namespace SimpleGL;
 
 class QSGLWidgetPrivate {
 public:
   SimpleGL::Window *window = nullptr;
+  QPoint mousePosition;
 };
 
 QSGLWidget::QSGLWidget(QWidget *parent) : QGLWidget(parent), d(new QSGLWidgetPrivate()) {
@@ -130,37 +133,6 @@ void QSGLWidget::initializeGL() {
       modelNode->attachObject(modelInstance);
     }
   }
-
-  //  void navigateCamera(SceneNode *cameraNode, long millis) {
-  //    // camera angles
-  //    static float verticalAngle = 0, horizontalAngle = 0;
-  //    static Vector2i mousePosition = Root::instance()->mousePosition();
-  //    // update camera position
-  //    float height = cameraNode->position().y;
-  //    if (Root::instance()->isKeyDown('W'))
-  //      cameraNode->moveRelative(0.0f, 0.0f, -0.25f * millis);
-  //    if (Root::instance()->isKeyDown('A'))
-  //      cameraNode->moveRelative(-0.25f * millis, 0.0f, 0.0f);
-  //    if (Root::instance()->isKeyDown('S'))
-  //      cameraNode->moveRelative(0.0f, 0.0f, +0.25f * millis);
-  //    if (Root::instance()->isKeyDown('D'))
-  //      cameraNode->moveRelative(+0.25f * millis, 0.0f, 0.0f);
-  //    // reset camera height
-  //    cameraNode->setPosition(cameraNode->position().x, height, cameraNode->position().z);
-  //    // update camera orientation
-  //    Vector2i position = Root::instance()->mousePosition();
-  //    // rotate camera
-  //    verticalAngle += -0.01f * millis * (position.y - mousePosition.y);
-  //    if (verticalAngle > 80)
-  //      verticalAngle = 80;
-  //    else if (verticalAngle < -80)
-  //      verticalAngle = -80;
-  //    horizontalAngle += -0.01f * millis * (position.x - mousePosition.x);
-  //    // set camera orientation
-  //    cameraNode->setOrientation(glm::angleAxis(horizontalAngle, Vector3f(0, 1, 0)) * glm::angleAxis(verticalAngle,  Vector3f(1, 0, 0)));
-  //    // update mouse coordinates
-  //    mousePosition = position;
-  //  }
 }
 
 void QSGLWidget::resizeGL(int width, int height) {
@@ -180,13 +152,42 @@ void QSGLWidget::keyReleaseEvent(QKeyEvent *e) {
 }
 
 void QSGLWidget::mouseMoveEvent(QMouseEvent *e) {
-
+  SceneNode *cameraNode = d->window->viewports().at(0)->camera()->parentSceneNode();
+  if (e->buttons() == Qt::RightButton) {
+    // pan camera
+    cameraNode->moveRelative(Vector3f(d->mousePosition.x() - e->pos().x(), e->pos().y() - d->mousePosition.y(), 0));
+  } else if (e->buttons() == Qt::MiddleButton) {
+    static float verticalAngle = 0, horizontalAngle = 0;
+    verticalAngle += -0.1f * (e->y() - d->mousePosition.y());
+    if (verticalAngle > 80)
+      verticalAngle = 80;
+    else if (verticalAngle < -80)
+      verticalAngle = -80;
+    horizontalAngle += -0.1f * (e->x() - d->mousePosition.x());
+    // set camera orientation
+    cameraNode->setOrientation(glm::angleAxis(horizontalAngle, Vector3f(0, 1, 0)) * glm::angleAxis(verticalAngle,  Vector3f(1, 0, 0)));
+  }
+  // update mouse position
+  d->mousePosition = e->pos();
+  // update view
+  updateGL();
 }
 
 void QSGLWidget::mousePressEvent(QMouseEvent *e) {
-
+  // update mouse position
+  d->mousePosition = e->pos();
 }
 
 void QSGLWidget::mouseReleaseEvent(QMouseEvent *e) {
+  // update mouse position
+  d->mousePosition = e->pos();
+}
 
+void QSGLWidget::wheelEvent(QWheelEvent *e) {
+  SceneNode *cameraNode = d->window->viewports().at(0)->camera()->parentSceneNode();
+  float altitude = cameraNode->position().y;
+  cameraNode->moveRelative(Vector3f(0, 0, -0.4f * e->delta()));
+  cameraNode->setPosition(cameraNode->position().x, altitude, cameraNode->position().z);
+  // update view
+  updateGL();
 }

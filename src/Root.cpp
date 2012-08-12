@@ -726,7 +726,7 @@ namespace SimpleGL {
     // update scene transformations
     d->calculateWorldTransforms(d->sceneNodes.at(0));
     // start rendering
-for (Window * window: d->windows) {
+    for (Window *window: d->windows) {
       // clear color and depth buffers
       glDepthMask(GL_TRUE);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -737,7 +737,7 @@ for (Window * window: d->windows) {
       // unbind framebuffer
       window->frameBuffer()->unbind();
       // render through each viewport
-for (Viewport * viewport: window->viewports()) {
+      for (Viewport *viewport: window->viewports()) {
         // calculate viewport dimension in pixels;
         float left = viewport->left() * window->size().x;
         float top = viewport->top() * window->size().y;
