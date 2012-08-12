@@ -6,27 +6,27 @@
 namespace SimpleGL {
   class SceneNodePrivate {
   public:
-    SceneNodePrivate() : parentSceneNode(0), position(0.0f, 0.0f, 0.0f), orientation(1.0f, 0.0f, 0.0f, 0.0f), scale(1.0f, 1.0f, 1.0f), recalcTransform(true), worldPosition(0.0f, 0.0f, 0.0f), worldOrientation(1.0f, 0.0f, 0.0f, 0.0f), worldScale(1.0f, 1.0f, 1.0f) {
+    SceneNodePrivate() {
     }
 
     ~SceneNodePrivate() {
     }
 
-    SceneNode *parentSceneNode;
+    SceneNode *parentSceneNode { nullptr };
 
     std::vector<SceneNode *> attachedNodes;
     std::vector<SceneObject *> attachedObjects;
 
-    Vector3f position;
-    Quaternion orientation;
-    Vector3f scale;
+    Vector3f position { 0.0f, 0.0f, 0.0f };
+    Quaternion orientation { 1.0f, 0.0f, 0.0f, 0.0f };
+    Vector3f scale { 1.0f, 1.0f, 1.0f };
 
-    bool recalcTransform;
+    bool recalcTransform { true };
     Matrix4f transform;
 
-    Vector3f worldPosition;
-    Quaternion worldOrientation;
-    Vector3f worldScale;
+    Vector3f worldPosition { 0.0f, 0.0f, 0.0f };
+    Quaternion worldOrientation { 1.0f, 0.0f, 0.0f, 0.0f };
+    Vector3f worldScale { 1.0f, 1.0f, 1.0f };
     Matrix4f worldTransform;
   };
 

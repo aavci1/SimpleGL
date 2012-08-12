@@ -3,19 +3,19 @@
 namespace SimpleGL {
   class ViewportPrivate {
   public:
-    ViewportPrivate(Camera *camera) : camera(camera), left(0.0f), top(0.0f), width(1.0f), height(1.0f) {
+    ViewportPrivate(Camera *camera) {
     }
 
     ~ViewportPrivate() {
     }
 
-    Camera *camera;
+    Camera *camera { nullptr };
 
-    float left;
-    float top;
-    float width;
-    float height;
-    int zIndex;
+    float left { 0.0f };
+    float top { 0.0f };
+    float width { 1.0f };
+    float height { 1.0f };
+    int zIndex { 0 };
   };
 
   Viewport::Viewport(Camera *camera) : d(new ViewportPrivate(camera)) {

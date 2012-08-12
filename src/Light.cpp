@@ -3,15 +3,15 @@
 namespace SimpleGL {
   class LightPrivate {
   public:
-    LightPrivate() : color(1.0f, 1.0f, 1.0f), diffuseIntensity(1.0f), specularIntensity(1.0f) {
+    LightPrivate() {
     }
 
     ~LightPrivate() {
     }
 
-    Vector3f color;
-    float diffuseIntensity;
-    float specularIntensity;
+    Vector3f color { 1.0f, 1.0f, 1.0f };
+    float diffuseIntensity { 1.0f };
+    float specularIntensity { 1.0f };
   };
 
   Light::Light() : d(new LightPrivate()) {

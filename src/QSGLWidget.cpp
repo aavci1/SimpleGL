@@ -20,8 +20,8 @@ using namespace SimpleGL;
 
 class QSGLWidgetPrivate {
 public:
-  SimpleGL::Window *window = nullptr;
-  QPoint mousePosition;
+  SimpleGL::Window *window { nullptr };
+  QPoint mousePosition { 0, 0 };
 };
 
 QSGLWidget::QSGLWidget(QWidget *parent) : QGLWidget(parent), d(new QSGLWidgetPrivate()) {
@@ -33,33 +33,33 @@ QSGLWidget::~QSGLWidget() {
 
 void QSGLWidget::initializeGL() {
   // initialize glew
-  // TODO: what will happen this line called multiple times?
   glewInit();
   // create associated window
   d->window = Root::instance()->createWindow(this->width(), this->height());
+  d->window->createViewport(Root::instance()->createCamera());
   // create a camera node
   SceneNode *cameraNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(0.0f, 170.0f, 1500.0f));
   cameraNode->attachObject(d->window->viewports().at(0)->camera());
   // load programs
   Program *pointLightProgram = Root::instance()->createProgram("PointLight");
-  if (!pointLightProgram->loadShaderFromPath(ST_VERTEX, "media/point_light_vp.glsl")) std::cerr << pointLightProgram->errorMessage() << std::endl;
-  if (!pointLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/point_light_fp.glsl")) std::cerr << pointLightProgram->errorMessage() << std::endl;
-  if (!pointLightProgram->link()) std::cerr << pointLightProgram->errorMessage() << std::endl;
+  if (!pointLightProgram->loadShaderFromPath(ST_VERTEX, "media/point_light_vp.glsl")) std::cerr << pointLightProgram->log() << std::endl;
+  if (!pointLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/point_light_fp.glsl")) std::cerr << pointLightProgram->log() << std::endl;
+  if (!pointLightProgram->link()) std::cerr << pointLightProgram->log() << std::endl;
   // spot light program
   Program *spotLightProgram = Root::instance()->createProgram("SpotLight");
-  if (!spotLightProgram->loadShaderFromPath(ST_VERTEX, "media/spot_light_vp.glsl")) std::cerr << spotLightProgram->errorMessage() << std::endl;
-  if (!spotLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/spot_light_fp.glsl")) std::cerr << spotLightProgram->errorMessage() << std::endl;
-  if (!spotLightProgram->link()) std::cerr << spotLightProgram->errorMessage() << std::endl;
+  if (!spotLightProgram->loadShaderFromPath(ST_VERTEX, "media/spot_light_vp.glsl")) std::cerr << spotLightProgram->log() << std::endl;
+  if (!spotLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/spot_light_fp.glsl")) std::cerr << spotLightProgram->log() << std::endl;
+  if (!spotLightProgram->link()) std::cerr << spotLightProgram->log() << std::endl;
   // directional light program
   Program *directionalLightProgram = Root::instance()->createProgram("DirectionalLight");
-  if (!directionalLightProgram->loadShaderFromPath(ST_VERTEX, "media/directional_light_vp.glsl")) std::cerr << directionalLightProgram->errorMessage() << std::endl;
-  if (!directionalLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/directional_light_fp.glsl")) std::cerr << directionalLightProgram->errorMessage() << std::endl;
-  if (!directionalLightProgram->link()) std::cerr << directionalLightProgram->errorMessage() << std::endl;
+  if (!directionalLightProgram->loadShaderFromPath(ST_VERTEX, "media/directional_light_vp.glsl")) std::cerr << directionalLightProgram->log() << std::endl;
+  if (!directionalLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/directional_light_fp.glsl")) std::cerr << directionalLightProgram->log() << std::endl;
+  if (!directionalLightProgram->link()) std::cerr << directionalLightProgram->log() << std::endl;
   // load programs
   Program *program = Root::instance()->createProgram("Textured");
-  if (!program->loadShaderFromPath(ST_VERTEX, "media/textured_vp.glsl")) std::cerr << program->errorMessage() << std::endl;
-  if (!program->loadShaderFromPath(ST_FRAGMENT, "media/textured_fp.glsl")) std::cerr << program->errorMessage() << std::endl;
-  if (!program->link()) std::cerr << program->errorMessage() << std::endl;
+  if (!program->loadShaderFromPath(ST_VERTEX, "media/textured_vp.glsl")) std::cerr << program->log() << std::endl;
+  if (!program->loadShaderFromPath(ST_FRAGMENT, "media/textured_fp.glsl")) std::cerr << program->log() << std::endl;
+  if (!program->link()) std::cerr << program->log() << std::endl;
   // load textures
   Root::instance()->createTexture("Laminate", "media/laminate.jpg");
   Root::instance()->createTexture("Ceiling", "media/ceiling.jpg");
@@ -136,6 +136,8 @@ void QSGLWidget::initializeGL() {
 }
 
 void QSGLWidget::resizeGL(int width, int height) {
+  if (!d->window)
+    return;
   d->window->setSize(width, height);
 }
 
@@ -152,6 +154,8 @@ void QSGLWidget::keyReleaseEvent(QKeyEvent *e) {
 }
 
 void QSGLWidget::mouseMoveEvent(QMouseEvent *e) {
+  if (!d->window)
+    return;
   SceneNode *cameraNode = d->window->viewports().at(0)->camera()->parentSceneNode();
   if (e->buttons() == Qt::RightButton) {
     // pan camera
@@ -184,6 +188,8 @@ void QSGLWidget::mouseReleaseEvent(QMouseEvent *e) {
 }
 
 void QSGLWidget::wheelEvent(QWheelEvent *e) {
+  if (!d->window)
+    return;
   SceneNode *cameraNode = d->window->viewports().at(0)->camera()->parentSceneNode();
   float altitude = cameraNode->position().y;
   cameraNode->moveRelative(Vector3f(0, 0, -0.4f * e->delta()));

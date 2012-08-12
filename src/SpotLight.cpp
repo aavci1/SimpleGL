@@ -12,22 +12,22 @@
 namespace SimpleGL {
   class SpotLightPrivate {
   public:
-    SpotLightPrivate() : direction(0.0f, 0.0f, -1.0f), innerAngle(30), outerAngle(30), attenuationRange(256.0f), attenuationConstant(0.0f), attenuationLinear(0.0f), attenuationQuadratic(1.0f) {
+    SpotLightPrivate() {
       cone = Root::instance()->createCone("", tanf(innerAngle + outerAngle) * attenuationRange, attenuationRange);
     }
 
     ~SpotLightPrivate() {
     }
 
-    Vector3f direction;
-    float innerAngle;
-    float outerAngle;
-    float attenuationRange;
-    float attenuationConstant;
-    float attenuationLinear;
-    float attenuationQuadratic;
+    Mesh *cone { nullptr };
 
-    Mesh *cone;
+    Vector3f direction { 0.0f, 0.0f, -1.0f };
+    float innerAngle { 30.0f };
+    float outerAngle { 30.0f };
+    float attenuationRange { 256.0f };
+    float attenuationConstant { 0.0f };
+    float attenuationLinear { 0.0f };
+    float attenuationQuadratic { 1.0f };
   };
 
   SpotLight::SpotLight() : d(new SpotLightPrivate())  {

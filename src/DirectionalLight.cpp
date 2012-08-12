@@ -10,15 +10,15 @@
 namespace SimpleGL {
   class DirectionalLightPrivate {
   public:
-    DirectionalLightPrivate() : direction(0.0f, 0.0f, -1.0f) {
+    DirectionalLightPrivate() {
       quad = Root::instance()->createQuad("");
     }
 
     ~DirectionalLightPrivate() {
     }
 
-    Vector3f direction;
-    Mesh *quad;
+    Mesh *quad { nullptr };
+    Vector3f direction { 0.0f, 0.0f, -1.0f };
   };
 
   DirectionalLight::DirectionalLight() : d(new DirectionalLightPrivate())  {

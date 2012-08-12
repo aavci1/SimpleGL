@@ -3,13 +3,13 @@
 namespace SimpleGL {
   class SceneObjectPrivate {
   public:
-    SceneObjectPrivate() : parentSceneNode(0) {
+    SceneObjectPrivate() {
     }
 
     ~SceneObjectPrivate() {
     }
 
-    SceneNode *parentSceneNode;
+    SceneNode *parentSceneNode { nullptr };
   };
 
   SceneObject::SceneObject() : d(new SceneObjectPrivate()) {

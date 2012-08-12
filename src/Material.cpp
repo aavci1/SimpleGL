@@ -9,14 +9,14 @@
 namespace SimpleGL {
   class MaterialPrivate {
   public:
-    MaterialPrivate(const String &name) : name(name), program("") {
+    MaterialPrivate(const String &name) : name(name) {
     }
 
     ~MaterialPrivate() {
     }
 
-    String name;
-    String program;
+    String name { "" };
+    String program { "" };
     std::vector<String> textures;
   };
 

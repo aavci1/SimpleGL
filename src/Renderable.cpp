@@ -3,13 +3,13 @@
 namespace SimpleGL {
   class RenderablePrivate {
   public:
-    RenderablePrivate() : material("") {
+    RenderablePrivate() {
     }
 
     ~RenderablePrivate() {
     }
 
-    String material;
+    String material { "" };
   };
 
   Renderable::Renderable() : d(new RenderablePrivate()) {

@@ -5,18 +5,18 @@
 namespace SimpleGL {
   class MeshPrivate {
   public:
-    MeshPrivate(const String &name) : name(name), vertexArray(0), vertexBuffer(0), indexBuffer(0), vertexCount(0), indexCount(0) {
+    MeshPrivate(const String &name) : name(name) {
     }
 
     ~MeshPrivate() {
     }
 
-    String name;
-    GLuint vertexArray;
-    GLuint vertexBuffer;
-    GLuint indexBuffer;
-    uint vertexCount;
-    uint indexCount;
+    String name { "" };
+    GLuint vertexArray { 0 };
+    GLuint vertexBuffer { 0 };
+    GLuint indexBuffer { 0 };
+    uint vertexCount { 0 };
+    uint indexCount { 0 };
   };
 
   Mesh::Mesh(const String &name) : d(new MeshPrivate(name)) {

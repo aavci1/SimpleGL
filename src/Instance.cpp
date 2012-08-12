@@ -15,8 +15,8 @@ namespace SimpleGL {
     ~InstancePrivate() {
     }
 
-    String name;
-    String mesh;
+    String name { "" };
+    String mesh { "" };
   };
 
   Instance::Instance(const String &name) : d(new InstancePrivate(name)) {

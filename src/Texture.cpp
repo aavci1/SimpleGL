@@ -7,16 +7,16 @@
 namespace SimpleGL {
   class TexturePrivate {
   public:
-    TexturePrivate(const String &name, const String &path) : name(name), path(path), id(0), index(0) {
+    TexturePrivate(const String &name, const String &path) : name(name), path(path) {
     }
 
     ~TexturePrivate() {
     }
 
-    String name;
-    String path;
-    GLuint id;
-    GLuint index;
+    String name { "" };
+    String path { "" };
+    GLuint id { 0 };
+    GLuint index { 0 };
   };
 
   Texture::Texture(const String &name, const String &path) : d(new TexturePrivate(name, path)) {

@@ -5,23 +5,23 @@
 namespace SimpleGL {
   class CameraPrivate {
   public:
-    CameraPrivate() : direction(0, 0, -1), fov(60.0f), aspectRatio(1.33), nearClipDistance(1.0f), farClipDistance(5000.0f), recalcViewMatrix(true), recalcProjectionMatrix(true) {
+    CameraPrivate() {
     }
 
     ~CameraPrivate() {
     }
 
-    Vector3f direction;
+    Vector3f direction { 0.0f, 0.0f, -1.0f };
 
-    float fov;
-    float aspectRatio;
-    float nearClipDistance;
-    float farClipDistance;
+    float fov { 60.0f };
+    float aspectRatio { 1.33f };
+    float nearClipDistance { 1.0f };
+    float farClipDistance { 5000.0f };
 
-    bool recalcViewMatrix;
+    bool recalcViewMatrix { true };
     Matrix4f viewMatrix;
 
-    bool recalcProjectionMatrix;
+    bool recalcProjectionMatrix { true };
     Matrix4f projectionMatrix;
   };
 

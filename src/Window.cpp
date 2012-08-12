@@ -10,7 +10,7 @@
 namespace SimpleGL {
   class WindowPrivate {
   public:
-    WindowPrivate() : size(0, 0) {
+    WindowPrivate() {
     }
 
     ~WindowPrivate() {
@@ -21,8 +21,8 @@ namespace SimpleGL {
         delete viewports[i];
     }
 
-    Vector2i size;
-    FrameBuffer *frameBuffer = nullptr;
+    Vector2i size { 0, 0 };
+    FrameBuffer *frameBuffer { nullptr };
     std::vector<Viewport *> viewports;
   };
 

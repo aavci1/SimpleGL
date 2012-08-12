@@ -7,18 +7,18 @@
 namespace SimpleGL {
   class FrameBufferPrivate {
   public:
-    FrameBufferPrivate(int width, int height) : width(width), height(height), frameBuffer(0), depthBuffer(0) {
+    FrameBufferPrivate(int width, int height) : width(width), height(height) {
     }
 
     ~FrameBufferPrivate() {
     }
 
-    int width;
-    int height;
+    int width { 0 };
+    int height { 0 };
     // frame buffer handle
-    GLuint frameBuffer;
+    GLuint frameBuffer { 0 };
     // depth buffer handle
-    GLuint depthBuffer;
+    GLuint depthBuffer { 0 };
     // color buffers
     std::vector<GLuint> colorBuffers;
   };

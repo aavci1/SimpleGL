@@ -16,10 +16,10 @@ namespace SimpleGL {
     ~ProgramPrivate() {
     }
 
-    String name;
-    GLuint id;
+    String name { "" };
+    String log { "" };
+    GLuint id { 0 };
     std::vector<GLuint> shaders;
-    String errorMessage;
   };
 
   Program::Program(const String &name) : d(new ProgramPrivate(name)) {
@@ -64,7 +64,7 @@ namespace SimpleGL {
     glShaderSource(id, 1, &s, NULL);
     delete s;
     // clear error message
-    d->errorMessage = "";
+    d->log = "";
     // compile shader
     glCompileShader(id);
     // check compile status
@@ -79,7 +79,7 @@ namespace SimpleGL {
       GLchar *message = new GLchar[messageLength + 1];
       glGetShaderInfoLog(id, messageLength, NULL, message);
       // update message
-      d->errorMessage = message;
+      d->log = message;
       // clean up
       delete[] message;
       // delete shader object
@@ -127,7 +127,7 @@ namespace SimpleGL {
       GLchar *message = new GLchar[messageLength + 1];
       glGetProgramInfoLog(d->id, messageLength, NULL, message);
       // update message
-      d->errorMessage = message;
+      d->log = message;
       // clean up
       delete[] message;
       // return fail
@@ -140,8 +140,8 @@ namespace SimpleGL {
     return true;
   }
 
-  const String &Program::errorMessage() const {
-    return d->errorMessage;
+  const String &Program::log() const {
+    return d->log;
   }
 
   const bool Program::setUniform(const String &name, uint value) const {

@@ -19,7 +19,7 @@ namespace SimpleGL {
 
     const bool link();
 
-    const String &errorMessage() const;
+    const String &log() const;
 
     const bool setUniform(const String &name, uint value) const;
     const bool setUniform(const String &name, int value) const;

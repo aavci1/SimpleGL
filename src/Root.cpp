@@ -27,11 +27,11 @@
 #include <map>
 
 namespace SimpleGL {
-  static Root *_instance = 0;
+  static Root *_instance { nullptr };
 
   class RootPrivate {
   public:
-    RootPrivate() : fpsTime(0), fpsCount(0), fps(0.0f) {
+    RootPrivate() {
       // create assimp importer
       importer = new Assimp::Importer();
     }
@@ -107,7 +107,7 @@ namespace SimpleGL {
       }
     }
 
-    Assimp::Importer *importer;
+    Assimp::Importer *importer { nullptr };
     std::vector<Window *> windows;
     std::vector<SceneNode *> sceneNodes;
     std::vector<Light *> lights;
@@ -118,12 +118,12 @@ namespace SimpleGL {
     std::vector<Mesh *> meshes;
     std::vector<Instance *> instances;
 
-    Vector2i mousePosition;
-    long time;
+    Vector2i mousePosition { 0, 0 };
+    long time { 0 };
 
-    long fpsTime;
-    long fpsCount;
-    float fps;
+    long fpsTime { 0 };
+    long fpsCount { 0 };
+    float fps { 0.0f };
   };
 
   Root::Root() : d(new RootPrivate()) {
@@ -152,8 +152,6 @@ namespace SimpleGL {
 
   Window *Root::createWindow(int width, int height) {
     Window *window = new Window(width, height);
-    // add a default viewport and camera
-    window->createViewport(createCamera());
     // add to list
     d->windows.push_back(window);
     // return window

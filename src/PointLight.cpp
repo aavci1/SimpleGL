@@ -12,22 +12,19 @@
 namespace SimpleGL {
   class PointLightPrivate {
   public:
-    PointLightPrivate() : attenuationRange(256.0f), attenuationConstant(0.0f), attenuationLinear(0.0f), attenuationQuadratic(1.0f) {
+    PointLightPrivate() {
       sphere = Root::instance()->createSphere("", attenuationRange, 32, 32);
     }
 
     ~PointLightPrivate() {
     }
 
-    Vector3f direction;
-    float innerAngle;
-    float outerAngle;
-    float attenuationRange;
-    float attenuationConstant;
-    float attenuationLinear;
-    float attenuationQuadratic;
+    Mesh *sphere { nullptr };
 
-    Mesh *sphere;
+    float attenuationRange { 256.0f };
+    float attenuationConstant { 0.0f };
+    float attenuationLinear { 0.0f };
+    float attenuationQuadratic { 1.0f };
   };
 
   PointLight::PointLight() : d(new PointLightPrivate())  {
