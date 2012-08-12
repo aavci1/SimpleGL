@@ -7,17 +7,16 @@
 namespace SimpleGL {
   class InstancePrivate;
 
-  class Instance : public Renderable, public SceneObject {
+  class Instance : public SceneObject {
   public:
-    Instance(const String &name);
+    Instance(const String &mesh, const String &material);
     ~Instance();
-
-    const String &name() const;
 
     const String &mesh() const;
     void setMesh(const String &mesh);
 
-    void render(Camera *camera);
+    const String &material() const;
+    void setMaterial(const String &material);
 
   private:
     InstancePrivate *d;

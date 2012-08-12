@@ -698,8 +698,8 @@ namespace SimpleGL {
     return d->meshes;
   }
 
-  Instance *Root::createInstance(const String &name) {
-    Instance *instance = new Instance(name);
+  Instance *Root::createInstance(const String &mesh, const String &material) {
+    Instance *instance = new Instance(mesh, material);
     // add to list
     d->instances.push_back(instance);
     // return instance

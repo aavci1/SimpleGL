@@ -62,7 +62,7 @@ namespace SimpleGL {
     Mesh *loadMesh(const String &name, const String &path);
     const std::vector<Mesh *> &meshes() const;
 
-    Instance *createInstance(const String &name);
+    Instance *createInstance(const String &mesh, const String &material);
     const std::vector<Instance *> &instances() const;
 
     const long renderOneFrame(long time);

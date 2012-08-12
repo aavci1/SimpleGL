@@ -9,25 +9,21 @@
 namespace SimpleGL {
   class InstancePrivate {
   public:
-    InstancePrivate(const String &name) : name(name), mesh("") {
+    InstancePrivate(const String &mesh, const String &material) : mesh(mesh), material(material) {
     }
 
     ~InstancePrivate() {
     }
 
-    String name { "" };
     String mesh { "" };
+    String material { "" };
   };
 
-  Instance::Instance(const String &name) : d(new InstancePrivate(name)) {
+  Instance::Instance(const String &mesh, const String &material) : d(new InstancePrivate(mesh, material)) {
   }
 
   Instance::~Instance() {
     delete d;
-  }
-
-  const String &Instance::name() const {
-    return d->name;
   }
 
   const String &Instance::mesh() const {
@@ -38,9 +34,11 @@ namespace SimpleGL {
     d->mesh = mesh;
   }
 
-  void Instance::render(Camera *camera) {
-    Mesh *mesh = Root::instance()->retrieveMesh(d->mesh);
-    if (mesh)
-      mesh->render(camera);
+  const String &Instance::material() const {
+    return d->material;
+  }
+
+  void Instance::setMaterial(const String &material) {
+    d->material = material;
   }
 }

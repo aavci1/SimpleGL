@@ -81,19 +81,13 @@ void QSGLWidget::initializeGL() {
   Root::instance()->createSphere("Sphere", 10.0f);
   Root::instance()->createCube("Cube", 50.0f, 50.0f, 50.0f);
   // create floor object
-  Instance *floor = Root::instance()->createInstance("");
-  floor->setMesh("Plane");
-  floor->setMaterial("Laminate");
   SceneNode *floorNode = Root::instance()->rootSceneNode()->createChildSceneNode();
-  floorNode->attachObject(floor);
+  floorNode->attachObject(Root::instance()->createInstance("Plane", "Laminate"));
   // create ceiling object
-  Instance *ceiling = Root::instance()->createInstance("");
-  ceiling->setMesh("Plane");
-  ceiling->setMaterial("Ceiling");
   SceneNode *ceilingNode = Root::instance()->rootSceneNode()->createChildSceneNode();
   ceilingNode->setPosition(0.0f, 300.0f, 0.0f);
   ceilingNode->roll(180.0f);
-  ceilingNode->attachObject(ceiling);
+  ceilingNode->attachObject(Root::instance()->createInstance("Plane", "Ceiling"));
   // add a directional light
   DirectionalLight *directionalLight = static_cast<DirectionalLight *>(Root::instance()->createLight(LT_DIRECTIONAL));
   directionalLight->setColor(1.0f, 1.0f, 1.0f);
@@ -105,13 +99,11 @@ void QSGLWidget::initializeGL() {
   srand(0);
   for (int i = -5; i <= 5; ++i) {
     for (int j = -5; j <= 5; ++j) {
+      // create light node
       SceneNode *lightNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(j * 180.0f, 290.0f, i * 180.0f));
-      // create a sphere instance
-      Instance *sphereInstance = Root::instance()->createInstance("");
-      sphereInstance->setMesh("Sphere");
-      sphereInstance->setMaterial("Ceiling");
-      lightNode->attachObject(sphereInstance);
-      // create a light
+      // attach a sphere
+      lightNode->attachObject(Root::instance()->createInstance("Sphere", "Ceiling"));
+      // attach a light
       PointLight *light = static_cast<PointLight *>(Root::instance()->createLight(LT_POINT));
       // SpotLight *light = static_cast<SpotLight *>(Root::instance()->createLight(LT_SPOT));
       // light->setInnerAngle(10);
@@ -122,15 +114,14 @@ void QSGLWidget::initializeGL() {
       light->setAttenuation(400.0f);
       lightNode->pitch(-90, TS_WORLD);
       lightNode->attachObject(light);
-      // create model instance
-      Instance *modelInstance = Root::instance()->createInstance("");
-      modelInstance->setMesh("MODEL");
+      // create model node
       SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
       modelNode->setPosition(j * 180.0f, 0.0f, i * 180.0f);
       modelNode->yaw(180.0f);
       // modelNode->pitch(90.0f);
       modelNode->setScale(20, 20, 20);
-      modelNode->attachObject(modelInstance);
+      // attach model
+      modelNode->attachObject(Root::instance()->createInstance("MODEL", ""));
     }
   }
 }
