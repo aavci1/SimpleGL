@@ -27,7 +27,7 @@ namespace SimpleGL {
     static void destroy();
     static Root *instance();
 
-    Window *createWindow(int width = 800, int height = 600, bool fullscreen = false, bool stereo = false);
+    Window *createWindow(int width = 800, int height = 600);
     const std::vector<Window *> &windows() const;
 
     SceneNode *createSceneNode();
@@ -65,14 +65,7 @@ namespace SimpleGL {
     Instance *createInstance(const String &name);
     const std::vector<Instance *> &instances() const;
 
-    const Vector2i &mousePosition() const;
-
-    void showCursor() const;
-    void hideCursor() const;
-
-    const bool isKeyDown(int key) const;
-
-    const long renderOneFrame();
+    const long renderOneFrame(long time);
 
     const float fps() const;
   private:

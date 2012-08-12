@@ -39,7 +39,7 @@ namespace SimpleGL {
     if (!dib)
       return;
     // get image data
-    BYTE* imageData = FreeImage_GetBits(dib);
+    BYTE *imageData = FreeImage_GetBits(dib);
     // set file data
     uint width = FreeImage_GetWidth(dib);
     uint height = FreeImage_GetHeight(dib);

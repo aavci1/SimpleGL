@@ -17,7 +17,6 @@
 #include "Window.h"
 
 #include <GL/glew.h>
-#include <GL/glfw.h>
 
 #include <FreeImage.h>
 
@@ -33,9 +32,6 @@ namespace SimpleGL {
   class RootPrivate {
   public:
     RootPrivate() : fpsTime(0), fpsCount(0), fps(0.0f) {
-      // initialize GLFW
-      if (glfwInit() != GL_TRUE)
-        std::cerr << "error: can not initialize GLFW." << std::endl;
       // create assimp importer
       importer = new Assimp::Importer();
     }
@@ -69,8 +65,6 @@ namespace SimpleGL {
       // delete instances
       for (uint i = 0; i < instances.size(); ++i)
         delete instances[i];
-      // terminate GLFW
-      glfwTerminate();
     }
 
     void calculateWorldTransforms(SceneNode *node) {
@@ -156,8 +150,8 @@ namespace SimpleGL {
     return _instance;
   }
 
-  Window *Root::createWindow(int width, int height, bool fullscreen, bool stereo) {
-    Window *window = new Window(width, height, fullscreen, stereo);
+  Window *Root::createWindow(int width, int height) {
+    Window *window = new Window(width, height);
     // add a default viewport and camera
     window->createViewport(createCamera());
     // add to list
@@ -562,25 +556,25 @@ namespace SimpleGL {
 
   Mesh *Root::loadMesh(const String &name, const String &path) {
     const aiScene *scene = d->importer->ReadFile(path.c_str(),
-                                                   aiProcess_CalcTangentSpace |
-                                                   aiProcess_JoinIdenticalVertices |
-                                                   aiProcess_Triangulate |
-                                                   // aiProcess_RemoveComponent |
-                                                   aiProcess_GenSmoothNormals |
-                                                   aiProcess_SplitLargeMeshes |
-                                                   aiProcess_PreTransformVertices |
-                                                   aiProcess_LimitBoneWeights |
-                                                   aiProcess_ImproveCacheLocality |
-                                                   aiProcess_RemoveRedundantMaterials |
-                                                   aiProcess_FixInfacingNormals |
-                                                   aiProcess_SortByPType |
-                                                   aiProcess_FindDegenerates |
-                                                   aiProcess_FindInvalidData |
-                                                   aiProcess_GenUVCoords |
-                                                   aiProcess_TransformUVCoords |
-                                                   aiProcess_FindInstances |
-                                                   aiProcess_OptimizeMeshes |
-                                                   aiProcess_OptimizeGraph);
+                           aiProcess_CalcTangentSpace |
+                           aiProcess_JoinIdenticalVertices |
+                           aiProcess_Triangulate |
+                           // aiProcess_RemoveComponent |
+                           aiProcess_GenSmoothNormals |
+                           aiProcess_SplitLargeMeshes |
+                           aiProcess_PreTransformVertices |
+                           aiProcess_LimitBoneWeights |
+                           aiProcess_ImproveCacheLocality |
+                           aiProcess_RemoveRedundantMaterials |
+                           aiProcess_FixInfacingNormals |
+                           aiProcess_SortByPType |
+                           aiProcess_FindDegenerates |
+                           aiProcess_FindInvalidData |
+                           aiProcess_GenUVCoords |
+                           aiProcess_TransformUVCoords |
+                           aiProcess_FindInstances |
+                           aiProcess_OptimizeMeshes |
+                           aiProcess_OptimizeGraph);
     // return mesh if scene cannot be loaded
     if (!scene) {
       std::cerr << "error: can not load model " << path << std::endl;
@@ -718,26 +712,8 @@ namespace SimpleGL {
     return d->instances;
   }
 
-  const Vector2i &Root::mousePosition() const {
-    return d->mousePosition;
-  }
-
-  void Root::showCursor() const {
-    glfwEnable(GLFW_MOUSE_CURSOR);
-  }
-
-  void Root::hideCursor() const {
-    glfwDisable(GLFW_MOUSE_CURSOR);
-  }
-
-  const bool Root::isKeyDown(int key) const {
-    return glfwGetKey(key) == 1;
-  }
-
-  const long Root::renderOneFrame() {
+  const long Root::renderOneFrame(long time) {
     // calculate time since last frame
-    glfwPollEvents();
-    long time = long(glfwGetTime() * 1000);
     long millis = (d->time == 0) ? 0 : (time - d->time);
     d->time = time;
     // update fps
@@ -750,14 +726,7 @@ namespace SimpleGL {
     // update scene transformations
     d->calculateWorldTransforms(d->sceneNodes.at(0));
     // start rendering
-    for (uint i = 0; i < d->windows.size(); ++i) {
-      Window *window = d->windows.at(i);
-      // check window size
-      int w = 0, h = 0;
-      glfwGetWindowSize(&w, &h);
-      // fire resize event if size changed
-      if (window->size().x != w || window->size().y != h)
-        window->resizeEvent(w, h);
+for (Window * window: d->windows) {
       // clear color and depth buffers
       glDepthMask(GL_TRUE);
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -767,11 +736,8 @@ namespace SimpleGL {
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       // unbind framebuffer
       window->frameBuffer()->unbind();
-      // render throught each viewport
-      for (uint j = 0; j < window->viewports().size(); ++j) {
-        Viewport *viewport = window->viewports().at(j);
-        if (!viewport)
-          continue;
+      // render through each viewport
+for (Viewport * viewport: window->viewports()) {
         // calculate viewport dimension in pixels;
         float left = viewport->left() * window->size().x;
         float top = viewport->top() * window->size().y;
@@ -851,10 +817,6 @@ namespace SimpleGL {
         window->frameBuffer()->unbindTextures();
 #endif
       }
-      // swap buffers
-      glfwSwapBuffers();
-      // get mouse position
-      glfwGetMousePos(&d->mousePosition.x, &d->mousePosition.y);
     }
     return millis;
   }
