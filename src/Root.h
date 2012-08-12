@@ -65,7 +65,7 @@ namespace SimpleGL {
     Instance *createInstance(const String &mesh, const String &material);
     const std::vector<Instance *> &instances() const;
 
-    const long renderOneFrame(long time);
+    void renderOneFrame(long time);
 
     const float fps() const;
   private:

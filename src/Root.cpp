@@ -710,7 +710,7 @@ namespace SimpleGL {
     return d->instances;
   }
 
-  const long Root::renderOneFrame(long time) {
+  void Root::renderOneFrame(long time) {
     // calculate time since last frame
     long millis = (d->time == 0) ? 0 : (time - d->time);
     d->time = time;
@@ -816,7 +816,6 @@ namespace SimpleGL {
 #endif
       }
     }
-    return millis;
   }
 
   const float Root::fps() const {
