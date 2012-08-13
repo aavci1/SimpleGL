@@ -56,33 +56,37 @@ namespace SimpleGL {
   void Window::setSize(const int width, const int height) {
     d->width = width;
     d->height = height;
-    // delete textures
-    glDeleteTextures(1, &d->texture0);
-    glDeleteTextures(1, &d->texture1);
-    glDeleteTextures(1, &d->texture2);
     // delete depth buffer
     glDeleteTextures(1, &d->depthBuffer);
-    // bind the frame buffer
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, d->frameBuffer);
     // generate depth buffer
     glGenTextures(1, &d->depthBuffer);
     glBindTexture(GL_TEXTURE_2D, d->depthBuffer);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, d->width, d->height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 0);
-    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, d->depthBuffer, 0);
+    // delete texture0
+    glDeleteTextures(1, &d->texture0);
     // generate texture0
     glGenTextures(1, &d->texture0);
     glBindTexture(GL_TEXTURE_2D, d->texture0);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, d->width, d->height, 0, GL_RGBA, GL_FLOAT, NULL);
-    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, d->texture0, 0);
+    // delete texture1
+    glDeleteTextures(1, &d->texture1);
     // generate texture1
     glGenTextures(1, &d->texture1);
     glBindTexture(GL_TEXTURE_2D, d->texture1);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, d->width, d->height, 0, GL_RGBA, GL_FLOAT, NULL);
-    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, d->texture1, 0);
+    // delete texture2
+    glDeleteTextures(1, &d->texture2);
     // generate texture2
     glGenTextures(1, &d->texture2);
     glBindTexture(GL_TEXTURE_2D, d->texture2);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, d->width, d->height, 0, GL_RGBA, GL_FLOAT, NULL);
+    // bind the frame buffer
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, d->frameBuffer);
+    // attach depth buffer
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, d->depthBuffer, 0);
+    // attach textures
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, d->texture0, 0);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, d->texture1, 0);
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, d->texture2, 0);
     // set draw buffers
     GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
@@ -164,7 +168,7 @@ namespace SimpleGL {
       // blit normal buffer
       glReadBuffer(GL_COLOR_ATTACHMENT1);
       glBlitFramebuffer(0, 0, d->width, d->height, d->width / 2, d->height / 2, d->width, d->height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-      // blit normal buffer
+      // blit position buffer
       glReadBuffer(GL_COLOR_ATTACHMENT2);
       glBlitFramebuffer(0, 0, d->width, d->height, 0, 0, d->width / 2, d->height / 2, GL_COLOR_BUFFER_BIT, GL_LINEAR);
       // unbind frame buffer
