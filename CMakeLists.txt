@@ -15,7 +15,6 @@ add_definitions(-O2 -msse2 -Wall -std=c++11)
 set (SOURCES
   src/Camera.cpp
   src/DirectionalLight.cpp
-  src/FrameBuffer.cpp
   src/Instance.cpp
   src/Light.cpp
   src/Main.cpp

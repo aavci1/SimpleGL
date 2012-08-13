@@ -8,7 +8,6 @@
 namespace SimpleGL {
   class WindowPrivate;
   class Camera;
-  class FrameBuffer;
   class Viewport;
 
   class Window {
@@ -16,8 +15,8 @@ namespace SimpleGL {
     Window(int width, int height);
     ~Window();
 
-    const Vector2i &size() const;
-    void setSize(const Vector2i &size);
+    uint32_t width();
+    uint32_t height();
     void setSize(const int width, const int height);
 
     const std::vector<Viewport *> &viewports() const;

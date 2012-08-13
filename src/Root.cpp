@@ -742,7 +742,7 @@ namespace SimpleGL {
       program->setUniform("texture0", 0);
       program->setUniform("texture1", 1);
       program->setUniform("texture2", 2);
-      program->setUniform("viewportSize", Vector2f(viewport->width() * window->size().x, viewport->height() * window->size().y));
+      program->setUniform("viewportSize", Vector2f(viewport->width() * window->width(), viewport->height() * window->height()));
       program->setUniform("cameraPos", camera->parentSceneNode()->worldPosition());
       // render the light
       for (uint k = 0; k < d->lights.size(); ++k)

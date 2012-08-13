@@ -1,7 +1,6 @@
 #include "Window.h"
 
 #include "Camera.h"
-#include "FrameBuffer.h"
 #include "Root.h"
 #include "Viewport.h"
 
@@ -13,22 +12,32 @@ namespace SimpleGL {
   class WindowPrivate {
   public:
     WindowPrivate() {
+      // generate frame buffer
+      glGenFramebuffers(1, &frameBuffer);
     }
 
     ~WindowPrivate() {
       // delete frame buffer
-      delete frameBuffer;
+      glDeleteFramebuffers(1, &frameBuffer);
       // delete viewports
       for (uint i = 0; i < viewports.size(); ++i)
         delete viewports[i];
     }
 
-    Vector2i size { 0, 0 };
-    FrameBuffer *frameBuffer { nullptr };
     std::vector<Viewport *> viewports;
+    uint32_t width { 0 };
+    uint32_t height { 0 };
+    // frame buffer handle
+    GLuint frameBuffer { 0 };
+    // depth buffer handle
+    GLuint depthBuffer { 0 };
+    GLuint texture0 { 0 };
+    GLuint texture1 { 0 };
+    GLuint texture2 { 0 };
   };
 
   Window::Window(int width, int height) : d(new WindowPrivate()) {
+    // generate textures
     setSize(width, height);
   }
 
@@ -36,20 +45,50 @@ namespace SimpleGL {
     delete d;
   }
 
-  const Vector2i &Window::size() const {
-    return d->size;
+  uint32_t Window::width() {
+    return d->width;
   }
 
-  void Window::setSize(const Vector2i &size) {
-    d->size = size;
-    // delete old frame buffer
-    delete d->frameBuffer;
-    // create frame buffer
-    d->frameBuffer = new FrameBuffer(size.x, size.y);
+  uint32_t Window::height() {
+    return d->height;
   }
 
   void Window::setSize(const int width, const int height) {
-    setSize(Vector2i(width, height));
+    d->width = width;
+    d->height = height;
+    // delete textures
+    glDeleteTextures(1, &d->texture0);
+    glDeleteTextures(1, &d->texture1);
+    glDeleteTextures(1, &d->texture2);
+    // delete depth buffer
+    glDeleteTextures(1, &d->depthBuffer);
+    // bind the frame buffer
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, d->frameBuffer);
+    // generate depth buffer
+    glGenTextures(1, &d->depthBuffer);
+    glBindTexture(GL_TEXTURE_2D, d->depthBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, d->width, d->height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 0);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, d->depthBuffer, 0);
+    // generate texture0
+    glGenTextures(1, &d->texture0);
+    glBindTexture(GL_TEXTURE_2D, d->texture0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, d->width, d->height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, d->texture0, 0);
+    // generate texture1
+    glGenTextures(1, &d->texture1);
+    glBindTexture(GL_TEXTURE_2D, d->texture1);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, d->width, d->height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, d->texture1, 0);
+    // generate texture2
+    glGenTextures(1, &d->texture2);
+    glBindTexture(GL_TEXTURE_2D, d->texture2);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, d->width, d->height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, d->texture2, 0);
+    // set draw buffers
+    GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+    glDrawBuffers(3, drawBuffers);
+    // unbind the frame buffer
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   }
 
   const std::vector<Viewport *> &Window::viewports() const {
@@ -78,19 +117,19 @@ namespace SimpleGL {
     // clear color and depth buffers
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // bind gbuffer for writing
-    d->frameBuffer->bind();
+    // bind frame buffer
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, d->frameBuffer);
     // clear color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // unbind framebuffer
-    d->frameBuffer->unbind();
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     // render through each viewport
     for (Viewport *viewport: d->viewports) {
       // calculate viewport dimension in pixels;
-      float left = viewport->left() * d->size.x;
-      float top = viewport->top() * d->size.y;
-      float width = viewport->width() * d->size.x;
-      float height = viewport->height() * d->size.y;
+      float left = viewport->left() * d->width;
+      float top = viewport->top() * d->height;
+      float width = viewport->width() * d->width;
+      float height = viewport->height() * d->height;
       // set up viewport
       glViewport(left, top, width, height);
       // get viewport camera
@@ -102,7 +141,7 @@ namespace SimpleGL {
       /////////////////////////////////////////////////////////////////////////////
       ////  GEOMETRY PASS
       /////////////////////////////////////////////////////////////////////////////
-      d->frameBuffer->bind();
+      glBindFramebuffer(GL_DRAW_FRAMEBUFFER, d->frameBuffer);
       // enable face culling
       glEnable(GL_CULL_FACE);
       glCullFace(GL_BACK);
@@ -114,11 +153,22 @@ namespace SimpleGL {
       glDisable(GL_BLEND);
       // render scene
       Root::instance()->renderScene(this, viewport);
-      // unbind gbuffer
-      d->frameBuffer->unbind();
+      // unbind frame buffer
+      glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 #if 0
-      // blit the frame buffer
-      d->frameBuffer->blit();
+      // bind frame buffer for reading
+      glBindFramebuffer(GL_READ_FRAMEBUFFER, d->frameBuffer);
+      // blit color buffer
+      glReadBuffer(GL_COLOR_ATTACHMENT0);
+      glBlitFramebuffer(0, 0, d->width, d->height, 0, d->height / 2, d->width / 2, d->height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+      // blit normal buffer
+      glReadBuffer(GL_COLOR_ATTACHMENT1);
+      glBlitFramebuffer(0, 0, d->width, d->height, d->width / 2, d->height / 2, d->width, d->height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+      // blit normal buffer
+      glReadBuffer(GL_COLOR_ATTACHMENT2);
+      glBlitFramebuffer(0, 0, d->width, d->height, 0, 0, d->width / 2, d->height / 2, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+      // unbind frame buffer
+      glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 #else
       /////////////////////////////////////////////////////////////////////////////
       ////  LIGHTING PASS
@@ -134,11 +184,21 @@ namespace SimpleGL {
       glBlendEquation(GL_FUNC_ADD);
       glBlendFunc(GL_ONE, GL_ONE);
       // bind textures
-      d->frameBuffer->bindTextures();
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, d->texture0);
+      glActiveTexture(GL_TEXTURE1);
+      glBindTexture(GL_TEXTURE_2D, d->texture1);
+      glActiveTexture(GL_TEXTURE2);
+      glBindTexture(GL_TEXTURE_2D, d->texture2);
       // render lights
       Root::instance()->renderLights(this, viewport);
       // unbind textures
-      d->frameBuffer->unbindTextures();
+      glActiveTexture(GL_TEXTURE0);
+      glBindTexture(GL_TEXTURE_2D, 0);
+      glActiveTexture(GL_TEXTURE1);
+      glBindTexture(GL_TEXTURE_2D, 0);
+      glActiveTexture(GL_TEXTURE2);
+      glBindTexture(GL_TEXTURE_2D, 0);
 #endif
     }
   }
