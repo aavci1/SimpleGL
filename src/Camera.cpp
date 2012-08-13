@@ -11,17 +11,12 @@ namespace SimpleGL {
     ~CameraPrivate() {
     }
 
-    Vector3f direction { 0.0f, 0.0f, -1.0f };
-
     float fov { 60.0f };
     float aspectRatio { 1.33f };
     float nearClipDistance { 1.0f };
     float farClipDistance { 5000.0f };
 
-    bool recalcViewMatrix { true };
     Matrix4f viewMatrix;
-
-    bool recalcProjectionMatrix { true };
     Matrix4f projectionMatrix;
   };
 
@@ -38,8 +33,6 @@ namespace SimpleGL {
 
   void Camera::setFov(const float fov) {
     d->fov = fov;
-    // recalc projection matrix
-    d->recalcProjectionMatrix = true;
   }
 
   const float Camera::nearClipDistance() const {
@@ -48,8 +41,6 @@ namespace SimpleGL {
 
   void Camera::setNearClipDistance(const float nearClipDistance) {
     d->nearClipDistance = nearClipDistance;
-    // recalc projection matrix
-    d->recalcProjectionMatrix = true;
   }
 
   const float Camera::farClipDistance() const {
@@ -58,8 +49,6 @@ namespace SimpleGL {
 
   void Camera::setFarClipDistance(const float farClipDistance) {
     d->farClipDistance = farClipDistance;
-    // recalc projection matrix
-    d->recalcProjectionMatrix = true;
   }
 
   const float Camera::aspectRatio() const {
@@ -68,32 +57,26 @@ namespace SimpleGL {
 
   void Camera::setAspectRatio(const float aspectRatio) {
     d->aspectRatio = aspectRatio;
-    // recalc projection matrix
-    d->recalcProjectionMatrix = true;
   }
 
   const Matrix4f &Camera::viewMatrix() const {
-    if (d->recalcViewMatrix) {
-      // calculate eye, lookAt and up vectors
-      Vector3f eye = (parentSceneNode() != 0) ? parentSceneNode()->worldPosition() : Vector3f(0.0f, 0.0f, 0.0f);
-      Vector3f lookAt = (parentSceneNode() != 0) ? parentSceneNode()->worldPosition() + parentSceneNode()->worldOrientation() * d->direction : Vector3f(0.0f, 0.0f, -1.0f);
-      Vector3f up = (parentSceneNode() != 0) ? parentSceneNode()->worldOrientation() * Vector3f(0.0f, 1.0f, 0.0f) : Vector3f(0.0f, 1.0f, 0.0f);
-      // calculate view matrix
-      d->viewMatrix = glm::lookAt(eye, lookAt, up);
-      // FIXME: dont reset flag, because parent transformation may change out of our control
-      // d->recalcViewMatrix = false;
+    // set default parameters
+    Vector3f eye = Vector3f(0.0f, 0.0f, 0.0f), lookAt = Vector3f(0.0f, 0.0f, -1.0f), up = Vector3f(0.0f, 1.0f, 0.0f);
+    // adjust parameters with parent node
+    if (parentSceneNode()) {
+      eye = parentSceneNode()->worldPosition();
+      lookAt = parentSceneNode()->worldPosition() + parentSceneNode()->worldOrientation() * lookAt;
+      up = parentSceneNode()->worldOrientation() * up;
     }
+    // calculate view matrix
+    d->viewMatrix = glm::lookAt(eye, lookAt, up);
     // return view matrix
     return d->viewMatrix;
   }
 
   const Matrix4f &Camera::projectionMatrix() const {
-    if (d->recalcProjectionMatrix) {
-      // calculate projection matrix
-      d->projectionMatrix = glm::perspective(d->fov, d->aspectRatio, d->nearClipDistance, d->farClipDistance);
-      // reset flag
-      d->recalcProjectionMatrix = false;
-    }
+    // calculate projection matrix
+    d->projectionMatrix = glm::perspective(d->fov, d->aspectRatio, d->nearClipDistance, d->farClipDistance);
     // return projection matrix
     return d->projectionMatrix;
   }
