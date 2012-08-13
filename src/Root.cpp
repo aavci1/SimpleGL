@@ -2,7 +2,6 @@
 
 #include "Camera.h"
 #include "DirectionalLight.h"
-#include "FrameBuffer.h"
 #include "Instance.h"
 #include "Light.h"
 #include "Material.h"
