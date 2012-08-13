@@ -19,8 +19,9 @@ namespace SimpleGL {
     GLuint frameBuffer { 0 };
     // depth buffer handle
     GLuint depthBuffer { 0 };
-    // color buffers
-    std::vector<GLuint> colorBuffers;
+    GLuint texture0 { 0 };
+    GLuint texture1 { 0 };
+    GLuint texture2 { 0 };
   };
 
   FrameBuffer::FrameBuffer(int width, int height) : d(new FrameBufferPrivate(width, height)) {
@@ -31,20 +32,35 @@ namespace SimpleGL {
     // generate depth buffer
     glGenTextures(1, &d->depthBuffer);
     glBindTexture(GL_TEXTURE_2D, d->depthBuffer);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, d->width, d->height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 0);
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, d->depthBuffer, 0);
+    // generate texture0
+    glGenTextures(1, &d->texture0);
+    glBindTexture(GL_TEXTURE_2D, d->texture0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, d->width, d->height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, d->texture0, 0);
+    // generate texture1
+    glGenTextures(1, &d->texture1);
+    glBindTexture(GL_TEXTURE_2D, d->texture1);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, d->width, d->height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, d->texture1, 0);
+    // generate texture2
+    glGenTextures(1, &d->texture2);
+    glBindTexture(GL_TEXTURE_2D, d->texture2);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, d->width, d->height, 0, GL_RGBA, GL_FLOAT, NULL);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, d->texture2, 0);
+    // set draw buffers
+    GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+    glDrawBuffers(3, drawBuffers);
     // unbind the frame buffer
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   }
 
   FrameBuffer::~FrameBuffer() {
-    // delete color buffers
-    for (uint i = 0; i < d->colorBuffers.size(); ++i)
-      glDeleteTextures(1, &d->colorBuffers.at(i));
+    // delete textures
+    glDeleteTextures(1, &d->texture0);
+    glDeleteTextures(1, &d->texture1);
+    glDeleteTextures(1, &d->texture2);
     // delete depth buffer
     glDeleteTextures(1, &d->depthBuffer);
     // delete frame buffer
@@ -55,49 +71,28 @@ namespace SimpleGL {
 
   void FrameBuffer::bind() const {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, d->frameBuffer);
-    // set draw buffers
-    GLenum *drawBuffers = new GLenum[d->colorBuffers.size()];
-    for (uint i = 0; i < d->colorBuffers.size(); ++i)
-      drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
-    glDrawBuffers(d->colorBuffers.size(), drawBuffers);
-    delete[] drawBuffers;
   }
 
   void FrameBuffer::unbind() const {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   }
 
-  void FrameBuffer::createTexture(TextureFormat textureFormat) {
-    GLuint colorBuffer;
-    // bind the frame buffer
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, d->frameBuffer);
-    // generate color buffer
-    glGenTextures(1, &colorBuffer);
-    glBindTexture(GL_TEXTURE_2D, colorBuffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, (textureFormat == TF_RGBA8) ? GL_RGBA8 : GL_RGBA16F, d->width, d->height, 0, GL_RGBA, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + d->colorBuffers.size(), GL_TEXTURE_2D, colorBuffer, 0);
-    // add to list
-    d->colorBuffers.push_back(colorBuffer);
-    // unbind frame buffer
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-  }
-
   void FrameBuffer::bindTextures() const {
-    for (uint i = 0; i < d->colorBuffers.size(); ++i) {
-      glActiveTexture(GL_TEXTURE0 + i);
-      glBindTexture(GL_TEXTURE_2D, d->colorBuffers.at(i));
-    }
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, d->texture0);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, d->texture1);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, d->texture2);
   }
 
   void FrameBuffer::unbindTextures() const {
-    for (uint i = 0; i < d->colorBuffers.size(); ++i) {
-      glActiveTexture(GL_TEXTURE0 + i);
-      glBindTexture(GL_TEXTURE_2D, 0);
-    }
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, 0);
   }
 
   void FrameBuffer::blit() const {

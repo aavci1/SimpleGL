@@ -46,12 +46,6 @@ namespace SimpleGL {
     delete d->frameBuffer;
     // create frame buffer
     d->frameBuffer = new FrameBuffer(size.x, size.y);
-    // create color buffer
-    d->frameBuffer->createTexture(TF_RGBA8);
-    // create normal buffer
-    d->frameBuffer->createTexture(TF_RGBA16F);
-    // create position buffer
-    d->frameBuffer->createTexture(TF_RGBA16F);
   }
 
   void Window::setSize(const int width, const int height) {

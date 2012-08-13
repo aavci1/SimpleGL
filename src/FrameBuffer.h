@@ -11,8 +11,6 @@ namespace SimpleGL {
     FrameBuffer(int width, int height);
     ~FrameBuffer();
 
-    void createTexture(TextureFormat textureFormat);
-
     void bind() const;
     void unbind() const;
 
