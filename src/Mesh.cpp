@@ -102,57 +102,18 @@ namespace SimpleGL {
       // increase offset
       offset += 2 * sizeof(float);
     }
-    // bone info 0
-    if (vertexFormat & AT_BONEINFO0) {
-      // bone id
-      glEnableVertexAttribArray(AP_BONEID0);
-      glVertexAttribIPointer(AP_BONEID0, 1, GL_INT, stride, (void *)offset);
+    // bone info
+    if (vertexFormat & AT_BONEINFO) {
+      // bone ids
+      glEnableVertexAttribArray(AP_BONEIDS);
+      glVertexAttribIPointer(AP_BONEIDS, 4, GL_INT, stride, (void *)offset);
       // increase offset
-      offset += sizeof(int);
-      // bone weight
-      glEnableVertexAttribArray(AP_BONEWEIGHT0);
-      glVertexAttribPointer(AP_BONEWEIGHT0, 1, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      offset += 4 * sizeof(int);
+      // bone weights
+      glEnableVertexAttribArray(AP_BONEWEIGHTS);
+      glVertexAttribPointer(AP_BONEWEIGHTS, 4, GL_FLOAT, GL_FALSE, stride, (void *)offset);
       // increase offset
-      offset += sizeof(false);
-    }
-    // bone info 1
-    if (vertexFormat & AT_BONEINFO1) {
-      // bone id
-      glEnableVertexAttribArray(AP_BONEID1);
-      glVertexAttribIPointer(AP_BONEID1, 1, GL_INT, stride, (void *)offset);
-      // increase offset
-      offset += sizeof(int);
-      // bone weight
-      glEnableVertexAttribArray(AP_BONEWEIGHT1);
-      glVertexAttribPointer(AP_BONEWEIGHT1, 1, GL_FLOAT, GL_FALSE, stride, (void *)offset);
-      // increase offset
-      offset += sizeof(false);
-    }
-    // bone info 2
-    if (vertexFormat & AT_BONEINFO2) {
-      // bone id
-      glEnableVertexAttribArray(AP_BONEID2);
-      glVertexAttribIPointer(AP_BONEID2, 1, GL_INT, stride, (void *)offset);
-      // increase offset
-      offset += sizeof(int);
-      // bone weight
-      glEnableVertexAttribArray(AP_BONEWEIGHT2);
-      glVertexAttribPointer(AP_BONEWEIGHT2, 1, GL_FLOAT, GL_FALSE, stride, (void *)offset);
-      // increase offset
-      offset += sizeof(false);
-    }
-    // bone info 3
-    if (vertexFormat & AT_BONEINFO3) {
-      // bone id
-      glEnableVertexAttribArray(AP_BONEID3);
-      glVertexAttribIPointer(AP_BONEID3, 1, GL_INT, stride, (void *)offset);
-      // increase offset
-      offset += sizeof(int);
-      // bone weight
-      glEnableVertexAttribArray(AP_BONEWEIGHT3);
-      glVertexAttribPointer(AP_BONEWEIGHT3, 1, GL_FLOAT, GL_FALSE, stride, (void *)offset);
-      // increase offset
-      offset += sizeof(false);
+      offset += 4 * sizeof(false);
     }
     // unbind vertex array object
     glBindVertexArray(0);
