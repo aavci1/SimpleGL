@@ -25,6 +25,7 @@ set (SOURCES
   src/Root.cpp
   src/SceneNode.cpp
   src/SceneObject.cpp
+  src/SubMesh.cpp
   src/SpotLight.cpp
   src/Texture.cpp
   src/Viewport.cpp

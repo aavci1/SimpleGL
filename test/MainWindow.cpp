@@ -16,7 +16,6 @@
 #include <QMouseEvent>
 #include <QWheelEvent>
 
-
 using namespace SimpleGL;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
@@ -118,15 +117,17 @@ void MainWindow::initialized() {
       light->setAttenuation(400.0f);
       lightNode->pitch(-90, TS_WORLD);
       lightNode->attachObject(light);
-      // create model node
-      SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
-      modelNode->setPosition(j * 180.0f, 0.0f, i * 180.0f);
-      modelNode->yaw(180.0f);
-      // modelNode->pitch(90.0f);
-      modelNode->setScale(20, 20, 20);
-      // attach model
-      modelNode->attachObject(Root::instance()->createInstance("MODEL", ""));
     }
+  }
+  if (QCoreApplication::argc() > 1) {
+    // load model
+    Root::instance()->loadMesh("MODEL", QCoreApplication::arguments().at(1).toStdString());
+    // create model node
+    SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
+    // attach model
+    modelNode->attachObject(Root::instance()->createInstance("MODEL", ""));
+    // scale model node
+    modelNode->setScale(3, 3, 3);
   }
 }
 

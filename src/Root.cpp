@@ -11,6 +11,7 @@
 #include "Root.h"
 #include "SceneNode.h"
 #include "SpotLight.h"
+#include "SubMesh.h"
 #include "Texture.h"
 #include "Viewport.h"
 #include "Window.h"
@@ -24,6 +25,7 @@
 #include <assimp/postprocess.h>
 
 #include <map>
+#include <sstream>
 
 namespace SimpleGL {
   static Root *_instance { nullptr };
@@ -86,23 +88,26 @@ namespace SimpleGL {
         Mesh *mesh = Root::instance()->retrieveMesh(instance->mesh());
         if (!mesh)
           continue;
-        Material *material = Root::instance()->retrieveMaterial(instance->material());
-        if (!material)
-          material = Root::instance()->retrieveMaterial(mesh->material());
-        if (!material)
-          continue;
-        Program *program = Root::instance()->retrieveProgram(material->program());
-        if (!program)
-          continue;
-        // bind the material
-        material->bind();
-        // set uniforms
-        program->setUniform("ModelMatrix", node->worldTransform());
-        program->setUniform("ModelViewProjMatrix", viewProjMatrix * node->worldTransform());
-        // render the mesh
-        mesh->render(camera);
-        // unbind material
-        material->unbind();
+        for (uint j = 0; j < mesh->numSubMeshes(); ++j) {
+          SubMesh *subMesh = mesh->subMeshAt(j);
+          Material *material = Root::instance()->retrieveMaterial(instance->material());
+          if (!material)
+            material = Root::instance()->retrieveMaterial(subMesh->material());
+          if (!material)
+            continue;
+          Program *program = Root::instance()->retrieveProgram(material->program());
+          if (!program)
+            continue;
+          // bind the material
+          material->bind();
+          // set uniforms
+          program->setUniform("ModelMatrix", node->worldTransform());
+          program->setUniform("ModelViewProjMatrix", viewProjMatrix * node->worldTransform());
+          // render the mesh
+          subMesh->render(camera);
+          // unbind material
+          material->unbind();
+        }
       }
     }
 
@@ -316,8 +321,9 @@ namespace SimpleGL {
     };
     uint indices[] = { 0, 1, 2, 0, 2, 3 };
     // set vertex and index data
-    mesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, 4, 32);
-    mesh->setIndexData(indices, 6);
+    SubMesh *subMesh = mesh->createSubMesh();
+    subMesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, 4, 32);
+    subMesh->setIndexData(indices, 6);
     // return mesh
     return mesh;
   }
@@ -333,8 +339,9 @@ namespace SimpleGL {
     };
     uint indices[] = { 0, 1, 2, 0, 2, 3 };
     // set vertex and index data
-    mesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, 4, 32);
-    mesh->setIndexData(indices, 6);
+    SubMesh *subMesh = mesh->createSubMesh();
+    subMesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, 4, 32);
+    subMesh->setIndexData(indices, 6);
     // return mesh
     return mesh;
   }
@@ -393,8 +400,9 @@ namespace SimpleGL {
       20, 22, 23
     };
     // set vertex and index data
-    mesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, 24, 32);
-    mesh->setIndexData(indices, 36);
+    SubMesh *subMesh = mesh->createSubMesh();
+    subMesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, 24, 32);
+    subMesh->setIndexData(indices, 36);
     // return mesh
     return mesh;
   }
@@ -483,8 +491,9 @@ namespace SimpleGL {
       }
     }
     // set vertex and index data
-    mesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, vertexCount, 32);
-    mesh->setIndexData(indices, indexCount);
+    SubMesh *subMesh = mesh->createSubMesh();
+    subMesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, vertexCount, 32);
+    subMesh->setIndexData(indices, indexCount);
     // clean up
     delete[] vertices;
     delete[] indices;
@@ -544,8 +553,9 @@ namespace SimpleGL {
       }
     }
     // set vertex and index data
-    mesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, vertexCount, 32);
-    mesh->setIndexData(indices, indexCount);
+    SubMesh *subMesh = mesh->createSubMesh();
+    subMesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, vertexCount, 32);
+    subMesh->setIndexData(indices, indexCount);
     // clean up
     delete[] vertices;
     delete[] indices;
@@ -553,27 +563,36 @@ namespace SimpleGL {
     return mesh;
   }
 
+  const std::string toString2(const int number) {
+    std::stringstream ss;
+    ss << number;
+    return ss.str();
+  }
+
   Mesh *Root::loadMesh(const String &name, const String &path) {
+    Mesh *mesh = Root::instance()->createMesh(name);
+    // import scene
     const aiScene *scene = d->importer->ReadFile(path.c_str(),
-                           aiProcess_CalcTangentSpace |
-                           aiProcess_JoinIdenticalVertices |
-                           aiProcess_Triangulate |
-                           // aiProcess_RemoveComponent |
-                           aiProcess_GenSmoothNormals |
-                           aiProcess_SplitLargeMeshes |
-                           aiProcess_PreTransformVertices |
-                           aiProcess_LimitBoneWeights |
-                           aiProcess_ImproveCacheLocality |
-                           aiProcess_RemoveRedundantMaterials |
-                           aiProcess_FixInfacingNormals |
-                           aiProcess_SortByPType |
-                           aiProcess_FindDegenerates |
-                           aiProcess_FindInvalidData |
-                           aiProcess_GenUVCoords |
-                           aiProcess_TransformUVCoords |
-                           aiProcess_FindInstances |
-                           aiProcess_OptimizeMeshes |
-                           aiProcess_OptimizeGraph);
+                                                 aiProcess_CalcTangentSpace |
+                                                 aiProcess_JoinIdenticalVertices |
+                                                 aiProcess_Triangulate |
+                                                 // aiProcess_RemoveComponent |
+                                                 aiProcess_GenSmoothNormals |
+                                                 aiProcess_SplitLargeMeshes |
+                                                 aiProcess_PreTransformVertices |
+                                                 aiProcess_LimitBoneWeights |
+                                                 aiProcess_ImproveCacheLocality |
+                                                 aiProcess_RemoveRedundantMaterials |
+                                                 aiProcess_FixInfacingNormals |
+                                                 aiProcess_SortByPType |
+                                                 aiProcess_FindDegenerates |
+                                                 aiProcess_FindInvalidData |
+                                                 aiProcess_GenUVCoords |
+                                                 aiProcess_TransformUVCoords |
+                                                 aiProcess_FindInstances |
+                                                 aiProcess_OptimizeMeshes |
+                                                 aiProcess_OptimizeGraph |
+                                                 aiProcess_Debone);
     // return mesh if scene cannot be loaded
     if (!scene) {
       std::cerr << "error: can not load model " << path << std::endl;
@@ -590,7 +609,7 @@ namespace SimpleGL {
       aimaterial->Get(AI_MATKEY_NAME, ainame);
       // TODO: get other material properties (specular, shininess etc.)
       //  create material
-      Material *material = Root::instance()->createMaterial(ainame.data);
+      Material *material = Root::instance()->createMaterial(path + "$mat" + toString2(i));
       // TODO: make program configurable
       material->setProgram("Textured");
       // add to list
@@ -610,10 +629,8 @@ namespace SimpleGL {
       }
     }
     // import meshes
-    std::map<uint, Mesh *> meshes;
     for (uint i = 0; i < scene->mNumMeshes; ++i) {
       const struct aiMesh *aimesh = scene->mMeshes[i];
-      std::cout << "Mesh: " << aimesh->mName.data << std::endl;
       // skip meshes with non triangle primitives
       if (aimesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE)
         continue;
@@ -680,19 +697,17 @@ namespace SimpleGL {
         // next face
         face++;
       }
-      // set mesh data
-      Mesh *mesh = Root::instance()->createMesh(name);
-      mesh->setMaterial(materials[aimesh->mMaterialIndex]);
-      mesh->setVertexData(attributes, vertices, vertexCount, stride * 4);
-      mesh->setIndexData(indices, indexCount);
+      // create a submesh
+      SubMesh *subMesh = mesh->createSubMesh();
+      subMesh->setMaterial(materials[aimesh->mMaterialIndex]);
+      subMesh->setVertexData(attributes, vertices, vertexCount, stride * 4);
+      subMesh->setIndexData(indices, indexCount);
       // free resources
       delete[] vertices;
       delete[] indices;
-      // add to list
-      meshes[i] = mesh;
     }
     // return first mesh
-    return meshes.at(0);
+    return mesh;
   }
 
   const std::vector<Mesh *> &Root::meshes() const {

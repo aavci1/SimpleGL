@@ -1,21 +1,24 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include "Renderable.h"
 #include "Types.h"
 
 namespace SimpleGL {
+  class Camera;
+  class SubMesh;
+
   class MeshPrivate;
 
-  class Mesh : public Renderable {
+  class Mesh {
   public:
     Mesh(const String &name);
     ~Mesh();
 
     const String &name() const;
 
-    const bool setVertexData(uint vertexFormat, float vertexData[], uint vertexCount, uint stride);
-    const bool setIndexData(uint indexData[], uint indexCount);
+    uint32_t numSubMeshes() const;
+    SubMesh *subMeshAt(uint32_t index) const;
+    SubMesh *createSubMesh();
 
     void render(Camera *camera);
 
