@@ -3,6 +3,10 @@
 
 #include <QGLWidget>
 
+namespace SimpleGL {
+  class Window;
+}
+
 class QSGLWidgetPrivate;
 
 class QSGLWidget : public QGLWidget {
@@ -10,6 +14,8 @@ class QSGLWidget : public QGLWidget {
 public:
   QSGLWidget(QWidget *parent = 0);
   ~QSGLWidget();
+
+  SimpleGL::Window *sglWindow() const;
 
 protected:
   void initializeGL();
@@ -24,6 +30,18 @@ protected:
   void mouseReleaseEvent(QMouseEvent *e);
 
   void wheelEvent(QWheelEvent *e);
+
+signals:
+  void initialized();
+
+  void keyPressed(QKeyEvent *e);
+  void keyReleased(QKeyEvent *e);
+
+  void mouseMoved(QMouseEvent *e);
+  void mousePressed(QMouseEvent *e);
+  void mouseReleased(QMouseEvent *e);
+
+  void wheelMoved(QWheelEvent *e);
 
 private:
   QSGLWidgetPrivate *d;

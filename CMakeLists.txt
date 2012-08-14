@@ -8,7 +8,7 @@ set (QT_USE_QTOPENGL TRUE)
 # include qt use file
 include (${QT_USE_FILE})
 # include additional directories -- needed for moc files etc.
-include_directories (${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/src)
+include_directories (${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/test)
 # extra definitions
 add_definitions(-O2 -msse2 -Wall -std=c++11)
 # add sources
@@ -17,13 +17,10 @@ set (SOURCES
   src/DirectionalLight.cpp
   src/Instance.cpp
   src/Light.cpp
-  src/Main.cpp
-  src/MainWindow.cpp
   src/Material.cpp
   src/Mesh.cpp
   src/PointLight.cpp
   src/Program.cpp
-  src/QSGLWidget.cpp
   src/Renderable.cpp
   src/Root.cpp
   src/SceneNode.cpp
@@ -32,15 +29,18 @@ set (SOURCES
   src/Texture.cpp
   src/Viewport.cpp
   src/Window.cpp
+  test/Main.cpp
+  test/MainWindow.cpp
+  test/QSGLWidget.cpp
 )
 # add ui files
 qt4_wrap_ui (UI_SOURCES
-  src/MainWindow.ui
+  test/MainWindow.ui
 )
 # add headers
 qt4_wrap_cpp (MOC_SOURCES
-  src/MainWindow.h
-  src/QSGLWidget.h
+  test/MainWindow.h
+  test/QSGLWidget.h
 )
 # add resources
 qt4_add_resources (RESOURCES

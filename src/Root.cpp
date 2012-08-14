@@ -128,6 +128,8 @@ namespace SimpleGL {
   Root::Root() : d(new RootPrivate()) {
     // create root scene node
     d->sceneNodes.push_back(new SceneNode());
+    // initialize glew
+    glewInit();
   }
 
   Root::~Root() {
