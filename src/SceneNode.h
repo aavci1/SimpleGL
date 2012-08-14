@@ -3,8 +3,6 @@
 
 #include "Types.h"
 
-#include <vector>
-
 namespace SimpleGL {
   class SceneNodePrivate;
   class SceneObject;
@@ -19,11 +17,13 @@ namespace SimpleGL {
 
     SceneNode *createChildSceneNode(Vector3f position = Vector3f(0.0f, 0.0f, 0.0f), Quaternion orientation = Quaternion(1.0f, 0.0f, 0.0f, 0.0f), Vector3f scale = Vector3f(1.0f, 1.0f, 1.0f));
 
+    uint32_t numNodes() const;
+    SceneNode *nodeAt(uint32_t index) const;
     void attachNode(SceneNode *node);
-    void attachObject(SceneObject *object);
 
-    const std::vector<SceneNode *> &attachedNodes() const;
-    const std::vector<SceneObject *> &attachedObjects() const;
+    uint32_t numObjects() const;
+    SceneObject *objectAt(uint32_t index) const;
+    void attachObject(SceneObject *object);
 
     const Vector3f &position() const;
     void setPosition(const Vector3f &position);
@@ -47,7 +47,6 @@ namespace SimpleGL {
     void setScale(float x, float y, float z);
 
     const Matrix4f &transform() const;
-
 
     const Vector3f &worldPosition() const;
     const Quaternion &worldOrientation() const;

@@ -57,6 +57,14 @@ namespace SimpleGL {
     return sceneNode;
   }
 
+  uint32_t SceneNode::numNodes() const {
+    return d->attachedNodes.size();
+  }
+
+  SceneNode *SceneNode::nodeAt(uint32_t index) const {
+    return d->attachedNodes.at(index);
+  }
+
   void SceneNode::attachNode(SceneNode *node) {
     // add to the list
     d->attachedNodes.push_back(node);
@@ -64,19 +72,19 @@ namespace SimpleGL {
     node->setParentSceneNode(this);
   }
 
+  uint32_t SceneNode::numObjects() const {
+    return d->attachedObjects.size();
+  }
+
+  SceneObject *SceneNode::objectAt(uint32_t index) const {
+    return d->attachedObjects.at(index);
+  }
+
   void SceneNode::attachObject(SceneObject *object) {
     // add to the list
     d->attachedObjects.push_back(object);
     // set child objects parent
     object->setParentSceneNode(this);
-  }
-
-  const std::vector<SceneNode *> &SceneNode::attachedNodes() const {
-    return d->attachedNodes;
-  }
-
-  const std::vector<SceneObject *> &SceneNode::attachedObjects() const {
-    return d->attachedObjects;
   }
 
   const Vector3f &SceneNode::position() const {

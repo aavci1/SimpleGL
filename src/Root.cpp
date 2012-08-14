@@ -70,17 +70,17 @@ namespace SimpleGL {
       // update node
       node->calculateWorldTransform();
       // visit child nodes
-      for (uint i = 0; i < node->attachedNodes().size(); ++i)
-        calculateWorldTransforms(node->attachedNodes().at(i));
+      for (uint i = 0; i < node->numNodes(); ++i)
+        calculateWorldTransforms(node->nodeAt(i));
     }
 
     void render(Camera *camera, SceneNode *node, const Matrix4f &viewProjMatrix) {
       // visit child nodes
-      for (uint i = 0; i < node->attachedNodes().size(); ++i)
-        render(camera, node->attachedNodes().at(i), viewProjMatrix);
+      for (uint i = 0; i < node->numNodes(); ++i)
+        render(camera, node->nodeAt(i), viewProjMatrix);
       // render meshes
-      for (uint i = 0; i < node->attachedObjects().size(); ++i) {
-        Instance *instance = dynamic_cast<Instance *>(node->attachedObjects().at(i));
+      for (uint i = 0; i < node->numObjects(); ++i) {
+        Instance *instance = dynamic_cast<Instance *>(node->objectAt(i));
         if (!instance)
           continue;
         Mesh *mesh = Root::instance()->retrieveMesh(instance->mesh());
