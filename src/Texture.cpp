@@ -7,7 +7,7 @@
 namespace SimpleGL {
   class TexturePrivate {
   public:
-    TexturePrivate(const String &name, const String &path) : name(name), path(path) {
+    TexturePrivate() {
     }
 
     ~TexturePrivate() {
@@ -19,7 +19,9 @@ namespace SimpleGL {
     GLuint index { 0 };
   };
 
-  Texture::Texture(const String &name, const String &path) : d(new TexturePrivate(name, path)) {
+  Texture::Texture(const String &name, const String &path) : d(new TexturePrivate()) {
+    d->name = name;
+    d->path = path;
     // generate texture object
     glGenTextures(1, &d->id);
     // check file header to find image format

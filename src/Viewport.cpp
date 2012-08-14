@@ -3,7 +3,7 @@
 namespace SimpleGL {
   class ViewportPrivate {
   public:
-    ViewportPrivate(Camera *camera) : camera(camera) {
+    ViewportPrivate() {
     }
 
     ~ViewportPrivate() {
@@ -18,7 +18,8 @@ namespace SimpleGL {
     int zIndex { 0 };
   };
 
-  Viewport::Viewport(Camera *camera) : d(new ViewportPrivate(camera)) {
+  Viewport::Viewport(Camera *camera) : d(new ViewportPrivate()) {
+    d->camera = camera;
   }
 
   Viewport::~Viewport() {

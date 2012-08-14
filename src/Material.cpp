@@ -9,7 +9,7 @@
 namespace SimpleGL {
   class MaterialPrivate {
   public:
-    MaterialPrivate(const String &name) : name(name) {
+    MaterialPrivate() {
     }
 
     ~MaterialPrivate() {
@@ -20,7 +20,8 @@ namespace SimpleGL {
     std::vector<String> textures;
   };
 
-  Material::Material(const String &name) : d(new MaterialPrivate(name)) {
+  Material::Material(const String &name) : d(new MaterialPrivate()) {
+    d->name = name;
   }
 
   Material::~Material() {

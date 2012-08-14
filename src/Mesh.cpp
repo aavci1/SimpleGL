@@ -5,7 +5,7 @@
 namespace SimpleGL {
   class MeshPrivate {
   public:
-    MeshPrivate(const String &name) : name(name) {
+    MeshPrivate() {
     }
 
     ~MeshPrivate() {
@@ -19,7 +19,8 @@ namespace SimpleGL {
     uint indexCount { 0 };
   };
 
-  Mesh::Mesh(const String &name) : d(new MeshPrivate(name)) {
+  Mesh::Mesh(const String &name) : d(new MeshPrivate()) {
+    d->name = name;
     // generate vertex array
     glGenVertexArrays(1, &d->vertexArray);
     // generate vertex buffer

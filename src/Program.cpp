@@ -10,7 +10,7 @@
 namespace SimpleGL {
   class ProgramPrivate {
   public:
-    ProgramPrivate(const String &name) : name(name) {
+    ProgramPrivate() {
     }
 
     ~ProgramPrivate() {
@@ -22,7 +22,9 @@ namespace SimpleGL {
     std::vector<GLuint> shaders;
   };
 
-  Program::Program(const String &name) : d(new ProgramPrivate(name)) {
+  Program::Program(const String &name) : d(new ProgramPrivate()) {
+    d->name = name;
+    // create program object
     d->id = glCreateProgram();
   }
 
