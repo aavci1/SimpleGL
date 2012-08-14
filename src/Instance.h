@@ -1,8 +1,8 @@
 #ifndef INSTANCE_H
 #define INSTANCE_H
 
-#include "Renderable.h"
 #include "SceneObject.h"
+#include "Types.h"
 
 namespace SimpleGL {
   class InstancePrivate;

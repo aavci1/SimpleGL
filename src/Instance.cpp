@@ -1,15 +1,9 @@
 #include "Instance.h"
 
-#include "Material.h"
-#include "Mesh.h"
-#include "Program.h"
-#include "Root.h"
-#include "Texture.h"
-
 namespace SimpleGL {
   class InstancePrivate {
   public:
-    InstancePrivate(const String &mesh, const String &material) : mesh(mesh), material(material) {
+    InstancePrivate() {
     }
 
     ~InstancePrivate() {
@@ -19,7 +13,9 @@ namespace SimpleGL {
     String material { "" };
   };
 
-  Instance::Instance(const String &mesh, const String &material) : d(new InstancePrivate(mesh, material)) {
+  Instance::Instance(const String &mesh, const String &material) : d(new InstancePrivate()) {
+    d->mesh = mesh;
+    d->material = material;
   }
 
   Instance::~Instance() {
