@@ -95,8 +95,12 @@ namespace SimpleGL {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   }
 
-  const std::vector<Viewport *> &Window::viewports() const {
-    return d->viewports;
+  uint32_t Window::numViewports() const {
+    return d->viewports.size();
+  }
+
+  Viewport *Window::viewportAt(int index) const {
+    return d->viewports.at(index);
   }
 
   Viewport *Window::createViewport(Camera *camera) {

@@ -3,8 +3,6 @@
 
 #include "Types.h"
 
-#include <vector>
-
 namespace SimpleGL {
   class WindowPrivate;
   class Camera;
@@ -19,7 +17,8 @@ namespace SimpleGL {
     uint32_t height();
     void setSize(const int width, const int height);
 
-    const std::vector<Viewport *> &viewports() const;
+    uint32_t numViewports() const;
+    Viewport *viewportAt(int index) const;
     Viewport *createViewport(Camera *camera);
 
     void update();

@@ -3,8 +3,6 @@
 
 #include "Types.h"
 
-#include <vector>
-
 namespace SimpleGL {
   class MaterialPrivate;
   class Program;
@@ -20,7 +18,8 @@ namespace SimpleGL {
     const String &program() const;
     void setProgram(const String &program);
 
-    const std::vector<String> &textures() const;
+    uint32_t numTextures() const;
+    const String &textureAt(uint32_t index) const;
     void addTexture(const String &texture);
 
     void bind();

@@ -40,8 +40,12 @@ namespace SimpleGL {
     d->program = program;
   }
 
-  const std::vector<String> &Material::textures() const {
-    return d->textures;
+  uint32_t Material::numTextures() const {
+    return d->textures.size();
+  }
+
+  const String &Material::textureAt(uint32_t index) const {
+    return d->textures.at(index);
   }
 
   void Material::addTexture(const String &texture) {

@@ -39,7 +39,7 @@ void QSGLWidget::initializeGL() {
   d->window->createViewport(Root::instance()->createCamera());
   // create a camera node
   SceneNode *cameraNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(0.0f, 170.0f, 1500.0f));
-  cameraNode->attachObject(d->window->viewports().at(0)->camera());
+  cameraNode->attachObject(d->window->viewportAt(0)->camera());
   // load programs
   Program *pointLightProgram = Root::instance()->createProgram("PointLight");
   if (!pointLightProgram->loadShaderFromPath(ST_VERTEX, "media/point_light_vp.glsl")) std::cerr << pointLightProgram->log() << std::endl;
@@ -147,7 +147,7 @@ void QSGLWidget::keyReleaseEvent(QKeyEvent *e) {
 void QSGLWidget::mouseMoveEvent(QMouseEvent *e) {
   if (!d->window)
     return;
-  SceneNode *cameraNode = d->window->viewports().at(0)->camera()->parentSceneNode();
+  SceneNode *cameraNode = d->window->viewportAt(0)->camera()->parentSceneNode();
   if (e->buttons() == Qt::RightButton) {
     // pan camera
     cameraNode->moveRelative(Vector3f(d->mousePosition.x() - e->pos().x(), e->pos().y() - d->mousePosition.y(), 0));
@@ -181,7 +181,7 @@ void QSGLWidget::mouseReleaseEvent(QMouseEvent *e) {
 void QSGLWidget::wheelEvent(QWheelEvent *e) {
   if (!d->window)
     return;
-  SceneNode *cameraNode = d->window->viewports().at(0)->camera()->parentSceneNode();
+  SceneNode *cameraNode = d->window->viewportAt(0)->camera()->parentSceneNode();
   float altitude = cameraNode->position().y;
   cameraNode->moveRelative(Vector3f(0, 0, -0.4f * e->delta()));
   cameraNode->setPosition(cameraNode->position().x, altitude, cameraNode->position().z);
