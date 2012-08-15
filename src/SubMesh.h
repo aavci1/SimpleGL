@@ -12,8 +12,8 @@ namespace SimpleGL {
     SubMesh();
     ~SubMesh();
 
-    const bool setVertexData(uint vertexFormat, float vertexData[], uint vertexCount, uint stride);
-    const bool setIndexData(uint indexData[], uint indexCount);
+    const bool setVertexData(void *vertexData, uint vertexCount, uint vertexFormat);
+    const bool setIndexData(void *indexData, uint indexCount);
 
     void render(Camera *camera);
 

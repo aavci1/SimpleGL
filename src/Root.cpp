@@ -311,8 +311,8 @@ namespace SimpleGL {
     uint indices[] = { 0, 1, 2, 0, 2, 3 };
     // set vertex and index data
     SubMesh *subMesh = mesh->createSubMesh();
-    subMesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, 4, 32);
-    subMesh->setIndexData(indices, 6);
+    subMesh->setVertexData((void *)vertices, 4, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
+    subMesh->setIndexData((void *)indices, 6);
     // return mesh
     return mesh;
   }
@@ -329,8 +329,8 @@ namespace SimpleGL {
     uint indices[] = { 0, 1, 2, 0, 2, 3 };
     // set vertex and index data
     SubMesh *subMesh = mesh->createSubMesh();
-    subMesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, 4, 32);
-    subMesh->setIndexData(indices, 6);
+    subMesh->setVertexData((void *)vertices, 4, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
+    subMesh->setIndexData((void *)indices, 6);
     // return mesh
     return mesh;
   }
@@ -390,8 +390,8 @@ namespace SimpleGL {
     };
     // set vertex and index data
     SubMesh *subMesh = mesh->createSubMesh();
-    subMesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, 24, 32);
-    subMesh->setIndexData(indices, 36);
+    subMesh->setVertexData((void *)vertices, 24, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
+    subMesh->setIndexData((void *)indices, 36);
     // return mesh
     return mesh;
   }
@@ -481,8 +481,8 @@ namespace SimpleGL {
     }
     // set vertex and index data
     SubMesh *subMesh = mesh->createSubMesh();
-    subMesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, vertexCount, 32);
-    subMesh->setIndexData(indices, indexCount);
+    subMesh->setVertexData((void *)vertices, vertexCount, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
+    subMesh->setIndexData((void *)indices, indexCount);
     // clean up
     delete[] vertices;
     delete[] indices;
@@ -543,8 +543,8 @@ namespace SimpleGL {
     }
     // set vertex and index data
     SubMesh *subMesh = mesh->createSubMesh();
-    subMesh->setVertexData(AT_POSITION | AT_NORMAL | AT_TEXCOORD0, vertices, vertexCount, 32);
-    subMesh->setIndexData(indices, indexCount);
+    subMesh->setVertexData((void *)vertices, vertexCount, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
+    subMesh->setIndexData((void *)indices, indexCount);
     // clean up
     delete[] vertices;
     delete[] indices;

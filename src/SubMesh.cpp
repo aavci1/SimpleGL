@@ -38,7 +38,24 @@ namespace SimpleGL {
     delete d;
   }
 
-  const bool SubMesh::setVertexData(uint vertexFormat, float vertexData[], uint vertexCount, uint stride) {
+  const bool SubMesh::setVertexData(void *vertexData, uint vertexCount, uint vertexFormat) {
+    // calculate stride size
+    uint stride = 0;
+    vector<pair<AttributeType, int>> attributes = {
+      { AT_POSITION, 3 * sizeof(float) },
+      { AT_NORMAL, 3 * sizeof(float) },
+      { AT_TANGENT_AND_BITANGENT, 6 * sizeof(float) },
+      { AT_COLOR, 3 * sizeof(float) },
+      { AT_TEXCOORD0, 2 * sizeof(float) },
+      { AT_TEXCOORD1, 2 * sizeof(float) },
+      { AT_TEXCOORD2, 2 * sizeof(float) },
+      { AT_TEXCOORD3, 2 * sizeof(float) },
+      { AT_BONES, 4 * sizeof(int) + 4 * sizeof(float) }
+    };
+    for (auto attribute: attributes) {
+      if (vertexFormat & attribute.first)
+        stride += attribute.second;
+    }
     // generate and bind vertex array object
     glBindVertexArray(d->vertexArray);
     // generate vertex buffer object
@@ -128,7 +145,7 @@ namespace SimpleGL {
     return true;
   }
 
-  const bool SubMesh::setIndexData(uint indexData[], uint indexCount) {
+  const bool SubMesh::setIndexData(void *indexData, uint indexCount) {
     // generate and bind vertex array object
     glBindVertexArray(d->vertexArray);
     // generate index buffer object
