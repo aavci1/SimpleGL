@@ -13,13 +13,13 @@ namespace SimpleGL {
     ~TexturePrivate() {
     }
 
-    String name { "" };
-    String path { "" };
+    string name { "" };
+    string path { "" };
     GLuint id { 0 };
     GLuint index { 0 };
   };
 
-  Texture::Texture(const String &name, const String &path) : d(new TexturePrivate()) {
+  Texture::Texture(const string &name, const string &path) : d(new TexturePrivate()) {
     d->name = name;
     d->path = path;
     // generate texture object
@@ -75,11 +75,11 @@ namespace SimpleGL {
     delete d;
   }
 
-  const String &Texture::name() const {
+  const string &Texture::name() const {
     return d->name;
   }
 
-  const String &Texture::path() const {
+  const string &Texture::path() const {
     return d->path;
   }
 

@@ -33,19 +33,19 @@ namespace SimpleGL {
     delete d;
   }
 
-  const std::string toString2(const int number) {
-    std::stringstream ss;
+  const string tostring2(const int number) {
+    stringstream ss;
     ss << number;
     return ss.str();
   }
 
-  void dumpNodes(aiNode *node, String string) {
-    std::cout << string << node->mName.data << " (" << node->mNumMeshes << " meshes)" << std::endl;
+  void dumpNodes(aiNode *node, string string) {
+    cout << string << node->mName.data << " (" << node->mNumMeshes << " meshes)" << endl;
     for (uint i = 0; i < node->mNumChildren; ++i)
       dumpNodes(node->mChildren[i], string + "  ");
   }
 
-  Mesh *AssimpImporter::loadMesh(const String &name, const String &path) {
+  Mesh *AssimpImporter::loadMesh(const string &name, const string &path) {
     Mesh *mesh = Root::instance()->createMesh(name);
     // import scene
     const aiScene *scene = d->importer->ReadFile(path.c_str(),
@@ -71,13 +71,13 @@ namespace SimpleGL {
                                                  aiProcess_Debone);
     // return mesh if scene cannot be loaded
     if (!scene) {
-      std::cerr << "error: can not load model " << path << std::endl;
+      cerr << "error: can not load model " << path << endl;
       return 0;
     }
     // extract base directory
-    String directory = path.substr(0, path.find_last_of("/"));
+    string directory = path.substr(0, path.find_last_of("/"));
     // import materials
-    std::map<int, String> materials;
+    map<int, string> materials;
     for (uint i = 0; i < scene->mNumMaterials; ++i) {
       const aiMaterial *aimaterial = scene->mMaterials[i];
       // get material name
@@ -85,7 +85,7 @@ namespace SimpleGL {
       aimaterial->Get(AI_MATKEY_NAME, ainame);
       // TODO: get other material properties (specular, shininess etc.)
       //  create material
-      Material *material = Root::instance()->createMaterial(path + "$mat" + toString2(i));
+      Material *material = Root::instance()->createMaterial(path + "$mat" + tostring2(i));
       // TODO: make program configurable
       material->setProgram("Textured");
       // add to list
@@ -96,7 +96,7 @@ namespace SimpleGL {
         // get texture path
         aimaterial->GetTexture(aiTextureType_DIFFUSE, j, &aitexturepath);
         // generate texture path
-        String texturePath = aitexturepath.data;
+        string texturePath = aitexturepath.data;
         texturePath = directory + "/" + texturePath.substr(texturePath.find_last_of("/") + 1);
         // create texture
         Root::instance()->createTexture(texturePath, texturePath);
@@ -108,7 +108,7 @@ namespace SimpleGL {
     // import meshes
     for (uint i = 0; i < scene->mNumMeshes; ++i) {
       const struct aiMesh *aimesh = scene->mMeshes[i];
-      std::cout << "Mesh: " << aimesh->mName.data << std::endl;
+      cout << "Mesh: " << aimesh->mName.data << endl;
       for (uint j = 0; j < aimesh->mNumBones; ++j) {
 
       }
@@ -190,15 +190,15 @@ namespace SimpleGL {
     // import animations
     for (uint i = 0; i < scene->mNumAnimations; ++i) {
       aiAnimation *animation = scene->mAnimations[i];
-      std::cout << "Animation: " << animation->mName.data << std::endl;
-      std::cout << "  Duration: " << animation->mDuration << std::endl;
-      std::cout << "  Ticks per second: " << animation->mTicksPerSecond << std::endl;
-      std::cout << "  Channel count: " << animation->mNumChannels << std::endl;
-      for (int j = 0; j < animation->mNumChannels; ++j) {
+      cout << "Animation: " << animation->mName.data << endl;
+      cout << "  Duration: " << animation->mDuration << endl;
+      cout << "  Ticks per second: " << animation->mTicksPerSecond << endl;
+      cout << "  Channel count: " << animation->mNumChannels << endl;
+      for (uint j = 0; j < animation->mNumChannels; ++j) {
         aiNodeAnim *channel = animation->mChannels[j];
-        std::cout << "    Channel: " << channel->mNodeName.data << std::endl;
+        cout << "    Channel: " << channel->mNodeName.data << endl;
       }
-      std::cout << "  Mesh channel count: " << animation->mNumMeshChannels << std::endl;
+      cout << "  Mesh channel count: " << animation->mNumMeshChannels << endl;
     }
 
     // return first mesh

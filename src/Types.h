@@ -2,13 +2,14 @@
 #define TYPES_H
 
 #include <string>
+#include <vector>
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-namespace SimpleGL {
-  typedef std::string String;
+using namespace std;
 
+namespace SimpleGL {
   typedef glm::detail::tvec2<int> Vector2i;
   typedef glm::detail::tvec3<int> Vector3i;
   typedef glm::detail::tvec4<int> Vector4i;

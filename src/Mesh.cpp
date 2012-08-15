@@ -15,11 +15,11 @@ namespace SimpleGL {
         delete subMeshes[i];
     }
 
-    String name;
-    std::vector<SubMesh *> subMeshes;
+    string name;
+    vector<SubMesh *> subMeshes;
   };
 
-  Mesh::Mesh(const String &name) : d(new MeshPrivate()){
+  Mesh::Mesh(const string &name) : d(new MeshPrivate()){
     d->name = name;
   }
 
@@ -27,7 +27,7 @@ namespace SimpleGL {
     delete d;
   }
 
-  const String &Mesh::name() const {
+  const string &Mesh::name() const {
     return d->name;
   }
 

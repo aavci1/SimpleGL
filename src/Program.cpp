@@ -16,13 +16,13 @@ namespace SimpleGL {
     ~ProgramPrivate() {
     }
 
-    String name { "" };
-    String log { "" };
+    string name { "" };
+    string log { "" };
     GLuint id { 0 };
-    std::vector<GLuint> shaders;
+    vector<GLuint> shaders;
   };
 
-  Program::Program(const String &name) : d(new ProgramPrivate()) {
+  Program::Program(const string &name) : d(new ProgramPrivate()) {
     d->name = name;
     // create program object
     d->id = glCreateProgram();
@@ -38,20 +38,20 @@ namespace SimpleGL {
     delete d;
   }
 
-  const String &Program::name() const {
+  const string &Program::name() const {
     return d->name;
   }
 
-  const bool Program::loadShaderFromPath(ShaderType type, const String &path) {
+  const bool Program::loadShaderFromPath(ShaderType type, const string &path) {
     // read file
-    std::ifstream in(path.c_str());
-    std::stringstream buffer;
+    ifstream in(path.c_str());
+    stringstream buffer;
     buffer << in.rdbuf();
     // load shader from source
-    return loadShaderFromSource(type, String(buffer.str()));
+    return loadShaderFromSource(type, string(buffer.str()));
   }
 
-  const bool Program::loadShaderFromSource(ShaderType type, const String &source) {
+  const bool Program::loadShaderFromSource(ShaderType type, const string &source) {
     GLenum shaderType;
     if (type == ST_VERTEX)
       shaderType = GL_VERTEX_SHADER;
@@ -136,11 +136,11 @@ namespace SimpleGL {
     return true;
   }
 
-  const String &Program::log() const {
+  const string &Program::log() const {
     return d->log;
   }
 
-  const bool Program::setUniform(const String &name, uint value) const {
+  const bool Program::setUniform(const string &name, uint value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -151,7 +151,7 @@ namespace SimpleGL {
     return true;
   }
 
-  const bool Program::setUniform(const String &name, int value) const {
+  const bool Program::setUniform(const string &name, int value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -162,7 +162,7 @@ namespace SimpleGL {
     return true;
   }
 
-  const bool Program::setUniform(const String &name, float value) const {
+  const bool Program::setUniform(const string &name, float value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -173,7 +173,7 @@ namespace SimpleGL {
     return true;
   }
 
-  const bool Program::setUniform(const String &name, const Vector2f &value) const {
+  const bool Program::setUniform(const string &name, const Vector2f &value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -184,7 +184,7 @@ namespace SimpleGL {
     return true;
   }
 
-  const bool Program::setUniform(const String &name, const Vector3f &value) const {
+  const bool Program::setUniform(const string &name, const Vector3f &value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)
@@ -195,7 +195,7 @@ namespace SimpleGL {
     return true;
   }
 
-  const bool Program::setUniform(const String &name, const Matrix4f &value) const {
+  const bool Program::setUniform(const string &name, const Matrix4f &value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name.c_str());
     if (location == -1)

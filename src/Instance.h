@@ -9,14 +9,14 @@ namespace SimpleGL {
 
   class Instance : public SceneObject {
   public:
-    Instance(const String &mesh, const String &material);
+    Instance(const string &mesh, const string &material);
     ~Instance();
 
-    const String &mesh() const;
-    void setMesh(const String &mesh);
+    const string &mesh() const;
+    void setMesh(const string &mesh);
 
-    const String &material() const;
-    void setMaterial(const String &material);
+    const string &material() const;
+    void setMaterial(const string &material);
 
   private:
     InstancePrivate *d;

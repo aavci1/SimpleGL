@@ -8,11 +8,11 @@ namespace SimpleGL {
 
   class Texture {
   public:
-    Texture(const String &name, const String &path);
+    Texture(const string &name, const string &path);
     ~Texture();
 
-    const String &name() const;
-    const String &path() const;
+    const string &name() const;
+    const string &path() const;
 
     const bool bind(uint index) const;
     const bool unbind() const;

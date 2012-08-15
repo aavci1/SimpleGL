@@ -24,7 +24,7 @@ namespace SimpleGL {
         delete viewports[i];
     }
 
-    std::vector<Viewport *> viewports;
+    vector<Viewport *> viewports;
     uint32_t width { 0 };
     uint32_t height { 0 };
     // frame buffer handle
@@ -108,7 +108,7 @@ namespace SimpleGL {
     // add to list
     d->viewports.push_back(viewport);
     // sort viewports
-    std::sort(d->viewports.begin(), d->viewports.end(), [](const Viewport * v1, const Viewport * v2) {
+    sort(d->viewports.begin(), d->viewports.end(), [](const Viewport * v1, const Viewport * v2) {
               return v1->zIndex() < v2->zIndex();
     });
     // return viewport

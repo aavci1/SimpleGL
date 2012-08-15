@@ -29,41 +29,41 @@ namespace SimpleGL {
     static Root *instance();
 
     Window *createWindow(int width = 800, int height = 600);
-    const std::vector<Window *> &windows() const;
+    const vector<Window *> &windows() const;
 
     SceneNode *createSceneNode();
     SceneNode *rootSceneNode() const;
-    const std::vector<SceneNode *> &sceneNodes() const;
+    const vector<SceneNode *> &sceneNodes() const;
 
     Light *createLight(LightType type);
-    const std::vector<Light *> &lights() const;
+    const vector<Light *> &lights() const;
 
     Camera *createCamera();
-    const std::vector<Camera *> &cameras() const;
+    const vector<Camera *> &cameras() const;
 
-    Texture *createTexture(const String &name, const String &path);
-    Texture *retrieveTexture(const String &name);
-    const std::vector<Texture *> &textures() const;
+    Texture *createTexture(const string &name, const string &path);
+    Texture *retrieveTexture(const string &name);
+    const vector<Texture *> &textures() const;
 
-    Program *createProgram(const String &name);
-    Program *retrieveProgram(const String &name);
-    const std::vector<Program *> &programs() const;
+    Program *createProgram(const string &name);
+    Program *retrieveProgram(const string &name);
+    const vector<Program *> &programs() const;
 
-    Material *createMaterial(const String &name);
-    Material *retrieveMaterial(const String &name);
-    const std::vector<Material *> &materials() const;
+    Material *createMaterial(const string &name);
+    Material *retrieveMaterial(const string &name);
+    const vector<Material *> &materials() const;
 
-    Mesh *createMesh(const String &name);
-    Mesh *retrieveMesh(const String &name);
-    Mesh *createQuad(const String &name, float width = 1.0f, float height = 1.0f);
-    Mesh *createPlane(const String &name, float width = 1.0f, float height = 1.0f, float uTile = 1.0f, float vTile = 1.0f);
-    Mesh *createCube(const String &name, float width = 1.0f, float height = 1.0f, float depth = 1.0f);
-    Mesh *createCone(const String &name, float radius = 1.0f, float height = 1.0f, uint slices = 16, uint stacks = 16);
-    Mesh *createSphere(const String &name, float radius = 1.0f, uint slices = 16, uint stacks = 16);
-    const std::vector<Mesh *> &meshes() const;
+    Mesh *createMesh(const string &name);
+    Mesh *retrieveMesh(const string &name);
+    Mesh *createQuad(const string &name, float width = 1.0f, float height = 1.0f);
+    Mesh *createPlane(const string &name, float width = 1.0f, float height = 1.0f, float uTile = 1.0f, float vTile = 1.0f);
+    Mesh *createCube(const string &name, float width = 1.0f, float height = 1.0f, float depth = 1.0f);
+    Mesh *createCone(const string &name, float radius = 1.0f, float height = 1.0f, uint slices = 16, uint stacks = 16);
+    Mesh *createSphere(const string &name, float radius = 1.0f, uint slices = 16, uint stacks = 16);
+    const vector<Mesh *> &meshes() const;
 
-    Instance *createInstance(const String &mesh, const String &material);
-    const std::vector<Instance *> &instances() const;
+    Instance *createInstance(const string &mesh, const string &material);
+    const vector<Instance *> &instances() const;
 
     void calculateWorldTransforms();
     void renderScene(Window *window, Viewport *viewport);

@@ -46,24 +46,24 @@ void MainWindow::initialized() {
   widget->sglWindow()->createViewport(camera);
   // load programs
   Program *pointLightProgram = Root::instance()->createProgram("PointLight");
-  if (!pointLightProgram->loadShaderFromPath(ST_VERTEX, "media/point_light_vp.glsl")) std::cerr << pointLightProgram->log() << std::endl;
-  if (!pointLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/point_light_fp.glsl")) std::cerr << pointLightProgram->log() << std::endl;
-  if (!pointLightProgram->link()) std::cerr << pointLightProgram->log() << std::endl;
+  if (!pointLightProgram->loadShaderFromPath(ST_VERTEX, "media/point_light_vp.glsl")) cerr << pointLightProgram->log() << endl;
+  if (!pointLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/point_light_fp.glsl")) cerr << pointLightProgram->log() << endl;
+  if (!pointLightProgram->link()) cerr << pointLightProgram->log() << endl;
   // spot light program
   Program *spotLightProgram = Root::instance()->createProgram("SpotLight");
-  if (!spotLightProgram->loadShaderFromPath(ST_VERTEX, "media/spot_light_vp.glsl")) std::cerr << spotLightProgram->log() << std::endl;
-  if (!spotLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/spot_light_fp.glsl")) std::cerr << spotLightProgram->log() << std::endl;
-  if (!spotLightProgram->link()) std::cerr << spotLightProgram->log() << std::endl;
+  if (!spotLightProgram->loadShaderFromPath(ST_VERTEX, "media/spot_light_vp.glsl")) cerr << spotLightProgram->log() << endl;
+  if (!spotLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/spot_light_fp.glsl")) cerr << spotLightProgram->log() << endl;
+  if (!spotLightProgram->link()) cerr << spotLightProgram->log() << endl;
   // directional light program
   Program *directionalLightProgram = Root::instance()->createProgram("DirectionalLight");
-  if (!directionalLightProgram->loadShaderFromPath(ST_VERTEX, "media/directional_light_vp.glsl")) std::cerr << directionalLightProgram->log() << std::endl;
-  if (!directionalLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/directional_light_fp.glsl")) std::cerr << directionalLightProgram->log() << std::endl;
-  if (!directionalLightProgram->link()) std::cerr << directionalLightProgram->log() << std::endl;
+  if (!directionalLightProgram->loadShaderFromPath(ST_VERTEX, "media/directional_light_vp.glsl")) cerr << directionalLightProgram->log() << endl;
+  if (!directionalLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/directional_light_fp.glsl")) cerr << directionalLightProgram->log() << endl;
+  if (!directionalLightProgram->link()) cerr << directionalLightProgram->log() << endl;
   // load programs
   Program *program = Root::instance()->createProgram("Textured");
-  if (!program->loadShaderFromPath(ST_VERTEX, "media/textured_vp.glsl")) std::cerr << program->log() << std::endl;
-  if (!program->loadShaderFromPath(ST_FRAGMENT, "media/textured_fp.glsl")) std::cerr << program->log() << std::endl;
-  if (!program->link()) std::cerr << program->log() << std::endl;
+  if (!program->loadShaderFromPath(ST_VERTEX, "media/textured_vp.glsl")) cerr << program->log() << endl;
+  if (!program->loadShaderFromPath(ST_FRAGMENT, "media/textured_fp.glsl")) cerr << program->log() << endl;
+  if (!program->link()) cerr << program->log() << endl;
   // load textures
   Root::instance()->createTexture("Laminate", "media/laminate.jpg");
   Root::instance()->createTexture("Ceiling", "media/ceiling.jpg");

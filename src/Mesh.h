@@ -11,10 +11,10 @@ namespace SimpleGL {
 
   class Mesh {
   public:
-    Mesh(const String &name);
+    Mesh(const string &name);
     ~Mesh();
 
-    const String &name() const;
+    const string &name() const;
 
     uint32_t numSubMeshes() const;
     SubMesh *subMeshAt(uint32_t index) const;

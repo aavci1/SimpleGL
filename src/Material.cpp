@@ -15,12 +15,12 @@ namespace SimpleGL {
     ~MaterialPrivate() {
     }
 
-    String name { "" };
-    String program { "" };
-    std::vector<String> textures;
+    string name { "" };
+    string program { "" };
+    vector<string> textures;
   };
 
-  Material::Material(const String &name) : d(new MaterialPrivate()) {
+  Material::Material(const string &name) : d(new MaterialPrivate()) {
     d->name = name;
   }
 
@@ -28,15 +28,15 @@ namespace SimpleGL {
     delete d;
   }
 
-  const String &Material::name() const {
+  const string &Material::name() const {
     return d->name;
   }
 
-  const String &Material::program() const {
+  const string &Material::program() const {
     return d->program;
   }
 
-  void Material::setProgram(const String &program) {
+  void Material::setProgram(const string &program) {
     d->program = program;
   }
 
@@ -44,16 +44,16 @@ namespace SimpleGL {
     return d->textures.size();
   }
 
-  const String &Material::textureAt(uint32_t index) const {
+  const string &Material::textureAt(uint32_t index) const {
     return d->textures.at(index);
   }
 
-  void Material::addTexture(const String &texture) {
+  void Material::addTexture(const string &texture) {
     d->textures.push_back(texture);
   }
 
-  const std::string toString(const int number) {
-    std::stringstream ss;
+  const string tostring(const int number) {
+    stringstream ss;
     ss << number;
     return ss.str();
   }
@@ -70,7 +70,7 @@ namespace SimpleGL {
       if (!texture)
         continue;
       texture->bind(j);
-      program->setUniform("texture" + toString(j), j);
+      program->setUniform("texture" + tostring(j), j);
     }
     // set specular parameters
     program->setUniform("specularIntensity", 1.0f);

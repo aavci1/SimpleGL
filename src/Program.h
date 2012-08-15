@@ -9,24 +9,24 @@ namespace SimpleGL {
 
   class Program {
   public:
-    Program(const String &name);
+    Program(const string &name);
     ~Program();
 
-    const String &name() const;
+    const string &name() const;
 
-    const bool loadShaderFromPath(ShaderType type, const String &path);
-    const bool loadShaderFromSource(ShaderType type, const String &source);
+    const bool loadShaderFromPath(ShaderType type, const string &path);
+    const bool loadShaderFromSource(ShaderType type, const string &source);
 
     const bool link();
 
-    const String &log() const;
+    const string &log() const;
 
-    const bool setUniform(const String &name, uint value) const;
-    const bool setUniform(const String &name, int value) const;
-    const bool setUniform(const String &name, float value) const;
-    const bool setUniform(const String &name, const Vector2f &value) const;
-    const bool setUniform(const String &name, const Vector3f &value) const;
-    const bool setUniform(const String &name, const Matrix4f &value) const;
+    const bool setUniform(const string &name, uint value) const;
+    const bool setUniform(const string &name, int value) const;
+    const bool setUniform(const string &name, float value) const;
+    const bool setUniform(const string &name, const Vector2f &value) const;
+    const bool setUniform(const string &name, const Vector3f &value) const;
+    const bool setUniform(const string &name, const Matrix4f &value) const;
 
     const bool bind() const;
     const bool unbind() const;

@@ -9,7 +9,7 @@ namespace SimpleGL {
     ~RenderablePrivate() {
     }
 
-    String material { "" };
+    string material { "" };
   };
 
   Renderable::Renderable() : d(new RenderablePrivate()) {
@@ -19,11 +19,11 @@ namespace SimpleGL {
     delete d;
   }
 
-  const String &Renderable::material() const {
+  const string &Renderable::material() const {
     return d->material;
   }
 
-  void Renderable::setMaterial(const String &name) {
+  void Renderable::setMaterial(const string &name) {
     d->material = name;
   }
 }

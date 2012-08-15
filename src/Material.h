@@ -10,17 +10,17 @@ namespace SimpleGL {
 
   class Material {
   public:
-    Material(const String &name);
+    Material(const string &name);
     ~Material();
 
-    const String &name() const;
+    const string &name() const;
 
-    const String &program() const;
-    void setProgram(const String &program);
+    const string &program() const;
+    void setProgram(const string &program);
 
     uint32_t numTextures() const;
-    const String &textureAt(uint32_t index) const;
-    void addTexture(const String &texture);
+    const string &textureAt(uint32_t index) const;
+    void addTexture(const string &texture);
 
     void bind();
     void unbind();

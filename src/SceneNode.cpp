@@ -14,8 +14,8 @@ namespace SimpleGL {
 
     SceneNode *parentSceneNode { nullptr };
 
-    std::vector<SceneNode *> attachedNodes;
-    std::vector<SceneObject *> attachedObjects;
+    vector<SceneNode *> attachedNodes;
+    vector<SceneObject *> attachedObjects;
 
     Vector3f position { 0.0f, 0.0f, 0.0f };
     Quaternion orientation { 1.0f, 0.0f, 0.0f, 0.0f };

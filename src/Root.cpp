@@ -101,15 +101,15 @@ namespace SimpleGL {
       }
     }
 
-    std::vector<Window *> windows;
-    std::vector<SceneNode *> sceneNodes;
-    std::vector<Light *> lights;
-    std::vector<Camera *> cameras;
-    std::vector<Texture *> textures;
-    std::vector<Program *> programs;
-    std::vector<Material *> materials;
-    std::vector<Mesh *> meshes;
-    std::vector<Instance *> instances;
+    vector<Window *> windows;
+    vector<SceneNode *> sceneNodes;
+    vector<Light *> lights;
+    vector<Camera *> cameras;
+    vector<Texture *> textures;
+    vector<Program *> programs;
+    vector<Material *> materials;
+    vector<Mesh *> meshes;
+    vector<Instance *> instances;
 
     Vector2i mousePosition { 0, 0 };
     long time { 0 };
@@ -153,7 +153,7 @@ namespace SimpleGL {
     return window;
   }
 
-  const std::vector<Window *> &Root::windows() const {
+  const vector<Window *> &Root::windows() const {
     return d->windows;
   }
 
@@ -169,7 +169,7 @@ namespace SimpleGL {
     return d->sceneNodes.at(0);
   }
 
-  const std::vector<SceneNode *> &Root::sceneNodes() const {
+  const vector<SceneNode *> &Root::sceneNodes() const {
     return d->sceneNodes;
   }
 
@@ -195,7 +195,7 @@ namespace SimpleGL {
     return light;
   }
 
-  const std::vector<Light *> &Root::lights() const {
+  const vector<Light *> &Root::lights() const {
     return d->lights;
   }
 
@@ -207,12 +207,12 @@ namespace SimpleGL {
     return camera;
   }
 
-  const std::vector<Camera *> &Root::cameras() const {
+  const vector<Camera *> &Root::cameras() const {
     return d->cameras;
   }
 
-  Texture *Root::createTexture(const String &name, const String &path) {
-    std::cout << "Root::createTexture(\"" << name << "\", \"" << path << "\");" << std::endl;
+  Texture *Root::createTexture(const string &name, const string &path) {
+    cout << "Root::createTexture(\"" << name << "\", \"" << path << "\");" << endl;
 
     Texture *texture = new Texture(name, path);
     // add to list
@@ -221,7 +221,7 @@ namespace SimpleGL {
     return texture;
   }
 
-  Texture *Root::retrieveTexture(const String &name) {
+  Texture *Root::retrieveTexture(const string &name) {
     if (name == "")
       return 0;
     for (uint i = 0; i < d->textures.size(); ++i)
@@ -230,12 +230,12 @@ namespace SimpleGL {
     return 0;
   }
 
-  const std::vector<Texture *> &Root::textures() const {
+  const vector<Texture *> &Root::textures() const {
     return d->textures;
   }
 
-  Program *Root::createProgram(const String &name) {
-    std::cout << "Root::createProgram(\"" << name << "\");" << std::endl;
+  Program *Root::createProgram(const string &name) {
+    cout << "Root::createProgram(\"" << name << "\");" << endl;
 
     Program *program = new Program(name);
     // add to list
@@ -244,7 +244,7 @@ namespace SimpleGL {
     return program;
   }
 
-  Program *Root::retrieveProgram(const String &name) {
+  Program *Root::retrieveProgram(const string &name) {
     if (name == "")
       return 0;
     for (uint i = 0; i < d->programs.size(); ++i)
@@ -253,12 +253,12 @@ namespace SimpleGL {
     return 0;
   }
 
-  const std::vector<Program *> &Root::programs() const {
+  const vector<Program *> &Root::programs() const {
     return d->programs;
   }
 
-  Material *Root::createMaterial(const String &name) {
-    std::cout << "Root::createMaterial(\"" << name << "\");" << std::endl;
+  Material *Root::createMaterial(const string &name) {
+    cout << "Root::createMaterial(\"" << name << "\");" << endl;
 
     Material *material = new Material(name);
     // add to list
@@ -267,7 +267,7 @@ namespace SimpleGL {
     return material;
   }
 
-  Material *Root::retrieveMaterial(const String &name) {
+  Material *Root::retrieveMaterial(const string &name) {
     if (name == "")
       return 0;
     for (uint i = 0; i < d->materials.size(); ++i)
@@ -276,12 +276,12 @@ namespace SimpleGL {
     return 0;
   }
 
-  const std::vector<Material *> &Root::materials() const {
+  const vector<Material *> &Root::materials() const {
     return d->materials;
   }
 
-  Mesh *Root::createMesh(const String &name) {
-    std::cout << "Root::createMesh(\"" << name << "\");" << std::endl;
+  Mesh *Root::createMesh(const string &name) {
+    cout << "Root::createMesh(\"" << name << "\");" << endl;
 
     Mesh *mesh = new Mesh(name);
     // add to list
@@ -290,7 +290,7 @@ namespace SimpleGL {
     return mesh;
   }
 
-  Mesh *Root::retrieveMesh(const String &name) {
+  Mesh *Root::retrieveMesh(const string &name) {
     if (name == "")
       return 0;
     for (uint i = 0; i < d->meshes.size(); ++i)
@@ -299,7 +299,7 @@ namespace SimpleGL {
     return 0;
   }
 
-  Mesh *Root::createQuad(const String &name, float width, float height) {
+  Mesh *Root::createQuad(const string &name, float width, float height) {
     Mesh *mesh = Root::instance()->createMesh(name);
     // calculate vertex and index data
     float vertices[] = {
@@ -317,7 +317,7 @@ namespace SimpleGL {
     return mesh;
   }
 
-  Mesh *Root::createPlane(const String &name, float width, float height, float uTile, float vTile) {
+  Mesh *Root::createPlane(const string &name, float width, float height, float uTile, float vTile) {
     Mesh *mesh = Root::instance()->createMesh(name);
     // calculate vertex and index data
     float vertices[] = {
@@ -335,7 +335,7 @@ namespace SimpleGL {
     return mesh;
   }
 
-  Mesh *Root::createCube(const String &name, float width, float height, float depth) {
+  Mesh *Root::createCube(const string &name, float width, float height, float depth) {
     Mesh *mesh = Root::instance()->createMesh(name);
     // calculate vertex and index data
     float vertices[] = {
@@ -396,7 +396,7 @@ namespace SimpleGL {
     return mesh;
   }
 
-  Mesh *Root::createCone(const String &name, float radius, float height, uint slices, uint stacks) {
+  Mesh *Root::createCone(const string &name, float radius, float height, uint slices, uint stacks) {
     Mesh *mesh = Root::instance()->createMesh(name);
     // calculate vertex and index data
     // allocate the vertex buffer
@@ -490,7 +490,7 @@ namespace SimpleGL {
     return mesh;
   }
 
-  Mesh *Root::createSphere(const String &name, float radius, uint slices, uint stacks) {
+  Mesh *Root::createSphere(const string &name, float radius, uint slices, uint stacks) {
     Mesh *mesh = Root::instance()->createMesh(name);
     // calculate vertex and index data
     // allocate the vertex buffer
@@ -552,11 +552,11 @@ namespace SimpleGL {
     return mesh;
   }
 
-  const std::vector<Mesh *> &Root::meshes() const {
+  const vector<Mesh *> &Root::meshes() const {
     return d->meshes;
   }
 
-  Instance *Root::createInstance(const String &mesh, const String &material) {
+  Instance *Root::createInstance(const string &mesh, const string &material) {
     Instance *instance = new Instance(mesh, material);
     // add to list
     d->instances.push_back(instance);
@@ -564,7 +564,7 @@ namespace SimpleGL {
     return instance;
   }
 
-  const std::vector<Instance *> &Root::instances() const {
+  const vector<Instance *> &Root::instances() const {
     return d->instances;
   }
 
@@ -635,7 +635,7 @@ namespace SimpleGL {
       d->fps = d->fpsCount / (d->fpsTime * 0.001f);
       d->fpsCount = 0;
       d->fpsTime = 0;
-      std::cout << "FPS: " << d->fps << std::endl;
+      cout << "FPS: " << d->fps << endl;
     }
     // return fps
     return d->fps;

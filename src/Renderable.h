@@ -12,8 +12,8 @@ namespace SimpleGL {
     Renderable();
     virtual ~Renderable();
 
-    const String &material() const;
-    void setMaterial(const String &name);
+    const string &material() const;
+    void setMaterial(const string &name);
 
     virtual void render(Camera *camera) = 0;
 
