@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 
+#include "AssimpImporter.h"
 #include "Camera.h"
 #include "DirectionalLight.h"
 #include "Instance.h"
@@ -121,7 +122,9 @@ void MainWindow::initialized() {
   }
   if (QCoreApplication::argc() > 1) {
     // load model
-    Root::instance()->loadMesh("MODEL", QCoreApplication::arguments().at(1).toStdString());
+    AssimpImporter *importer = new AssimpImporter();
+    importer->loadMesh("MODEL", QCoreApplication::arguments().at(1).toStdString());
+    delete importer;
     // create model node
     SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
     // attach model
