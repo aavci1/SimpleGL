@@ -61,6 +61,17 @@ namespace SimpleGL {
       // increase offset
       offset += 3 * sizeof(float);
     }
+    // vertex tangent/bitangent
+    if (vertexFormat & AT_TANGENT_AND_BITANGENT) {
+      glEnableVertexAttribArray(AP_TANGENT);
+      glVertexAttribPointer(AP_TANGENT, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      // increase offset
+      offset += 3 * sizeof(float);
+      glEnableVertexAttribArray(AP_BITANGENT);
+      glVertexAttribPointer(AP_BITANGENT, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      // increase offset
+      offset += 3 * sizeof(float);
+    }
     // vertex color
     if (vertexFormat & AT_COLOR) {
       glEnableVertexAttribArray(AP_COLOR);
@@ -97,7 +108,7 @@ namespace SimpleGL {
       offset += 2 * sizeof(float);
     }
     // bone info
-    if (vertexFormat & AT_BONEINFO) {
+    if (vertexFormat & AT_BONES) {
       // bone ids
       glEnableVertexAttribArray(AP_BONEIDS);
       glVertexAttribIPointer(AP_BONEIDS, 4, GL_INT, stride, (void *)offset);

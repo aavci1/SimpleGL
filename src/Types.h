@@ -31,24 +31,27 @@ namespace SimpleGL {
   enum AttributeType {
     AT_POSITION = 0x00001,
     AT_NORMAL = 0x0002,
-    AT_COLOR = 0x0004,
-    AT_TEXCOORD0 = 0x0008,
-    AT_TEXCOORD1 = 0x0010,
-    AT_TEXCOORD2 = 0x0020,
-    AT_TEXCOORD3 = 0x0040,
-    AT_BONEINFO = 0x0080
+    AT_TANGENT_AND_BITANGENT = 0x0004,
+    AT_COLOR = 0x0008,
+    AT_TEXCOORD0 = 0x0010,
+    AT_TEXCOORD1 = 0x0020,
+    AT_TEXCOORD2 = 0x0040,
+    AT_TEXCOORD3 = 0x0080,
+    AT_BONES = 0x0100
   };
 
   enum AttributePosition {
     AP_POSITION = 0,
     AP_NORMAL = 1,
-    AP_COLOR = 2,
-    AP_TEXCOORD0 = 3,
-    AP_TEXCOORD1 = 4,
-    AP_TEXCOORD2 = 5,
-    AP_TEXCOORD3 = 6,
-    AP_BONEIDS = 7,
-    AP_BONEWEIGHTS = 8
+    AP_TANGENT = 2,
+    AP_BITANGENT = 3,
+    AP_COLOR = 4,
+    AP_TEXCOORD0 = 5,
+    AP_TEXCOORD1 = 6,
+    AP_TEXCOORD2 = 7,
+    AP_TEXCOORD3 = 8,
+    AP_BONEIDS = 9,
+    AP_BONEWEIGHTS = 10
   };
 
   enum LightType {

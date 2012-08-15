@@ -102,6 +102,8 @@ namespace SimpleGL {
     // bind generic vertex attributes
     glBindAttribLocation(d->id, AP_POSITION, "POSITION");
     glBindAttribLocation(d->id, AP_NORMAL, "NORMAL");
+    glBindAttribLocation(d->id, AP_TANGENT, "TANGENT");
+    glBindAttribLocation(d->id, AP_BITANGENT, "BITANGENT");
     glBindAttribLocation(d->id, AP_COLOR, "COLOR");
     glBindAttribLocation(d->id, AP_TEXCOORD0, "TEXCOORD0");
     glBindAttribLocation(d->id, AP_TEXCOORD1, "TEXCOORD1");
