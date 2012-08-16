@@ -59,7 +59,7 @@ namespace SimpleGL {
     // get transform for track
     for (AnimationTrack *track: d->tracks)
       if (track->name() == trackName)
-        return track->transform(d->time);
+        return track->transform(d->time % d->duration);
     // return identity matrix
     return Matrix4f();
   }
