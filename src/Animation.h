@@ -15,8 +15,15 @@ namespace SimpleGL {
 
     const string &name() const;
     void setName(const string &name);
-    void setDuration(float duration);
-    void setTicksPerSecond(float ticksPerSecond);
+
+    const long duration() const;
+    void setDuration(long duration);
+
+    const long time() const;
+    void setTime(long time);
+    void addTime(long delta);
+
+    Matrix4f transform(const string &trackName) const;
 
     vector<AnimationTrack *> &tracks() const;
 

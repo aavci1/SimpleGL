@@ -23,7 +23,7 @@ namespace SimpleGL {
     void setTransform(const Matrix4f &transform);
 
     const Matrix4f &worldTransform() const;
-    void calculateWorldTransform();
+    void updateWorldTransform();
 
     vector<Bone *> &children() const;
     vector<SubMesh *> &subMeshes() const;

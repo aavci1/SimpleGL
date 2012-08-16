@@ -16,6 +16,7 @@
 
 #include <QKeyEvent>
 #include <QMouseEvent>
+#include <QTimer>
 #include <QWheelEvent>
 
 using namespace SimpleGL;
@@ -30,9 +31,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   connect(widget, SIGNAL(mousePressed(QMouseEvent*)), this, SLOT(mousePressed(QMouseEvent*)));
   connect(widget, SIGNAL(mouseReleased(QMouseEvent*)), this, SLOT(mouseReleased(QMouseEvent*)));
   connect(widget, SIGNAL(wheelMoved(QWheelEvent*)), this, SLOT(wheelMoved(QWheelEvent*)));
+  timer = new QTimer();
+  timer->setInterval(10);
+  connect(timer, SIGNAL(timeout()), widget, SLOT(updateGL()));
+  timer->start();
 }
 
 MainWindow::~MainWindow() {
+  delete timer;
   // deinitialize SimpleGL
   SimpleGL::Root::destroy();
 }
@@ -61,11 +67,16 @@ void MainWindow::initialized() {
   if (!directionalLightProgram->loadShaderFromPath(ST_VERTEX, "media/directional_light_vp.glsl")) cerr << directionalLightProgram->log() << endl;
   if (!directionalLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/directional_light_fp.glsl")) cerr << directionalLightProgram->log() << endl;
   if (!directionalLightProgram->link()) cerr << directionalLightProgram->log() << endl;
-  // load programs
-  Program *program = Root::instance()->createProgram("Textured");
-  if (!program->loadShaderFromPath(ST_VERTEX, "media/textured_vp.glsl")) cerr << program->log() << endl;
-  if (!program->loadShaderFromPath(ST_FRAGMENT, "media/textured_fp.glsl")) cerr << program->log() << endl;
-  if (!program->link()) cerr << program->log() << endl;
+  // load texturing program
+  Program *textured = Root::instance()->createProgram("Textured");
+  if (!textured->loadShaderFromPath(ST_VERTEX, "media/textured_vp.glsl")) cerr << textured->log() << endl;
+  if (!textured->loadShaderFromPath(ST_FRAGMENT, "media/textured_fp.glsl")) cerr << textured->log() << endl;
+  if (!textured->link()) cerr << textured->log() << endl;
+  // load skinning program
+  Program *skinned = Root::instance()->createProgram("Skinned");
+  if (!skinned->loadShaderFromPath(ST_VERTEX, "media/skinned_vp.glsl")) cerr << skinned->log() << endl;
+  if (!skinned->loadShaderFromPath(ST_FRAGMENT, "media/skinned_fp.glsl")) cerr << skinned->log() << endl;
+  if (!skinned->link()) cerr << skinned->log() << endl;
   // load textures
   Root::instance()->createTexture("Laminate", "media/laminate.jpg");
   Root::instance()->createTexture("Ceiling", "media/ceiling.jpg");
@@ -126,13 +137,11 @@ void MainWindow::initialized() {
     // load model
     AssimpImporter *importer = new AssimpImporter();
     Mesh *mesh = importer->import("MODEL", QCoreApplication::arguments().at(1).toStdString());
-    Animation *animation = mesh->animations().at(0);
-    cout << "Animation: " << animation->name() << endl << "Tracks: " << mesh->animations().at(0)->tracks().size() << endl;
     delete importer;
     // create model node
     SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
     // attach model
-    modelNode->attachObject(Root::instance()->createInstance("MODEL", ""));
+    modelNode->attachObject(Root::instance()->createInstance("MODEL", "Skinned"));
     // scale model node
     modelNode->setScale(40, 40, 40);
     modelNode->yaw(180);

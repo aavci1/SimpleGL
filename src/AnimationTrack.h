@@ -8,15 +8,18 @@ namespace SimpleGL {
 
   class AnimationTrack {
   public:
-    AnimationTrack();
+    AnimationTrack(const string &name);
     ~AnimationTrack();
 
-    void setNodeName(const string &name);
-    void addPositionKey(float time, Vector3f position);
-    void addOrientationKey(float time, Quaternion orientation);
-    void addScaleKey(float time, Vector3f scale);
+    const string &name() const;
+    void setName(const string &name);
 
-    Matrix4f calculateTransform(float time);
+    void addPositionKey(long time, Vector3f position);
+    void addOrientationKey(long time, Quaternion orientation);
+    void addScaleKey(long time, Vector3f scale);
+
+    Matrix4f transform(long time);
+
   private:
     AnimationTrackPrivate *d;
   };

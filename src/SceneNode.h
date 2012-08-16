@@ -54,7 +54,7 @@ namespace SimpleGL {
 
     const Matrix4f &worldTransform() const;
 
-    void calculateWorldTransform();
+    void updateWorldTransform();
 
   private:
     SceneNodePrivate *d;

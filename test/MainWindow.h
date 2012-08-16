@@ -9,6 +9,8 @@ namespace SimpleGL {
   class Window;
 }
 
+class QTimer;
+
 class MainWindow : public QMainWindow, private Ui::MainWindow {
   Q_OBJECT
 public:
@@ -31,6 +33,7 @@ private:
   SimpleGL::Camera *camera { nullptr };
   SimpleGL::SceneNode *cameraNode { nullptr };
   QPoint mousePosition { 0, 0 };
+  QTimer *timer;
 };
 
 #endif // MAINWINDOW_H

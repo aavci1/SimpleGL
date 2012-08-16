@@ -56,12 +56,12 @@ namespace SimpleGL {
     return d->worldTransform;
   }
 
-  void Bone::calculateWorldTransform() {
+  void Bone::updateWorldTransform() {
     d->worldTransform = d->transform;
     if (d->parent)
       d->worldTransform = d->parent->worldTransform() * d->transform;
     for (Bone *bone: d->children)
-      bone->calculateWorldTransform();
+      bone->updateWorldTransform();
   }
 
   vector<Bone *> &Bone::children() const {

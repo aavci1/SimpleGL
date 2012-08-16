@@ -65,10 +65,9 @@ namespace SimpleGL {
     Instance *createInstance(const string &mesh, const string &material);
     const vector<Instance *> &instances() const;
 
-    void calculateWorldTransforms();
+    void prepareRender();
     void renderScene(Window *window, Viewport *viewport);
     void renderLights(Window *window, Viewport *viewport);
-    void renderOneFrame(long time);
 
     const float fps() const;
   private:

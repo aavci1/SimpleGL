@@ -50,6 +50,10 @@ namespace SimpleGL {
     return animation;
   }
 
+  vector<Bone *> &Mesh::bones() const {
+    return d->bones;
+  }
+
   uint32_t Mesh::numBones() const {
     return d->bones.size();
   }

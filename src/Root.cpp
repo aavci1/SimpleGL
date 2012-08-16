@@ -1,5 +1,7 @@
 #include "Root.h"
 
+#include "Animation.h"
+#include "AnimationTrack.h"
 #include "Bone.h"
 #include "Camera.h"
 #include "DirectionalLight.h"
@@ -59,18 +61,37 @@ namespace SimpleGL {
         delete instances[i];
     }
 
-    void calculateWorldTransforms(SceneNode *node) {
-      // update node
-      node->calculateWorldTransform();
+    void prepareRender(SceneNode *node, long delta) {
+      // update world transform
+      node->updateWorldTransform();
+      // update animations
+      for (uint i = 0; i < node->numObjects(); ++i) {
+        Instance *instance = dynamic_cast<Instance *>(node->objectAt(i));
+        if (!instance)
+          continue;
+        Mesh *mesh = Root::instance()->retrieveMesh(instance->mesh());
+        if (!mesh)
+          continue;
+        // update each animation
+        for (Animation *animation: mesh->animations()) {
+          // add time delta
+          animation->addTime(delta);
+          // update bone transforms
+          for (Bone *bone: mesh->bones())
+            bone->setTransform(animation->transform(bone->name()));
+        }
+        // update bones world transforms
+        mesh->boneAt(0)->updateWorldTransform();
+      }
       // visit child nodes
       for (uint i = 0; i < node->numNodes(); ++i)
-        calculateWorldTransforms(node->nodeAt(i));
+        prepareRender(node->nodeAt(i), delta);
     }
 
-    void render(Camera *camera, SceneNode *node, const Matrix4f &viewProjMatrix) {
+    void render(Camera *camera, SceneNode *node) {
       // visit child nodes
       for (uint i = 0; i < node->numNodes(); ++i)
-        render(camera, node->nodeAt(i), viewProjMatrix);
+        render(camera, node->nodeAt(i));
       // render meshes
       for (uint i = 0; i < node->numObjects(); ++i) {
         Instance *instance = dynamic_cast<Instance *>(node->objectAt(i));
@@ -79,8 +100,6 @@ namespace SimpleGL {
         Mesh *mesh = Root::instance()->retrieveMesh(instance->mesh());
         if (!mesh)
           continue;
-        // calculate world transforms of bones
-        mesh->boneAt(0)->calculateWorldTransform();
         // draw using bones
         for (uint j = 0; j < mesh->numBones(); ++j) {
           Bone *bone = mesh->boneAt(j);
@@ -98,7 +117,12 @@ namespace SimpleGL {
             material->bind();
             // set uniforms
             program->setUniform("ModelMatrix", node->worldTransform());
-            program->setUniform("ModelViewProjMatrix", viewProjMatrix * node->worldTransform() * bone->worldTransform());
+            program->setUniform("ModelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * node->worldTransform());
+            for (uint l = 0; l < mesh->numBones(); ++l) {
+              char boneName[12] = { 0 };
+              snprintf(boneName, sizeof(boneName), "Bones[%d]", l);
+              program->setUniform(boneName, mesh->boneAt(l)->worldTransform() * mesh->boneAt(l)->offsetMatrix());
+            }
             // render the mesh
             subMesh->render(camera);
             // unbind material
@@ -575,8 +599,16 @@ namespace SimpleGL {
     return d->instances;
   }
 
-  void Root::calculateWorldTransforms() {
-    d->calculateWorldTransforms(d->sceneNodes.at(0));
+  void Root::prepareRender() {
+    // calculate time since last frame
+    long time = d->time + 10;
+    long delta = (d->time == 0) ? 0 : (time - d->time);
+    d->time = time;
+    // update fps
+    d->fpsCount++;
+    d->fpsTime += delta;
+    // update world transformations and animations
+    d->prepareRender(d->sceneNodes.at(0), delta);
   }
 
   void Root::renderScene(Window *window, Viewport *viewport) {
@@ -585,7 +617,7 @@ namespace SimpleGL {
     // get camera
     Camera *camera = viewport->camera();
     // render scene
-    d->render(camera, d->sceneNodes.at(0), camera->projectionMatrix() * camera->viewMatrix());
+    d->render(camera, d->sceneNodes.at(0));
   }
 
   void Root::renderLights(Window *window, Viewport *viewport) {
@@ -617,24 +649,6 @@ namespace SimpleGL {
       // deselect material
       program->unbind();
     }
-  }
-
-  void Root::renderOneFrame(long time) {
-    // calculate time since last frame
-    long millis = (d->time == 0) ? 0 : (time - d->time);
-    d->time = time;
-    // update fps
-    d->fpsCount++;
-    d->fpsTime += millis;
-    // set general state
-    glEnable(GL_TEXTURE_2D);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClearDepth(1.0f);
-    // update scene transformations
-    d->calculateWorldTransforms(d->sceneNodes.at(0));
-    // update all windows
-    for (Window *window: d->windows)
-      window->update();
   }
 
   const float Root::fps() const {

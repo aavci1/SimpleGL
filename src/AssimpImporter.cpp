@@ -100,7 +100,7 @@ namespace SimpleGL {
       Material *material = Root::instance()->createMaterial(directory + "$mat" + tostring2(index));
       materials[index] = material;
       // TODO: make program configurable
-      material->setProgram("Textured");
+      material->setProgram("Skinned");
       // extract diffuse maps
       for (uint j = 0; j < aimaterial->GetTextureCount(aiTextureType_DIFFUSE); ++j) {
         aiString aitexturepath;
@@ -226,15 +226,14 @@ namespace SimpleGL {
         importNode(ainode->mChildren[i], node);
     }
 
-    AnimationTrack *importChannel(aiNodeAnim *_channel) {
-      AnimationTrack *track = new AnimationTrack();
-      track->setNodeName(_channel->mNodeName.data);
+    AnimationTrack *importChannel(aiNodeAnim *_channel, float ticksPerSecond) {
+      AnimationTrack *track = new AnimationTrack(_channel->mNodeName.data);
       for (uint i = 0; i < _channel->mNumPositionKeys; ++i)
-        track->addPositionKey(_channel->mPositionKeys->mTime, toVector(_channel->mPositionKeys->mValue));
+        track->addPositionKey(_channel->mPositionKeys[i].mTime / ticksPerSecond * 1000, toVector(_channel->mPositionKeys[i].mValue));
       for (uint i = 0; i < _channel->mNumRotationKeys; ++i)
-        track->addOrientationKey(_channel->mRotationKeys->mTime, toQuaternion(_channel->mRotationKeys->mValue));
+        track->addOrientationKey(_channel->mRotationKeys[i].mTime / ticksPerSecond * 1000, toQuaternion(_channel->mRotationKeys[i].mValue));
       for (uint i = 0; i < _channel->mNumScalingKeys; ++i)
-        track->addScaleKey(_channel->mScalingKeys->mTime, toVector(_channel->mScalingKeys->mValue));
+        track->addScaleKey(_channel->mScalingKeys[i].mTime / ticksPerSecond * 1000, toVector(_channel->mScalingKeys[i].mValue));
       return track;
     }
 
@@ -243,10 +242,12 @@ namespace SimpleGL {
         return;
       aiAnimation *_animation = scene->mAnimations[index];
       Animation *animation = mesh->createAnimation(_animation->mName.data);
-      animation->setDuration(_animation->mDuration);
-      animation->setTicksPerSecond(_animation->mTicksPerSecond);
+      double ticksPerSecond = _animation->mTicksPerSecond;
+      if (ticksPerSecond == 0)
+        ticksPerSecond = 10;
+      animation->setDuration((_animation->mDuration / ticksPerSecond) * 1000);
       for(uint i = 0; i < _animation->mNumChannels; ++i)
-        animation->tracks().push_back(importChannel(_animation->mChannels[i]));
+        animation->tracks().push_back(importChannel(_animation->mChannels[i], ticksPerSecond));
 
     }
   };

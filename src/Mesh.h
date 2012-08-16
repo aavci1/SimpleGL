@@ -21,6 +21,8 @@ namespace SimpleGL {
     vector<Animation *> &animations() const;
     Animation *createAnimation(const string &name);
 
+    vector<Bone *> &bones() const;
+
     uint32_t numBones() const;
     Bone *boneAt(uint32_t index) const;
     Bone *createBone(Bone *parent);

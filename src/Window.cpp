@@ -116,12 +116,12 @@ namespace SimpleGL {
   }
 
   void Window::update() {
+    // update scene transformations
+    Root::instance()->prepareRender();
     // set general state
     glEnable(GL_TEXTURE_2D);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClearDepth(1.0f);
-    // update scene transformations
-    Root::instance()->calculateWorldTransforms();
     // clear color and depth buffers
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

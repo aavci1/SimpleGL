@@ -14,8 +14,8 @@ namespace SimpleGL {
     }
 
     string name { "" };
-    float duration { 0.0f };
-    float ticksPerSecond { 0.0f };
+    long time { 0 };
+    long duration { 0 };
     vector<AnimationTrack *> tracks;
   };
 
@@ -35,12 +35,33 @@ namespace SimpleGL {
     d->name = name;
   }
 
-  void Animation::setDuration(float duration) {
+  const long Animation::duration() const {
+    return d->duration;
+  }
+
+  void Animation::setDuration(long duration) {
     d->duration = duration;
   }
 
-  void Animation::setTicksPerSecond(float ticksPerSecond) {
-    d->ticksPerSecond = ticksPerSecond;
+  const long Animation::time() const {
+    return d->time;
+  }
+
+  void Animation::addTime(long delta) {
+    d->time += delta;
+  }
+
+  void Animation::setTime(long time) {
+    d->time = time;
+  }
+
+  Matrix4f Animation::transform(const string &trackName) const {
+    // get transform for track
+    for (AnimationTrack *track: d->tracks)
+      if (track->name() == trackName)
+        return track->transform(d->time);
+    // return identity matrix
+    return Matrix4f();
   }
 
   vector<AnimationTrack *> &Animation::tracks() const {

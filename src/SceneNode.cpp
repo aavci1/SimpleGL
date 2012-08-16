@@ -185,7 +185,7 @@ namespace SimpleGL {
     return d->worldTransform;
   }
 
-  void SceneNode::calculateWorldTransform() {
+  void SceneNode::updateWorldTransform() {
     if (d->parentSceneNode) {
       d->worldOrientation = d->parentSceneNode->worldOrientation() * d->orientation;
       d->worldScale = d->parentSceneNode->worldScale() * d->scale;
