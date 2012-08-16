@@ -248,7 +248,6 @@ namespace SimpleGL {
       animation->setDuration((_animation->mDuration / ticksPerSecond) * 1000);
       for(uint i = 0; i < _animation->mNumChannels; ++i)
         animation->tracks().push_back(importChannel(_animation->mChannels[i], ticksPerSecond));
-
     }
   };
 
@@ -278,8 +277,7 @@ namespace SimpleGL {
                                                  aiProcess_TransformUVCoords |
                                                  aiProcess_FindInstances |
                                                  aiProcess_OptimizeMeshes |
-                                                 aiProcess_OptimizeGraph |
-                                                 aiProcess_Debone);
+                                                 aiProcess_OptimizeGraph);
     // check status
     if (!d->scene)
       return nullptr;

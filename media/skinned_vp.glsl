@@ -1,10 +1,9 @@
 #version 330 core
 
-// model view projection matrix
+// uniforms
 uniform mat4 ModelViewProjMatrix;
 uniform mat4 ModelMatrix;
-const int MAX_BONES = 100;
-uniform mat4 Bones[MAX_BONES];
+uniform mat4 Bones[100];
 // inputs
 in vec3 POSITION;
 in vec3 NORMAL;
@@ -18,7 +17,9 @@ out vec4 _normal;
 out vec2 _texCoord;
 
 void main() {
-   mat4 boneTransform = Bones[BONEIDS[0]] * BONEWEIGHTS[0] + Bones[BONEIDS[1]] * BONEWEIGHTS[1] + Bones[BONEIDS[2]] * BONEWEIGHTS[2] + Bones[BONEIDS[3]] * BONEWEIGHTS[3];
+   mat4 boneTransform = mat4(1);
+   if (BONEWEIGHTS != vec4(0))
+    boneTransform = Bones[BONEIDS[0]] * BONEWEIGHTS[0] + Bones[BONEIDS[1]] * BONEWEIGHTS[1] + Bones[BONEIDS[2]] * BONEWEIGHTS[2] + Bones[BONEIDS[3]] * BONEWEIGHTS[3];
    gl_Position = ModelViewProjMatrix * boneTransform * vec4(POSITION, 1.0);
    // pass output
    _worldPosition = ModelMatrix * vec4(POSITION, 1.0);
