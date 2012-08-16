@@ -10,9 +10,10 @@ namespace SimpleGL {
 
   class Animation {
   public:
-    Animation();
+    Animation(const string &name);
     ~Animation();
 
+    const string &name() const;
     void setName(const string &name);
     void setDuration(float duration);
     void setTicksPerSecond(float ticksPerSecond);

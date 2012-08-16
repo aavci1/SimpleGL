@@ -19,11 +19,16 @@ namespace SimpleGL {
     vector<AnimationTrack *> tracks;
   };
 
-  Animation::Animation() : d(new AnimationPrivate()) {
+  Animation::Animation(const string &name) : d(new AnimationPrivate()) {
+    d->name = name;
   }
 
   Animation::~Animation() {
     delete d;
+  }
+
+  const string &Animation::name() const {
+    return d->name;
   }
 
   void Animation::setName(const string &name) {

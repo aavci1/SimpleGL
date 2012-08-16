@@ -242,12 +242,12 @@ namespace SimpleGL {
       if (index > scene->mNumAnimations)
         return;
       aiAnimation *_animation = scene->mAnimations[index];
-      Animation *animation = new Animation();
-      animation->setName(_animation->mName.data);
+      Animation *animation = mesh->createAnimation(_animation->mName.data);
       animation->setDuration(_animation->mDuration);
       animation->setTicksPerSecond(_animation->mTicksPerSecond);
       for(uint i = 0; i < _animation->mNumChannels; ++i)
         animation->tracks().push_back(importChannel(_animation->mChannels[i]));
+
     }
   };
 

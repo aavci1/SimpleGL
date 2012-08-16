@@ -1,5 +1,6 @@
 #include "Mesh.h"
 
+#include "Animation.h"
 #include "Bone.h"
 #include "SubMesh.h"
 
@@ -10,6 +11,8 @@ namespace SimpleGL {
     }
 
     ~MeshPrivate() {
+      for (uint i = 0; i < animations.size(); ++i)
+        delete animations[i];
       for (uint i = 0; i < bones.size(); ++i)
         delete bones[i];
       for (uint i = 0; i < subMeshes.size(); ++i)
@@ -17,6 +20,7 @@ namespace SimpleGL {
     }
 
     string name;
+    vector<Animation *> animations;
     vector<Bone *> bones;
     vector<SubMesh *> subMeshes;
   };
@@ -34,6 +38,18 @@ namespace SimpleGL {
     return d->name;
   }
 
+  vector<Animation *> &Mesh::animations() const {
+    return d->animations;
+  }
+
+  Animation *Mesh::createAnimation(const string &name) {
+    Animation *animation = new Animation(name);
+    // add to list
+    d->animations.push_back(animation);
+    // return animation
+    return animation;
+  }
+
   uint32_t Mesh::numBones() const {
     return d->bones.size();
   }
@@ -46,10 +62,9 @@ namespace SimpleGL {
     Bone *bone = new Bone(parent);
     // add to list
     d->bones.push_back(bone);
-    // return mesh
+    // return bone
     return bone;
   }
-
 
   uint32_t Mesh::numSubMeshes() const {
     return d->subMeshes.size();

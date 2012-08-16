@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 
+#include "Animation.h"
 #include "AssimpImporter.h"
 #include "Camera.h"
 #include "DirectionalLight.h"
@@ -124,14 +125,16 @@ void MainWindow::initialized() {
   if (QCoreApplication::argc() > 1) {
     // load model
     AssimpImporter *importer = new AssimpImporter();
-    importer->import("MODEL", QCoreApplication::arguments().at(1).toStdString());
+    Mesh *mesh = importer->import("MODEL", QCoreApplication::arguments().at(1).toStdString());
+    Animation *animation = mesh->animations().at(0);
+    cout << "Animation: " << animation->name() << endl << "Tracks: " << mesh->animations().at(0)->tracks().size() << endl;
     delete importer;
     // create model node
     SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
     // attach model
     modelNode->attachObject(Root::instance()->createInstance("MODEL", ""));
     // scale model node
-    modelNode->setScale(20, 20, 20);
+    modelNode->setScale(40, 40, 40);
     modelNode->yaw(180);
   }
 }
