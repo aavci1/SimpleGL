@@ -88,7 +88,7 @@ namespace SimpleGL {
       return matrix;
     }
 
-    void importMaterial(uint index) {
+    void importMaterial(uint index, string program) {
       if (index >= scene->mNumMaterials)
         return;
       aiMaterial *aimaterial = scene->mMaterials[index];
@@ -98,9 +98,9 @@ namespace SimpleGL {
       // TODO: get other material properties (specular, shininess etc.)
       //  create material
       Material *material = Root::instance()->createMaterial(directory + "$mat" + tostring2(index));
+      material->setProgram(program);
+      // put material into the list
       materials[index] = material;
-      // TODO: make program configurable
-      material->setProgram("Skinned");
       // extract diffuse maps
       for (uint j = 0; j < aimaterial->GetTextureCount(aiTextureType_DIFFUSE); ++j) {
         aiString aitexturepath;
@@ -201,7 +201,7 @@ namespace SimpleGL {
       subMesh->setIndexData(indices, indexCount);
       // set material
       if (materials[aimesh->mMaterialIndex] == nullptr)
-        importMaterial(aimesh->mMaterialIndex);
+        importMaterial(aimesh->mMaterialIndex, aimesh->HasBones() ? "Skinned" : "Textured");
       if (materials[aimesh->mMaterialIndex] != nullptr)
         subMesh->setMaterial(materials[aimesh->mMaterialIndex]->name());
     }

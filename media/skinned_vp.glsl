@@ -17,9 +17,7 @@ out vec4 _normal;
 out vec2 _texCoord;
 
 void main() {
-   mat4 boneTransform = mat4(1);
-   if (BONEWEIGHTS != vec4(0))
-    boneTransform = Bones[BONEIDS[0]] * BONEWEIGHTS[0] + Bones[BONEIDS[1]] * BONEWEIGHTS[1] + Bones[BONEIDS[2]] * BONEWEIGHTS[2] + Bones[BONEIDS[3]] * BONEWEIGHTS[3];
+   mat4 boneTransform = Bones[BONEIDS[0]] * BONEWEIGHTS[0] + Bones[BONEIDS[1]] * BONEWEIGHTS[1] + Bones[BONEIDS[2]] * BONEWEIGHTS[2] + Bones[BONEIDS[3]] * BONEWEIGHTS[3];
    gl_Position = ModelViewProjMatrix * boneTransform * vec4(POSITION, 1.0);
    // pass output
    _worldPosition = ModelMatrix * vec4(POSITION, 1.0);
