@@ -4,6 +4,7 @@
 #include "Types.h"
 
 namespace SimpleGL {
+  class Bone;
   class Camera;
   class SubMesh;
 
@@ -16,9 +17,13 @@ namespace SimpleGL {
 
     const string &name() const;
 
+    uint32_t numBones() const;
+    Bone *boneAt(uint32_t index) const;
+    Bone *createBone(Bone *parent);
+
     uint32_t numSubMeshes() const;
     SubMesh *subMeshAt(uint32_t index) const;
-    SubMesh *createSubMesh();
+    SubMesh *createSubMesh(Bone *parent = nullptr);
 
     void render(Camera *camera);
 

@@ -40,7 +40,8 @@ void MainWindow::initialized() {
   // create a camera
   camera = Root::instance()->createCamera();
   // create camera node
-  cameraNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(0.0f, 170.0f, 1500.0f));
+  cameraNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(0.0f, 170.0f, 300.0f));
+  cameraNode->pitch(-10);
   cameraNode->attachObject(camera);
   // create viewport
   widget->sglWindow()->createViewport(camera);
@@ -123,14 +124,15 @@ void MainWindow::initialized() {
   if (QCoreApplication::argc() > 1) {
     // load model
     AssimpImporter *importer = new AssimpImporter();
-    importer->loadMesh("MODEL", QCoreApplication::arguments().at(1).toStdString());
+    importer->import("MODEL", QCoreApplication::arguments().at(1).toStdString());
     delete importer;
     // create model node
     SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
     // attach model
     modelNode->attachObject(Root::instance()->createInstance("MODEL", ""));
     // scale model node
-    modelNode->setScale(3, 3, 3);
+    modelNode->setScale(20, 20, 20);
+    modelNode->yaw(180);
   }
 }
 

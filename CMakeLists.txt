@@ -14,6 +14,7 @@ add_definitions(-O2 -msse2 -Wall -std=c++11)
 # add sources
 set (SOURCES
   src/AssimpImporter.cpp
+  src/Bone.cpp
   src/Camera.cpp
   src/DirectionalLight.cpp
   src/Instance.cpp

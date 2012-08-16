@@ -1,5 +1,6 @@
 #include "Root.h"
 
+#include "Bone.h"
 #include "Camera.h"
 #include "DirectionalLight.h"
 #include "Instance.h"
@@ -78,25 +79,31 @@ namespace SimpleGL {
         Mesh *mesh = Root::instance()->retrieveMesh(instance->mesh());
         if (!mesh)
           continue;
-        for (uint j = 0; j < mesh->numSubMeshes(); ++j) {
-          SubMesh *subMesh = mesh->subMeshAt(j);
-          Material *material = Root::instance()->retrieveMaterial(instance->material());
-          if (!material)
-            material = Root::instance()->retrieveMaterial(subMesh->material());
-          if (!material)
-            continue;
-          Program *program = Root::instance()->retrieveProgram(material->program());
-          if (!program)
-            continue;
-          // bind the material
-          material->bind();
-          // set uniforms
-          program->setUniform("ModelMatrix", node->worldTransform());
-          program->setUniform("ModelViewProjMatrix", viewProjMatrix * node->worldTransform());
-          // render the mesh
-          subMesh->render(camera);
-          // unbind material
-          material->unbind();
+        // calculate world transforms of bones
+        mesh->boneAt(0)->calculateWorldTransform();
+        // draw using bones
+        for (uint j = 0; j < mesh->numBones(); ++j) {
+          Bone *bone = mesh->boneAt(j);
+          for (uint k = 0; k < bone->subMeshes().size(); ++k) {
+            SubMesh *subMesh = bone->subMeshes().at(k);
+            Material *material = Root::instance()->retrieveMaterial(instance->material());
+            if (!material)
+              material = Root::instance()->retrieveMaterial(subMesh->material());
+            if (!material)
+              continue;
+            Program *program = Root::instance()->retrieveProgram(material->program());
+            if (!program)
+              continue;
+            // bind the material
+            material->bind();
+            // set uniforms
+            program->setUniform("ModelMatrix", node->worldTransform());
+            program->setUniform("ModelViewProjMatrix", viewProjMatrix * node->worldTransform() * bone->worldTransform());
+            // render the mesh
+            subMesh->render(camera);
+            // unbind material
+            material->unbind();
+          }
         }
       }
     }

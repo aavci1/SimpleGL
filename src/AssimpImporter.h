@@ -12,7 +12,7 @@ namespace SimpleGL {
     AssimpImporter();
     ~AssimpImporter();
 
-    Mesh *loadMesh(const string &name, const string &path);
+    Mesh *import(const string &name, const string &path);
 
   private:
     AssimpImporterPrivate *d;
