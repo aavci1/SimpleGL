@@ -599,9 +599,8 @@ namespace SimpleGL {
     return d->instances;
   }
 
-  void Root::prepareRender() {
+  void Root::prepareRender(long time) {
     // calculate time since last frame
-    long time = d->time + 10;
     long delta = (d->time == 0) ? 0 : (time - d->time);
     d->time = time;
     // update fps

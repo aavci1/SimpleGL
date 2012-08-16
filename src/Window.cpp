@@ -4,6 +4,8 @@
 #include "Root.h"
 #include "Viewport.h"
 
+#include <QElapsedTimer>
+
 #include <GL/glew.h>
 
 #include <algorithm>
@@ -34,11 +36,14 @@ namespace SimpleGL {
     GLuint texture0 { 0 };
     GLuint texture1 { 0 };
     GLuint texture2 { 0 };
+    QElapsedTimer timer;
   };
 
   Window::Window(int width, int height) : d(new WindowPrivate()) {
     // generate textures
     setSize(width, height);
+    // start the timer
+    d->timer.start();
   }
 
   Window::~Window() {
@@ -117,7 +122,7 @@ namespace SimpleGL {
 
   void Window::update() {
     // update scene transformations
-    Root::instance()->prepareRender();
+    Root::instance()->prepareRender(d->timer.elapsed());
     // set general state
     glEnable(GL_TEXTURE_2D);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
