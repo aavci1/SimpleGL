@@ -13,6 +13,8 @@ include_directories (${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_
 add_definitions(-O2 -msse2 -Wall -std=c++11)
 # add sources
 set (SOURCES
+  src/Animation.cpp
+  src/AnimationTrack.cpp
   src/AssimpImporter.cpp
   src/Bone.cpp
   src/Camera.cpp

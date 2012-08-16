@@ -1,5 +1,7 @@
 #include "AssimpImporter.h"
 
+#include "Animation.h"
+#include "AnimationTrack.h"
 #include "Bone.h"
 #include "Material.h"
 #include "Mesh.h"
@@ -53,6 +55,14 @@ namespace SimpleGL {
       return ss.str();
     }
 
+    Vector3f toVector(aiVector3D aivector) {
+      return Vector3f(aivector.x, aivector.y, aivector.z);
+    }
+
+    Quaternion toQuaternion(aiQuaternion aiquaternion) {
+      return Quaternion(aiquaternion.w, aiquaternion.x, aiquaternion.y, aiquaternion.z);
+    }
+
     Matrix4f toMatrix(aiMatrix4x4 aimatrix) {
       Matrix4f matrix;
       matrix[0][0] = aimatrix.a1;
@@ -78,7 +88,7 @@ namespace SimpleGL {
       return matrix;
     }
 
-    void importMaterial(int index) {
+    void importMaterial(uint index) {
       if (index >= scene->mNumMaterials)
         return;
       aiMaterial *aimaterial = scene->mMaterials[index];
@@ -106,7 +116,7 @@ namespace SimpleGL {
       }
     }
 
-    void importMesh(Bone *parent, int index) {
+    void importMesh(Bone *parent, uint index) {
       if (index >= scene->mNumMeshes)
         return;
       aiMesh *aimesh = scene->mMeshes[index];
@@ -215,6 +225,30 @@ namespace SimpleGL {
       for (uint32_t i = 0; i < ainode->mNumChildren; ++i)
         importNode(ainode->mChildren[i], node);
     }
+
+    AnimationTrack *importChannel(aiNodeAnim *_channel) {
+      AnimationTrack *track = new AnimationTrack();
+      track->setNodeName(_channel->mNodeName.data);
+      for (uint i = 0; i < _channel->mNumPositionKeys; ++i)
+        track->addPositionKey(_channel->mPositionKeys->mTime, toVector(_channel->mPositionKeys->mValue));
+      for (uint i = 0; i < _channel->mNumRotationKeys; ++i)
+        track->addOrientationKey(_channel->mRotationKeys->mTime, toQuaternion(_channel->mRotationKeys->mValue));
+      for (uint i = 0; i < _channel->mNumScalingKeys; ++i)
+        track->addScaleKey(_channel->mScalingKeys->mTime, toVector(_channel->mScalingKeys->mValue));
+      return track;
+    }
+
+    void importAnimation(uint index) {
+      if (index > scene->mNumAnimations)
+        return;
+      aiAnimation *_animation = scene->mAnimations[index];
+      Animation *animation = new Animation();
+      animation->setName(_animation->mName.data);
+      animation->setDuration(_animation->mDuration);
+      animation->setTicksPerSecond(_animation->mTicksPerSecond);
+      for(uint i = 0; i < _animation->mNumChannels; ++i)
+        animation->tracks().push_back(importChannel(_animation->mChannels[i]));
+    }
   };
 
   AssimpImporter::AssimpImporter() : d(new AssimpImporterPrivate()) {
@@ -255,7 +289,9 @@ namespace SimpleGL {
     // import nodes
     d->importNode(d->scene->mRootNode, d->mesh->boneAt(0));
     // TODO: import textures
-    // TODO: import animations
+    // import animations
+    for (uint32_t i = 0; i < d->scene->mNumAnimations; ++i)
+      d->importAnimation(i);
     // return mesh
     return d->mesh;
   }
