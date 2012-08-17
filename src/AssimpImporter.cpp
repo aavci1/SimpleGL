@@ -88,9 +88,7 @@ namespace SimpleGL {
       return matrix;
     }
 
-    void importMaterial(uint index, string program) {
-      if (index >= scene->mNumMaterials)
-        return;
+    void importMaterial(uint index) {
       aiMaterial *aimaterial = scene->mMaterials[index];
       // get material name
       aiString ainame;
@@ -98,7 +96,6 @@ namespace SimpleGL {
       // TODO: get other material properties (specular, shininess etc.)
       //  create material
       Material *material = Root::instance()->createMaterial(directory + "$mat" + tostring2(index));
-      material->setProgram(program);
       // put material into the list
       materials[index] = material;
       // extract diffuse maps
@@ -200,10 +197,10 @@ namespace SimpleGL {
       subMesh->setVertexData(vertices, vertexCount, AT_POSITION | AT_NORMAL | AT_TANGENT_AND_BITANGENT | AT_COLOR | AT_TEXCOORD0 | AT_TEXCOORD1 | AT_TEXCOORD2 | AT_TEXCOORD3 | AT_BONES);
       subMesh->setIndexData(indices, indexCount);
       // set material
-      if (materials[aimesh->mMaterialIndex] == nullptr)
-        importMaterial(aimesh->mMaterialIndex, aimesh->HasBones() ? "Skinned" : "Textured");
-      if (materials[aimesh->mMaterialIndex] != nullptr)
+      if (materials[aimesh->mMaterialIndex] != nullptr) {
+        materials[aimesh->mMaterialIndex]->setProgram(aimesh->HasBones() ? "Skinned" : "Textured");
         subMesh->setMaterial(materials[aimesh->mMaterialIndex]->name());
+      }
     }
 
     void importNode(aiNode *_node, Bone *parent) {
@@ -278,6 +275,9 @@ namespace SimpleGL {
     d->path = path;
     d->directory = path.substr(0, path.find_last_of("/"));
     // TODO: import textures
+    // import materials
+    for (uint i = 0; i < d->scene->mNumMaterials; ++i)
+      d->importMaterial(i);
     // import nodes
     d->importNode(d->scene->mRootNode, d->mesh->bones().at(0));
     // import meshes
