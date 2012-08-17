@@ -38,7 +38,7 @@ namespace SimpleGL {
     return d->name;
   }
 
-  vector<Animation *> &Mesh::animations() const {
+  const vector<Animation *> &Mesh::animations() const {
     return d->animations;
   }
 
@@ -50,16 +50,8 @@ namespace SimpleGL {
     return animation;
   }
 
-  vector<Bone *> &Mesh::bones() const {
+  const vector<Bone *> &Mesh::bones() const {
     return d->bones;
-  }
-
-  uint32_t Mesh::numBones() const {
-    return d->bones.size();
-  }
-
-  Bone *Mesh::boneAt(uint32_t index) const {
-    return d->bones.at(index);
   }
 
   Bone *Mesh::createBone(Bone *parent) {
@@ -70,23 +62,14 @@ namespace SimpleGL {
     return bone;
   }
 
-  uint32_t Mesh::numSubMeshes() const {
-    return d->subMeshes.size();
+  const vector<SubMesh *> &Mesh::subMeshes() const {
+    return d->subMeshes;
   }
 
-  SubMesh *Mesh::subMeshAt(uint32_t index) const {
-    return d->subMeshes.at(index);
-  }
-
-  SubMesh *Mesh::createSubMesh(Bone *parent) {
+  SubMesh *Mesh::createSubMesh() {
     SubMesh *subMesh = new SubMesh();
     // add to list
     d->subMeshes.push_back(subMesh);
-    // attach to bone
-    if (parent)
-      parent->subMeshes().push_back(subMesh);
-    else
-      d->bones.at(0)->subMeshes().push_back(subMesh);
     // return mesh
     return subMesh;
   }

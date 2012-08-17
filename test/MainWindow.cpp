@@ -13,6 +13,7 @@
 #include "SceneNode.h"
 #include "SpotLight.h"
 #include "Window.h"
+#include "Viewport.h"
 
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -136,7 +137,7 @@ void MainWindow::initialized() {
   {
     // load model
     AssimpImporter *importer = new AssimpImporter();
-    Mesh *mesh = importer->import("DWARF", "/home/aavci/Documents/SimpleGL/dwarf/dwarf1.x");
+    importer->import("DWARF", "/home/aavci/Documents/SimpleGL/dwarf/dwarf1.x");
     delete importer;
     // create model node
     SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(+300.0f, 0.0f, 0.0f));
@@ -149,10 +150,10 @@ void MainWindow::initialized() {
   {
     // load model
     AssimpImporter *importer = new AssimpImporter();
-    Mesh *mesh = importer->import("NINJA", "/home/aavci/Documents/SimpleGL/ninja/ninja.ms3d");
+    importer->import("NINJA", "/home/aavci/Documents/SimpleGL/ninja/ninja.ms3d");
     delete importer;
     // create model node
-    SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(0.0f, 0.0f, 0.0f));
+    SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(+100.0f, 0.0f, 0.0f));
     // attach model
     modelNode->attachObject(Root::instance()->createInstance("NINJA", ""));
     // scale model node
@@ -162,20 +163,19 @@ void MainWindow::initialized() {
   {
     // load model
     AssimpImporter *importer = new AssimpImporter();
-    Mesh *mesh = importer->import("MARKUS", "/home/aavci/Documents/SimpleGL/markus/markus.dae");
+    importer->import("MARKUS", "/home/aavci/Documents/SimpleGL/markus/markus.dae");
     delete importer;
     // create model node
-    SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(0.0f, 0.0f, -300.0f));
+    SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(-100.0f, 0.0f, 0.0f));
     // attach model
     modelNode->attachObject(Root::instance()->createInstance("MARKUS", ""));
     // scale model node
     modelNode->setScale(3, 3, 3);
-    modelNode->pitch(-90);
   }
   {
     // load model
     AssimpImporter *importer = new AssimpImporter();
-    Mesh *mesh = importer->import("BOB", "/home/aavci/Documents/SimpleGL/bob/boblampclean.md5mesh");
+    importer->import("BOB", "/home/aavci/Documents/SimpleGL/bob/boblampclean.md5mesh");
     delete importer;
     // create model node
     SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(-300.0f, 0.0f, 0.0f));

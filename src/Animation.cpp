@@ -64,7 +64,11 @@ namespace SimpleGL {
     return Matrix4f();
   }
 
-  vector<AnimationTrack *> &Animation::tracks() const {
+  const vector<AnimationTrack *> &Animation::tracks() const {
     return d->tracks;
+  }
+
+  void Animation::addTrack(AnimationTrack *track) {
+    d->tracks.push_back(track);
   }
 }

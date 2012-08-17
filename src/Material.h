@@ -18,8 +18,7 @@ namespace SimpleGL {
     const string &program() const;
     void setProgram(const string &program);
 
-    uint32_t numTextures() const;
-    const string &textureAt(uint32_t index) const;
+    const vector<string> &textures() const;
     void addTexture(const string &texture);
 
     void bind();

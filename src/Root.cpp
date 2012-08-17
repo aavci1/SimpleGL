@@ -65,8 +65,8 @@ namespace SimpleGL {
       // update world transform
       node->updateWorldTransform();
       // update animations
-      for (uint i = 0; i < node->numObjects(); ++i) {
-        Instance *instance = dynamic_cast<Instance *>(node->objectAt(i));
+      for (SceneObject *object: node->attachedObjects()) {
+        Instance *instance = dynamic_cast<Instance *>(object);
         if (!instance)
           continue;
         Mesh *mesh = Root::instance()->retrieveMesh(instance->mesh());
@@ -81,53 +81,49 @@ namespace SimpleGL {
             bone->setTransform(animation->transform(bone->name()));
         }
         // update bones world transforms
-        mesh->boneAt(0)->updateWorldTransform();
+        mesh->bones().at(0)->updateWorldTransform();
       }
       // visit child nodes
-      for (uint i = 0; i < node->numNodes(); ++i)
-        prepareRender(node->nodeAt(i), delta);
+      for (SceneNode *childNode: node->childNodes())
+        prepareRender(childNode, delta);
     }
 
     void render(Camera *camera, SceneNode *node) {
       // visit child nodes
-      for (uint i = 0; i < node->numNodes(); ++i)
-        render(camera, node->nodeAt(i));
+      for (SceneNode *childNode: node->childNodes())
+        render(camera, childNode);
       // render meshes
-      for (uint i = 0; i < node->numObjects(); ++i) {
-        Instance *instance = dynamic_cast<Instance *>(node->objectAt(i));
+      for (SceneObject *object: node->attachedObjects()) {
+        Instance *instance = dynamic_cast<Instance *>(object);
         if (!instance)
           continue;
         Mesh *mesh = Root::instance()->retrieveMesh(instance->mesh());
         if (!mesh)
           continue;
-        // draw using bones
-        for (uint j = 0; j < mesh->numBones(); ++j) {
-          Bone *bone = mesh->boneAt(j);
-          for (uint k = 0; k < bone->subMeshes().size(); ++k) {
-            SubMesh *subMesh = bone->subMeshes().at(k);
-            Material *material = Root::instance()->retrieveMaterial(instance->material());
-            if (!material)
-              material = Root::instance()->retrieveMaterial(subMesh->material());
-            if (!material)
-              continue;
-            Program *program = Root::instance()->retrieveProgram(material->program());
-            if (!program)
-              continue;
-            // bind the material
-            material->bind();
-            // set uniforms
-            program->setUniform("ModelMatrix", node->worldTransform());
-            program->setUniform("ModelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * node->worldTransform());
-            for (uint l = 0; l < mesh->numBones(); ++l) {
-              char boneName[12] = { 0 };
-              snprintf(boneName, sizeof(boneName), "Bones[%d]", l);
-              program->setUniform(boneName, mesh->boneAt(l)->worldTransform() * mesh->boneAt(l)->offsetMatrix());
-            }
-            // render the mesh
-            subMesh->render(camera);
-            // unbind material
-            material->unbind();
+        // draw sub meshes
+        for (SubMesh *subMesh: mesh->subMeshes()) {
+          Material *material = Root::instance()->retrieveMaterial(instance->material());
+          if (!material)
+            material = Root::instance()->retrieveMaterial(subMesh->material());
+          if (!material)
+            continue;
+          Program *program = Root::instance()->retrieveProgram(material->program());
+          if (!program)
+            continue;
+          // bind the material
+          material->bind();
+          // set uniforms
+          program->setUniform("ModelMatrix", node->worldTransform());
+          program->setUniform("ModelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * node->worldTransform());
+          for (uint l = 0; l < mesh->bones().size(); ++l) {
+            char boneName[12] = { 0 };
+            snprintf(boneName, sizeof(boneName), "Bones[%d]", l);
+            program->setUniform(boneName, mesh->bones().at(l)->worldTransform() * mesh->bones().at(l)->offsetMatrix());
           }
+          // render the mesh
+          subMesh->render(camera);
+          // unbind material
+          material->unbind();
         }
       }
     }

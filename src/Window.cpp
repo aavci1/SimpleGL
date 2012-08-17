@@ -100,12 +100,8 @@ namespace SimpleGL {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   }
 
-  uint32_t Window::numViewports() const {
-    return d->viewports.size();
-  }
-
-  Viewport *Window::viewportAt(int index) const {
-    return d->viewports.at(index);
+  const vector<Viewport *> &Window::viewports() const {
+    return d->viewports;
   }
 
   Viewport *Window::createViewport(Camera *camera) {
@@ -114,7 +110,7 @@ namespace SimpleGL {
     d->viewports.push_back(viewport);
     // sort viewports
     sort(d->viewports.begin(), d->viewports.end(), [](const Viewport * v1, const Viewport * v2) {
-              return v1->zIndex() < v2->zIndex();
+         return v1->zIndex() < v2->zIndex();
     });
     // return viewport
     return viewport;

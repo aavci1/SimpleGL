@@ -16,8 +16,7 @@ namespace SimpleGL {
     Matrix4f offsetMatrix;
     Matrix4f transform;
     Matrix4f worldTransform;
-    vector<Bone *> children;
-    vector<SubMesh *> meshes;
+    vector<Bone *> childBones;
   };
 
   Bone::Bone(Bone *parent) : d(new BonePrivate()) {
@@ -26,6 +25,14 @@ namespace SimpleGL {
 
   Bone::~Bone() {
     delete d;
+  }
+
+  Bone *Bone::parentBone() const {
+    return d->parent;
+  }
+
+  void Bone::setParentBone(Bone *parent) {
+    d->parent = parent;
   }
 
   const string &Bone::name() const {
@@ -60,15 +67,18 @@ namespace SimpleGL {
     d->worldTransform = d->transform;
     if (d->parent)
       d->worldTransform = d->parent->worldTransform() * d->transform;
-    for (Bone *bone: d->children)
+    for (Bone *bone: d->childBones)
       bone->updateWorldTransform();
   }
 
-  vector<Bone *> &Bone::children() const {
-    return d->children;
+  const vector<Bone *> &Bone::childBones() const {
+    return d->childBones;
   }
 
-  vector<SubMesh *> &Bone::subMeshes() const {
-    return d->meshes;
+  void Bone::attachBone(Bone *childBone) {
+    // add to the list
+    d->childBones.push_back(childBone);
+    // set child nodes parent
+    childBone->setParentBone(this);
   }
 }

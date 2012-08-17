@@ -17,8 +17,7 @@ namespace SimpleGL {
     uint32_t height();
     void setSize(const int width, const int height);
 
-    uint32_t numViewports() const;
-    Viewport *viewportAt(int index) const;
+    const vector<Viewport *> &viewports() const;
     Viewport *createViewport(Camera *camera);
 
     void update();

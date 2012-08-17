@@ -116,11 +116,11 @@ namespace SimpleGL {
       }
     }
 
-    void importMesh(Bone *parent, uint index) {
+    void importMesh(uint index) {
       if (index >= scene->mNumMeshes)
         return;
       aiMesh *aimesh = scene->mMeshes[index];
-      SubMesh *subMesh = mesh->createSubMesh(parent);
+      SubMesh *subMesh = mesh->createSubMesh();
       meshes[index] = subMesh;
       // create vertex buffer
       uint vertexCount = aimesh->mNumVertices;
@@ -166,15 +166,15 @@ namespace SimpleGL {
       for (uint i = 0; i < aimesh->mNumBones; ++i) {
         aiBone *aibone = aimesh->mBones[i];
         uint boneId = 0;
-        for (uint j = 0; j < mesh->numBones(); ++j)
-          if (mesh->boneAt(j) && (mesh->boneAt(j)->name().compare(aibone->mName.data) == 0)) {
+        for (uint j = 0; j < mesh->bones().size(); ++j)
+          if (mesh->bones().at(j) && (mesh->bones().at(j)->name().compare(aibone->mName.data) == 0)) {
             boneId = j;
             break;
           }
         if (boneId == 0)
           continue;
         // set bones offset matrix
-        mesh->boneAt(boneId)->setOffsetMatrix(toMatrix(aibone->mOffsetMatrix));
+        mesh->bones().at(boneId)->setOffsetMatrix(toMatrix(aibone->mOffsetMatrix));
 
         for (uint j = 0; j < aibone->mNumWeights; ++j) {
           aiVertexWeight vertexWeight = aibone->mWeights[j];
@@ -206,24 +206,16 @@ namespace SimpleGL {
         subMesh->setMaterial(materials[aimesh->mMaterialIndex]->name());
     }
 
-    void importNode(aiNode *ainode, Bone *parent) {
-      Bone *node = mesh->createBone(parent);
+    void importNode(aiNode *_node, Bone *parent) {
+      Bone *bone = mesh->createBone(parent);
       // import node info
       if (parent)
-        parent->children().push_back(node);
-      node->setName(string(ainode->mName.data));
-      node->setTransform(toMatrix(ainode->mTransformation));
-      // import meshes
-      for (uint32_t i = 0; i < ainode->mNumMeshes; ++i) {
-        int meshIndex = ainode->mMeshes[i];
-        if (meshes[meshIndex] == nullptr)
-          importMesh(node, meshIndex);
-        if (meshes[meshIndex] != nullptr)
-          node->subMeshes().push_back(meshes[meshIndex]);
-      }
+        parent->attachBone(bone);
+      bone->setName(string(_node->mName.data));
+      bone->setTransform(toMatrix(_node->mTransformation));
       // import children
-      for (uint32_t i = 0; i < ainode->mNumChildren; ++i)
-        importNode(ainode->mChildren[i], node);
+      for (uint i = 0; i < _node->mNumChildren; ++i)
+        importNode(_node->mChildren[i], bone);
     }
 
     AnimationTrack *importChannel(aiNodeAnim *_channel, float ticksPerSecond) {
@@ -247,7 +239,7 @@ namespace SimpleGL {
         ticksPerSecond = 10;
       animation->setDuration((_animation->mDuration / ticksPerSecond) * 1000);
       for(uint i = 0; i < _animation->mNumChannels; ++i)
-        animation->tracks().push_back(importChannel(_animation->mChannels[i], ticksPerSecond));
+        animation->addTrack(importChannel(_animation->mChannels[i], ticksPerSecond));
     }
   };
 
@@ -285,11 +277,14 @@ namespace SimpleGL {
     d->mesh = Root::instance()->createMesh(name);
     d->path = path;
     d->directory = path.substr(0, path.find_last_of("/"));
-    // import nodes
-    d->importNode(d->scene->mRootNode, d->mesh->boneAt(0));
     // TODO: import textures
+    // import nodes
+    d->importNode(d->scene->mRootNode, d->mesh->bones().at(0));
+    // import meshes
+    for (uint i = 0; i < d->scene->mNumMeshes; ++i)
+      d->importMesh(i);
     // import animations
-    for (uint32_t i = 0; i < d->scene->mNumAnimations; ++i)
+    for (uint i = 0; i < d->scene->mNumAnimations; ++i)
       d->importAnimation(i);
     // return mesh
     return d->mesh;

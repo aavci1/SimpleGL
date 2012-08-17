@@ -13,6 +13,9 @@ namespace SimpleGL {
     Bone(Bone *parent = nullptr);
     ~Bone();
 
+    Bone *parentBone() const;
+    void setParentBone(Bone *parent);
+
     const string &name() const;
     void setName(const string &name);
 
@@ -25,8 +28,8 @@ namespace SimpleGL {
     const Matrix4f &worldTransform() const;
     void updateWorldTransform();
 
-    vector<Bone *> &children() const;
-    vector<SubMesh *> &subMeshes() const;
+    const vector<Bone *> &childBones() const;
+    void attachBone(Bone *bone);
 
   private:
     BonePrivate *d;

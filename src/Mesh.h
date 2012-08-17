@@ -18,18 +18,14 @@ namespace SimpleGL {
 
     const string &name() const;
 
-    vector<Animation *> &animations() const;
+    const vector<Animation *> &animations() const;
     Animation *createAnimation(const string &name);
 
-    vector<Bone *> &bones() const;
-
-    uint32_t numBones() const;
-    Bone *boneAt(uint32_t index) const;
+    const vector<Bone *> &bones() const;
     Bone *createBone(Bone *parent);
 
-    uint32_t numSubMeshes() const;
-    SubMesh *subMeshAt(uint32_t index) const;
-    SubMesh *createSubMesh(Bone *parent = nullptr);
+    const vector<SubMesh *> &subMeshes() const;
+    SubMesh *createSubMesh();
 
     void render(Camera *camera);
 
