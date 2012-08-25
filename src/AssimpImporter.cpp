@@ -215,8 +215,8 @@ namespace SimpleGL {
         importNode(_node->mChildren[i], bone);
     }
 
-    AnimationTrack *importChannel(aiNodeAnim *_channel, float ticksPerSecond) {
-      AnimationTrack *track = new AnimationTrack(_channel->mNodeName.data);
+    AnimationTrack *importChannel(Animation *animation, aiNodeAnim *_channel, float ticksPerSecond) {
+      AnimationTrack *track = animation->createTrack(_channel->mNodeName.data);
       for (uint i = 0; i < _channel->mNumPositionKeys; ++i)
         track->addPositionKey(_channel->mPositionKeys[i].mTime / ticksPerSecond * 1000, toVector(_channel->mPositionKeys[i].mValue));
       for (uint i = 0; i < _channel->mNumRotationKeys; ++i)
@@ -227,8 +227,6 @@ namespace SimpleGL {
     }
 
     void importAnimation(uint index) {
-      if (index > scene->mNumAnimations)
-        return;
       aiAnimation *_animation = scene->mAnimations[index];
       Animation *animation = mesh->createAnimation(_animation->mName.data);
       double ticksPerSecond = _animation->mTicksPerSecond;
@@ -236,7 +234,7 @@ namespace SimpleGL {
         ticksPerSecond = 10;
       animation->setDuration((_animation->mDuration / ticksPerSecond) * 1000);
       for(uint i = 0; i < _animation->mNumChannels; ++i)
-        animation->addTrack(importChannel(_animation->mChannels[i], ticksPerSecond));
+        importChannel(animation, _animation->mChannels[i], ticksPerSecond);
     }
   };
 

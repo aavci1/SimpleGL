@@ -27,6 +27,14 @@ namespace SimpleGL {
     delete d;
   }
 
+  const string &Bone::name() const {
+    return d->name;
+  }
+
+  void Bone::setName(const string &name) {
+    d->name = name;
+  }
+
   Bone *Bone::parentBone() const {
     return d->parent;
   }
@@ -35,12 +43,15 @@ namespace SimpleGL {
     d->parent = parent;
   }
 
-  const string &Bone::name() const {
-    return d->name;
+  const vector<Bone *> &Bone::childBones() const {
+    return d->childBones;
   }
 
-  void Bone::setName(const string &name) {
-    d->name = name;
+  void Bone::attachBone(Bone *childBone) {
+    // add to the list
+    d->childBones.push_back(childBone);
+    // set child nodes parent
+    childBone->setParentBone(this);
   }
 
   const Matrix4f &Bone::offsetMatrix() const {
@@ -69,16 +80,5 @@ namespace SimpleGL {
       d->worldTransform = d->parent->worldTransform() * d->transform;
     for (Bone *bone: d->childBones)
       bone->updateWorldTransform();
-  }
-
-  const vector<Bone *> &Bone::childBones() const {
-    return d->childBones;
-  }
-
-  void Bone::attachBone(Bone *childBone) {
-    // add to the list
-    d->childBones.push_back(childBone);
-    // set child nodes parent
-    childBone->setParentBone(this);
   }
 }

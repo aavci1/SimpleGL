@@ -26,7 +26,7 @@ namespace SimpleGL {
     Matrix4f transform(const string &trackName) const;
 
     const vector<AnimationTrack *> &tracks() const;
-    void addTrack(AnimationTrack *track);
+    AnimationTrack *createTrack(const string &name);
 
   private:
     AnimationPrivate *d;

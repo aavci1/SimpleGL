@@ -68,7 +68,11 @@ namespace SimpleGL {
     return d->tracks;
   }
 
-  void Animation::addTrack(AnimationTrack *track) {
+  AnimationTrack *Animation::createTrack(const string &name) {
+    AnimationTrack *track = new AnimationTrack(name);
+    // add to list
     d->tracks.push_back(track);
+    // return mesh
+    return track;
   }
 }

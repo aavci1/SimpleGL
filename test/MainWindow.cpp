@@ -163,14 +163,14 @@ void MainWindow::initialized() {
   {
     // load model
     AssimpImporter *importer = new AssimpImporter();
-    importer->import("MARKUS", "/home/aavci/Documents/SimpleGL/markus/markus.dae");
+    importer->import("BOY", "/home/aavci/Documents/SimpleGL/astroboy/astroboy_walk.dae");
     delete importer;
     // create model node
     SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(-100.0f, 0.0f, 0.0f));
     // attach model
-    modelNode->attachObject(Root::instance()->createInstance("MARKUS", ""));
+    modelNode->attachObject(Root::instance()->createInstance("BOY", ""));
     // scale model node
-    modelNode->setScale(3, 3, 3);
+    modelNode->setScale(30, 30, 30);
   }
   {
     // load model
