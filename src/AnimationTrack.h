@@ -12,7 +12,6 @@ namespace SimpleGL {
     ~AnimationTrack();
 
     const string &name() const;
-    void setName(const string &name);
 
     void addPositionKey(long time, Vector3f position);
     void addOrientationKey(long time, Quaternion orientation);

@@ -14,7 +14,6 @@ namespace SimpleGL {
     ~Animation();
 
     const string &name() const;
-    void setName(const string &name);
 
     const long duration() const;
     void setDuration(long duration);

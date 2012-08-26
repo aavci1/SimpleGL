@@ -204,11 +204,10 @@ namespace SimpleGL {
     }
 
     void importNode(aiNode *_node, Bone *parent) {
-      Bone *bone = mesh->createBone(parent);
+      Bone *bone = mesh->createBone(string(_node->mName.data), parent);
       // import node info
       if (parent)
         parent->attachBone(bone);
-      bone->setName(string(_node->mName.data));
       bone->setTransform(toMatrix(_node->mTransformation));
       // import children
       for (uint i = 0; i < _node->mNumChildren; ++i)

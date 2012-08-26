@@ -19,7 +19,8 @@ namespace SimpleGL {
     vector<Bone *> childBones;
   };
 
-  Bone::Bone(Bone *parent) : d(new BonePrivate()) {
+  Bone::Bone(const string &name, Bone *parent) : d(new BonePrivate()) {
+    d->name = name;
     d->parent = parent;
   }
 
@@ -29,10 +30,6 @@ namespace SimpleGL {
 
   const string &Bone::name() const {
     return d->name;
-  }
-
-  void Bone::setName(const string &name) {
-    d->name = name;
   }
 
   Bone *Bone::parentBone() const {

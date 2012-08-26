@@ -10,11 +10,10 @@ namespace SimpleGL {
 
   class Bone {
   public:
-    Bone(Bone *parent = nullptr);
+    Bone(const string &name, Bone *parent = nullptr);
     ~Bone();
 
     const string &name() const;
-    void setName(const string &name);
 
     Bone *parentBone() const;
     void setParentBone(Bone *parent);

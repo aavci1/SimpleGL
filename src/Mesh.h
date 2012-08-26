@@ -22,7 +22,7 @@ namespace SimpleGL {
     Animation *createAnimation(const string &name);
 
     const vector<Bone *> &bones() const;
-    Bone *createBone(Bone *parent);
+    Bone *createBone(const string &name, Bone *parent);
 
     const vector<SubMesh *> &subMeshes() const;
     SubMesh *createSubMesh();

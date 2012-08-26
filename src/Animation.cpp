@@ -31,10 +31,6 @@ namespace SimpleGL {
     return d->name;
   }
 
-  void Animation::setName(const string &name) {
-    d->name = name;
-  }
-
   const long Animation::duration() const {
     return d->duration;
   }

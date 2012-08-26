@@ -27,7 +27,7 @@ namespace SimpleGL {
 
   Mesh::Mesh(const string &name) : d(new MeshPrivate()){
     d->name = name;
-    d->bones.push_back(new Bone());
+    d->bones.push_back(new Bone("Root"));
   }
 
   Mesh::~Mesh() {
@@ -54,8 +54,8 @@ namespace SimpleGL {
     return d->bones;
   }
 
-  Bone *Mesh::createBone(Bone *parent) {
-    Bone *bone = new Bone(parent);
+  Bone *Mesh::createBone(const string &name, Bone *parent) {
+    Bone *bone = new Bone(name, parent);
     // add to list
     d->bones.push_back(bone);
     // return bone

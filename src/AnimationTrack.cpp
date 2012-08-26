@@ -51,10 +51,6 @@ namespace SimpleGL {
     return d->name;
   }
 
-  void AnimationTrack::setName(const string &name) {
-    d->name = name;
-  }
-
   void AnimationTrack::addPositionKey(long time, Vector3f position) {
     d->positionKeys.push_back(make_pair(time, position));
   }
