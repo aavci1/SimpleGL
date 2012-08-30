@@ -22,10 +22,10 @@ namespace SimpleGL {
     void setTime(long time);
     void addTime(long delta);
 
-    Matrix4f transform(const string &trackName) const;
-
     const vector<AnimationTrack *> &tracks() const;
     AnimationTrack *createTrack(const string &name);
+
+    Matrix4f transform(const string &trackName) const;
 
   private:
     AnimationPrivate *d;

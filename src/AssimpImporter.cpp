@@ -95,7 +95,7 @@ namespace SimpleGL {
       aimaterial->Get(AI_MATKEY_NAME, ainame);
       // TODO: get other material properties (specular, shininess etc.)
       //  create material
-      Material *material = Root::instance()->createMaterial(directory + "$mat" + tostring2(index));
+      Material *material = Root::instance()->createMaterial(path + "$mat" + tostring2(index));
       // put material into the list
       materials[index] = material;
       // extract diffuse maps

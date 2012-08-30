@@ -125,62 +125,29 @@ void MainWindow::initialized() {
       PointLight *light = static_cast<PointLight *>(Root::instance()->createLight(LT_POINT));
       // SpotLight *light = static_cast<SpotLight *>(Root::instance()->createLight(LT_SPOT));
       // light->setInnerAngle(10);
-      // light->setOuterAngle(10);
+      // light->setOuterAngle(40);
       light->setColor(float(rand()) / RAND_MAX, float(rand()) / RAND_MAX, float(rand()) / RAND_MAX);
       light->setDiffuseIntensity(1.0f);
       light->setSpecularIntensity(1.0f);
       light->setAttenuation(400.0f);
-      lightNode->pitch(-90, TS_WORLD);
+      // lightNode->pitch(-90, TS_WORLD); // needed for spots
       lightNode->attachObject(light);
     }
   }
   {
     // load model
     AssimpImporter *importer = new AssimpImporter();
-    importer->import("DWARF", "/home/aavci/Documents/SimpleGL/dwarf/dwarf1.x");
+    importer->import("MODEL", "/home/aavci/Documents/SimpleGL/bob/boblampclean.md5mesh");
+    // importer->import("MODEL", "/home/aavci/Documents/SimpleGL/Altair/Altair.3ds");
+    // importer->import("MODEL", "/home/aavci/Documents/SimpleGL/astroboy/astroboy_walk.dae");
+    // importer->import("MODEL", "/home/aavci/Documents/SimpleGL/dwarf/dwarf1.x");
+    // importer->import("MODEL", "/home/aavci/Documents/SimpleGL/hellknight/hellknight.md5mesh");
+    // importer->import("MODEL", "/home/aavci/Documents/SimpleGL/Sinbad/Sinbad.blend");
     delete importer;
     // create model node
-    SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(+300.0f, 0.0f, 0.0f));
+    SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
     // attach model
-    modelNode->attachObject(Root::instance()->createInstance("DWARF", ""));
-    // scale model node
-    modelNode->setScale(30, 30, 30);
-    modelNode->yaw(180);
-  }
-  {
-    // load model
-    AssimpImporter *importer = new AssimpImporter();
-    importer->import("NINJA", "/home/aavci/Documents/SimpleGL/ninja/ninja.ms3d");
-    delete importer;
-    // create model node
-    SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(+100.0f, 0.0f, 0.0f));
-    // attach model
-    modelNode->attachObject(Root::instance()->createInstance("NINJA", ""));
-    // scale model node
-    modelNode->setScale(30, 30, 30);
-    modelNode->yaw(180);
-  }
-  {
-    // load model
-    AssimpImporter *importer = new AssimpImporter();
-    importer->import("BOY", "/home/aavci/Documents/SimpleGL/astroboy/astroboy_walk.dae");
-    delete importer;
-    // create model node
-    SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(-100.0f, 0.0f, 0.0f));
-    // attach model
-    modelNode->attachObject(Root::instance()->createInstance("BOY", ""));
-    // scale model node
-    modelNode->setScale(30, 30, 30);
-  }
-  {
-    // load model
-    AssimpImporter *importer = new AssimpImporter();
-    importer->import("BOB", "/home/aavci/Documents/SimpleGL/bob/boblampclean.md5mesh");
-    delete importer;
-    // create model node
-    SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(-300.0f, 0.0f, 0.0f));
-    // attach model
-    modelNode->attachObject(Root::instance()->createInstance("BOB", ""));
+    modelNode->attachObject(Root::instance()->createInstance("MODEL", ""));
     // scale model node
     modelNode->setScale(3, 3, 3);
     modelNode->pitch(-90);

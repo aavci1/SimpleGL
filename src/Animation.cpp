@@ -51,15 +51,6 @@ namespace SimpleGL {
     d->time = time;
   }
 
-  Matrix4f Animation::transform(const string &trackName) const {
-    // get transform for track
-    for (AnimationTrack *track: d->tracks)
-      if (track->name() == trackName)
-        return track->transform(d->time % d->duration);
-    // return identity matrix
-    return Matrix4f();
-  }
-
   const vector<AnimationTrack *> &Animation::tracks() const {
     return d->tracks;
   }
@@ -70,5 +61,14 @@ namespace SimpleGL {
     d->tracks.push_back(track);
     // return mesh
     return track;
+  }
+
+  Matrix4f Animation::transform(const string &trackName) const {
+    // get transform for track
+    for (AnimationTrack *track: d->tracks)
+      if (track->name() == trackName)
+        return track->transform(d->time % d->duration);
+    // return identity matrix
+    return Matrix4f();
   }
 }

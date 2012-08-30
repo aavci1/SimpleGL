@@ -88,10 +88,10 @@ namespace SimpleGL {
         prepareRender(childNode, delta);
     }
 
-    void render(Camera *camera, SceneNode *node) {
+    void renderScene(Camera *camera, SceneNode *node) {
       // visit child nodes
       for (SceneNode *childNode: node->childNodes())
-        render(camera, childNode);
+        renderScene(camera, childNode);
       // render meshes
       for (SceneObject *object: node->attachedObjects()) {
         Instance *instance = dynamic_cast<Instance *>(object);
@@ -609,10 +609,8 @@ namespace SimpleGL {
   void Root::renderScene(Window *window, Viewport *viewport) {
     if (viewport == nullptr || viewport->camera() == nullptr)
       return;
-    // get camera
-    Camera *camera = viewport->camera();
     // render scene
-    d->render(camera, d->sceneNodes.at(0));
+    d->renderScene(viewport->camera(), d->sceneNodes.at(0));
   }
 
   void Root::renderLights(Window *window, Viewport *viewport) {
