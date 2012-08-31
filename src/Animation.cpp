@@ -34,7 +34,7 @@ namespace SimpleGL {
     return d->duration;
   }
 
-  void Animation::setDuration(long duration) {
+  void Animation::setDuration(const long duration) {
     d->duration = duration;
   }
 

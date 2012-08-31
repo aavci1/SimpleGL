@@ -16,7 +16,7 @@ namespace SimpleGL {
     const string &name() const;
 
     const long duration() const;
-    void setDuration(long duration);
+    void setDuration(const long duration);
 
     const vector<AnimationTrack *> &tracks() const;
     AnimationTrack *createTrack(const string &name);

@@ -55,7 +55,7 @@ namespace SimpleGL {
     return d->positionKeys;
   }
 
-  void AnimationTrack::createPositionKey(long time, Vector3f position) {
+  void AnimationTrack::createPositionKey(const long time, Vector3f position) {
     d->positionKeys.push_back(make_pair(time, position));
   }
 
@@ -63,7 +63,7 @@ namespace SimpleGL {
     return d->orientationKeys;
   }
 
-  void AnimationTrack::createOrientationKey(long time, Quaternion orientation) {
+  void AnimationTrack::createOrientationKey(const long time, Quaternion orientation) {
     d->orientationKeys.push_back(make_pair(time, orientation));
   }
 
@@ -71,11 +71,11 @@ namespace SimpleGL {
     return d->scaleKeys;
   }
 
-  void AnimationTrack::createScaleKey(long time, Vector3f scale) {
+  void AnimationTrack::createScaleKey(const long time, Vector3f scale) {
     d->scaleKeys.push_back(make_pair(time, scale));
   }
 
-  Matrix4f AnimationTrack::transform(long time) const {
+  const Matrix4f AnimationTrack::transform(const long time) const {
     Vector3f position = d->calculateValue<Vector3f>(d->positionKeys, time);
     Quaternion orientation = d->calculateValue<Quaternion>(d->orientationKeys, time);
     Vector3f scale = d->calculateValue<Vector3f>(d->scaleKeys, time);
