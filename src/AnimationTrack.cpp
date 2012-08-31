@@ -63,7 +63,7 @@ namespace SimpleGL {
     d->scaleKeys.push_back(make_pair(time, scale));
   }
 
-  Matrix4f AnimationTrack::transform(long time) {
+  Matrix4f AnimationTrack::transform(long time) const {
     Vector3f position = d->calculateValue<Vector3f>(d->positionKeys, time);
     Quaternion orientation = d->calculateValue<Quaternion>(d->orientationKeys, time);
     Vector3f scale = d->calculateValue<Vector3f>(d->scaleKeys, time);

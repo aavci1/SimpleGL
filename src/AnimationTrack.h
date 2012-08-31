@@ -17,7 +17,7 @@ namespace SimpleGL {
     void addOrientationKey(long time, Quaternion orientation);
     void addScaleKey(long time, Vector3f scale);
 
-    Matrix4f transform(long time);
+    Matrix4f transform(long time) const;
 
   private:
     AnimationTrackPrivate *d;
