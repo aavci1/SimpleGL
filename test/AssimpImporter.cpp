@@ -23,7 +23,6 @@ public:
   Vector3f normal { 0.0f, 0.0f, 0.0f };
   Vector3f tangent { 0.0f, 0.0f, 0.0f };
   Vector3f bitangent { 0.0f, 0.0f, 0.0f };
-  Vector3f color { 0.0f, 0.0f, 0.0f };
   Vector2f texCoord0 { 0.0f, 0.0f };
   Vector2f texCoord1 { 0.0f, 0.0f };
   Vector2f texCoord2 { 0.0f, 0.0f };
@@ -195,7 +194,7 @@ public:
       indices[i * 3 + 2] = aimesh->mFaces[i].mIndices[2];
     }
     // set mesh data
-    subMesh->setVertexData(vertices, vertexCount, AT_POSITION | AT_NORMAL | AT_TANGENT_AND_BITANGENT | AT_COLOR | AT_TEXCOORD0 | AT_TEXCOORD1 | AT_TEXCOORD2 | AT_TEXCOORD3 | AT_BONES);
+    subMesh->setVertexData((float *)vertices, vertexCount, AT_POSITION | AT_NORMAL | AT_TANGENT_AND_BITANGENT | AT_TEXCOORD0 | AT_TEXCOORD1 | AT_TEXCOORD2 | AT_TEXCOORD3 | AT_BONES);
     subMesh->setIndexData(indices, indexCount);
     // set material
     if (materials[aimesh->mMaterialIndex] != nullptr) {
