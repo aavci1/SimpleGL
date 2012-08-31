@@ -15,7 +15,6 @@ add_definitions(-O2 -msse2 -Wall -std=c++11)
 set (SOURCES
   src/Animation.cpp
   src/AnimationTrack.cpp
-  src/AssimpImporter.cpp
   src/Bone.cpp
   src/Camera.cpp
   src/DirectionalLight.cpp
@@ -34,6 +33,7 @@ set (SOURCES
   src/Texture.cpp
   src/Viewport.cpp
   src/Window.cpp
+  test/AssimpImporter.cpp
   test/Main.cpp
   test/MainWindow.cpp
   test/QSGLWidget.cpp
