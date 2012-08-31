@@ -217,11 +217,11 @@ namespace SimpleGL {
     AnimationTrack *importChannel(Animation *animation, aiNodeAnim *_channel, float ticksPerSecond) {
       AnimationTrack *track = animation->createTrack(_channel->mNodeName.data);
       for (uint i = 0; i < _channel->mNumPositionKeys; ++i)
-        track->addPositionKey(_channel->mPositionKeys[i].mTime / ticksPerSecond * 1000, toVector(_channel->mPositionKeys[i].mValue));
+        track->createPositionKey(_channel->mPositionKeys[i].mTime / ticksPerSecond * 1000, toVector(_channel->mPositionKeys[i].mValue));
       for (uint i = 0; i < _channel->mNumRotationKeys; ++i)
-        track->addOrientationKey(_channel->mRotationKeys[i].mTime / ticksPerSecond * 1000, toQuaternion(_channel->mRotationKeys[i].mValue));
+        track->createOrientationKey(_channel->mRotationKeys[i].mTime / ticksPerSecond * 1000, toQuaternion(_channel->mRotationKeys[i].mValue));
       for (uint i = 0; i < _channel->mNumScalingKeys; ++i)
-        track->addScaleKey(_channel->mScalingKeys[i].mTime / ticksPerSecond * 1000, toVector(_channel->mScalingKeys[i].mValue));
+        track->createScaleKey(_channel->mScalingKeys[i].mTime / ticksPerSecond * 1000, toVector(_channel->mScalingKeys[i].mValue));
       return track;
     }
 

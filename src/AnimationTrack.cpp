@@ -51,15 +51,27 @@ namespace SimpleGL {
     return d->name;
   }
 
-  void AnimationTrack::addPositionKey(long time, Vector3f position) {
+  const vector<pair<long, Vector3f>> &AnimationTrack::positionKeys() const {
+    return d->positionKeys;
+  }
+
+  void AnimationTrack::createPositionKey(long time, Vector3f position) {
     d->positionKeys.push_back(make_pair(time, position));
   }
 
-  void AnimationTrack::addOrientationKey(long time, Quaternion orientation) {
+  const vector<pair<long, Quaternion>> &AnimationTrack::orientationKeys() const {
+    return d->orientationKeys;
+  }
+
+  void AnimationTrack::createOrientationKey(long time, Quaternion orientation) {
     d->orientationKeys.push_back(make_pair(time, orientation));
   }
 
-  void AnimationTrack::addScaleKey(long time, Vector3f scale) {
+  const vector<pair<long, Vector3f>> &AnimationTrack::scaleKeys() const {
+    return d->scaleKeys;
+  }
+
+  void AnimationTrack::createScaleKey(long time, Vector3f scale) {
     d->scaleKeys.push_back(make_pair(time, scale));
   }
 
