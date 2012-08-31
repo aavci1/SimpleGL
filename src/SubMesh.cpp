@@ -9,12 +9,20 @@ namespace SimpleGL {
     }
 
     ~SubMeshPrivate() {
+      delete vertexData;
+      delete indexData;
     }
 
     GLuint vertexArray { 0 };
     GLuint vertexBuffer { 0 };
     GLuint indexBuffer { 0 };
+
+    float *vertexData { 0 };
     uint vertexCount { 0 };
+    uint vertexFormat { 0 };
+    uint vertexSize { 0 };
+
+    uint32_t *indexData { 0 };
     uint indexCount { 0 };
   };
 
@@ -38,9 +46,33 @@ namespace SimpleGL {
     delete d;
   }
 
-  const bool SubMesh::setVertexData(void *vertexData, uint vertexCount, uint vertexFormat) {
-    // calculate stride size
-    uint stride = 0;
+  const float *SubMesh::vertexData() const {
+    return d->vertexData;
+  }
+
+  const uint32_t SubMesh::vertexCount() const {
+    return d->vertexCount;
+  }
+
+  const uint16_t SubMesh::vertexFormat() const {
+    return d->vertexFormat;
+  }
+
+  const uint16_t SubMesh::vertexSize() const {
+    return d->vertexSize;
+  }
+
+  const uint32_t *SubMesh::indexData() const {
+    return d->indexData;
+  }
+
+  const uint32_t SubMesh::indexCount() const {
+    return d->indexCount;
+  }
+
+  const bool SubMesh::setVertexData(float *vertexData, uint vertexCount, uint vertexFormat) {
+    // calculate vertex size
+    d->vertexSize = 0;
     vector<pair<AttributeType, int>> attributes = {
       { AT_POSITION, 3 * sizeof(float) },
       { AT_NORMAL, 3 * sizeof(float) },
@@ -52,75 +84,74 @@ namespace SimpleGL {
       { AT_TEXCOORD3, 2 * sizeof(float) },
       { AT_BONES, 4 * sizeof(int) + 4 * sizeof(float) }
     };
-    for (auto attribute: attributes) {
+    for (auto attribute: attributes)
       if (vertexFormat & attribute.first)
-        stride += attribute.second;
-    }
+        d->vertexSize += attribute.second;
     // generate and bind vertex array object
     glBindVertexArray(d->vertexArray);
     // generate vertex buffer object
     glBindBuffer(GL_ARRAY_BUFFER, d->vertexBuffer);
     // assign data
-    glBufferData(GL_ARRAY_BUFFER, stride * vertexCount, vertexData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, d->vertexSize * vertexCount, vertexData, GL_STATIC_DRAW);
     // define vertex data
     char *offset = 0;
     // vertex position
     if (vertexFormat & AT_POSITION) {
       glEnableVertexAttribArray(AP_POSITION);
-      glVertexAttribPointer(AP_POSITION, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      glVertexAttribPointer(AP_POSITION, 3, GL_FLOAT, GL_FALSE, d->vertexSize, (void *)offset);
       // increase offset
       offset += 3 * sizeof(float);
     }
     // vertex normal
     if (vertexFormat & AT_NORMAL) {
       glEnableVertexAttribArray(AP_NORMAL);
-      glVertexAttribPointer(AP_NORMAL, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      glVertexAttribPointer(AP_NORMAL, 3, GL_FLOAT, GL_FALSE, d->vertexSize, (void *)offset);
       // increase offset
       offset += 3 * sizeof(float);
     }
     // vertex tangent/bitangent
     if (vertexFormat & AT_TANGENT_AND_BITANGENT) {
       glEnableVertexAttribArray(AP_TANGENT);
-      glVertexAttribPointer(AP_TANGENT, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      glVertexAttribPointer(AP_TANGENT, 3, GL_FLOAT, GL_FALSE, d->vertexSize, (void *)offset);
       // increase offset
       offset += 3 * sizeof(float);
       glEnableVertexAttribArray(AP_BITANGENT);
-      glVertexAttribPointer(AP_BITANGENT, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      glVertexAttribPointer(AP_BITANGENT, 3, GL_FLOAT, GL_FALSE, d->vertexSize, (void *)offset);
       // increase offset
       offset += 3 * sizeof(float);
     }
     // vertex color
     if (vertexFormat & AT_COLOR) {
       glEnableVertexAttribArray(AP_COLOR);
-      glVertexAttribPointer(AP_COLOR, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      glVertexAttribPointer(AP_COLOR, 3, GL_FLOAT, GL_FALSE, d->vertexSize, (void *)offset);
       // increase offset
       offset += 3 * sizeof(float);
     }
     // texture coordinate 0
     if (vertexFormat & AT_TEXCOORD0) {
       glEnableVertexAttribArray(AP_TEXCOORD0);
-      glVertexAttribPointer(AP_TEXCOORD0, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      glVertexAttribPointer(AP_TEXCOORD0, 2, GL_FLOAT, GL_FALSE, d->vertexSize, (void *)offset);
       // increase offset
       offset += 2 * sizeof(float);
     }
     // texture coordinate 1
     if (vertexFormat & AT_TEXCOORD1) {
       glEnableVertexAttribArray(AP_TEXCOORD1);
-      glVertexAttribPointer(AP_TEXCOORD1, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      glVertexAttribPointer(AP_TEXCOORD1, 2, GL_FLOAT, GL_FALSE, d->vertexSize, (void *)offset);
       // increase offset
       offset += 2 * sizeof(float);
     }
     // texture coordinate 2
     if (vertexFormat & AT_TEXCOORD2) {
       glEnableVertexAttribArray(AP_TEXCOORD2);
-      glVertexAttribPointer(AP_TEXCOORD2, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      glVertexAttribPointer(AP_TEXCOORD2, 2, GL_FLOAT, GL_FALSE, d->vertexSize, (void *)offset);
       // increase offset
       offset += 2 * sizeof(float);
     }
     // texture coordinate 3
     if (vertexFormat & AT_TEXCOORD3) {
       glEnableVertexAttribArray(AP_TEXCOORD3);
-      glVertexAttribPointer(AP_TEXCOORD3, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      glVertexAttribPointer(AP_TEXCOORD3, 2, GL_FLOAT, GL_FALSE, d->vertexSize, (void *)offset);
       // increase offset
       offset += 2 * sizeof(float);
     }
@@ -128,24 +159,27 @@ namespace SimpleGL {
     if (vertexFormat & AT_BONES) {
       // bone ids
       glEnableVertexAttribArray(AP_BONEIDS);
-      glVertexAttribIPointer(AP_BONEIDS, 4, GL_INT, stride, (void *)offset);
+      glVertexAttribIPointer(AP_BONEIDS, 4, GL_INT, d->vertexSize, (void *)offset);
       // increase offset
       offset += 4 * sizeof(int);
       // bone weights
       glEnableVertexAttribArray(AP_BONEWEIGHTS);
-      glVertexAttribPointer(AP_BONEWEIGHTS, 4, GL_FLOAT, GL_FALSE, stride, (void *)offset);
+      glVertexAttribPointer(AP_BONEWEIGHTS, 4, GL_FLOAT, GL_FALSE, d->vertexSize, (void *)offset);
       // increase offset
       offset += 4 * sizeof(false);
     }
     // unbind vertex array object
     glBindVertexArray(0);
-    // update vertex count
+    // copy of the buffer
+    d->vertexData = (float *)(new uint8_t[d->vertexSize * vertexCount]);
+    memcpy(d->vertexData, vertexData, d->vertexSize * vertexCount);
     d->vertexCount = vertexCount;
+    d->vertexFormat = vertexFormat;
     // return succes
     return true;
   }
 
-  const bool SubMesh::setIndexData(void *indexData, uint indexCount) {
+  const bool SubMesh::setIndexData(uint32_t *indexData, uint indexCount) {
     // generate and bind vertex array object
     glBindVertexArray(d->vertexArray);
     // generate index buffer object
@@ -154,7 +188,9 @@ namespace SimpleGL {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indexCount, indexData, GL_STATIC_DRAW);
     // unbind vertex array object
     glBindVertexArray(0);
-    // update index count
+    // copy the buffer
+    d->indexData = new uint32_t[indexCount];
+    memcpy(d->indexData, indexData, sizeof(uint32_t) * indexCount);
     d->indexCount = indexCount;
     // return succes
     return true;
