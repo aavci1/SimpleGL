@@ -18,14 +18,8 @@ namespace SimpleGL {
     const long duration() const;
     void setDuration(long duration);
 
-    const long time() const;
-    void setTime(long time);
-    void addTime(long delta);
-
     const vector<AnimationTrack *> &tracks() const;
     AnimationTrack *createTrack(const string &name);
-
-    Matrix4f transform(const string &trackName) const;
 
   private:
     AnimationPrivate *d;

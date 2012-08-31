@@ -75,10 +75,12 @@ namespace SimpleGL {
         // update each animation
         for (Animation *animation: mesh->animations()) {
           // add time delta
-          animation->addTime(delta);
+          animationTime += delta;
           // update bone transforms
-          for (Bone *bone: mesh->bones())
-            bone->setTransform(animation->transform(bone->name()));
+          for (AnimationTrack *track: animation->tracks())
+            for (Bone *bone: mesh->bones())
+              if (bone->name() == track->name())
+                bone->setTransform(track->transform(animationTime % animation->duration()));
         }
         // update bones world transforms
         mesh->bones().at(0)->updateWorldTransform();
@@ -140,6 +142,7 @@ namespace SimpleGL {
 
     Vector2i mousePosition { 0, 0 };
     long time { 0 };
+    long animationTime { 0 };
 
     long fpsTime { 0 };
     long fpsCount { 0 };

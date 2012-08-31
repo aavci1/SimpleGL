@@ -150,7 +150,7 @@ void MainWindow::initialized() {
     modelNode->attachObject(Root::instance()->createInstance("MODEL", ""));
     // scale model node
     modelNode->setScale(3, 3, 3);
-    modelNode->pitch(-90);
+    // modelNode->pitch(-90);
   }
 }
 

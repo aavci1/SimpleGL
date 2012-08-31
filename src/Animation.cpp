@@ -14,7 +14,6 @@ namespace SimpleGL {
     }
 
     string name { "" };
-    long time { 0 };
     long duration { 0 };
     vector<AnimationTrack *> tracks;
   };
@@ -39,18 +38,6 @@ namespace SimpleGL {
     d->duration = duration;
   }
 
-  const long Animation::time() const {
-    return d->time;
-  }
-
-  void Animation::addTime(long delta) {
-    d->time += delta;
-  }
-
-  void Animation::setTime(long time) {
-    d->time = time;
-  }
-
   const vector<AnimationTrack *> &Animation::tracks() const {
     return d->tracks;
   }
@@ -61,14 +48,5 @@ namespace SimpleGL {
     d->tracks.push_back(track);
     // return mesh
     return track;
-  }
-
-  Matrix4f Animation::transform(const string &trackName) const {
-    // get transform for track
-    for (AnimationTrack *track: d->tracks)
-      if (track->name() == trackName)
-        return track->transform(d->time % d->duration);
-    // return identity matrix
-    return Matrix4f();
   }
 }
