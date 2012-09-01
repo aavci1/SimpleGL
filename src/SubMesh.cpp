@@ -17,13 +17,14 @@ namespace SimpleGL {
     GLuint vertexBuffer { 0 };
     GLuint indexBuffer { 0 };
 
+    uint16_t vertexFormat { 0 };
+    uint16_t vertexSize { 0 };
+    uint32_t vertexCount { 0 };
     float *vertexData { 0 };
-    uint vertexCount { 0 };
-    uint vertexFormat { 0 };
-    uint vertexSize { 0 };
 
+    uint16_t indexSize { 4 };
+    uint16_t indexCount { 0 };
     uint32_t *indexData { 0 };
-    uint indexCount { 0 };
   };
 
   SubMesh::SubMesh() : d(new SubMeshPrivate()) {
@@ -46,14 +47,6 @@ namespace SimpleGL {
     delete d;
   }
 
-  const float *SubMesh::vertexData() const {
-    return d->vertexData;
-  }
-
-  const uint32_t SubMesh::vertexCount() const {
-    return d->vertexCount;
-  }
-
   const uint16_t SubMesh::vertexFormat() const {
     return d->vertexFormat;
   }
@@ -62,12 +55,24 @@ namespace SimpleGL {
     return d->vertexSize;
   }
 
-  const uint32_t *SubMesh::indexData() const {
-    return d->indexData;
+  const uint32_t SubMesh::vertexCount() const {
+    return d->vertexCount;
+  }
+
+  const char *SubMesh::vertexData() const {
+    return (char *)d->vertexData;
+  }
+
+  const uint16_t SubMesh::indexSize() const {
+    return d->indexSize;
   }
 
   const uint32_t SubMesh::indexCount() const {
     return d->indexCount;
+  }
+
+  const char *SubMesh::indexData() const {
+    return (char *)d->indexData;
   }
 
   const bool SubMesh::setVertexData(float *vertexData, uint vertexCount, uint vertexFormat) {
