@@ -276,7 +276,7 @@ Mesh *AssimpImporter::import(const string &name, const string &path) {
   for (uint i = 0; i < d->scene->mNumMaterials; ++i)
     d->importMaterial(i);
   // import nodes
-  d->importNode(d->scene->mRootNode, d->mesh->bones().at(0));
+  d->importNode(d->scene->mRootNode, nullptr);
   // import meshes
   for (uint i = 0; i < d->scene->mNumMeshes; ++i)
     d->importMesh(i);

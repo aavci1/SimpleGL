@@ -144,16 +144,15 @@ void MainWindow::initialized() {
   Root::instance()->save("MODEL", "markus.sglm");
   // load model
   Root::instance()->load("MARKUS", "markus.sglm");
-  // create model material
-  // create materials
-  Material *markusMaterial = Root::instance()->createMaterial("Markus");
-  markusMaterial->setProgram("Textured");
-  markusMaterial->addTexture("markus_diffuse");
+  // create texture
   Root::instance()->createTexture("markus_diffuse", "markus_diffuse.png");
+  // create material
+  Material *markusMaterial = Root::instance()->createMaterial("Markus");
+  markusMaterial->setProgram("Skinned");
+  markusMaterial->addTexture("markus_diffuse");
   // add model to the scene
   SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
   modelNode->setScale(3, 3, 3);
-  modelNode->pitch(-90);
   modelNode->attachObject(Root::instance()->createInstance("MARKUS", ""));
 }
 

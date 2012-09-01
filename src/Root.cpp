@@ -83,7 +83,8 @@ namespace SimpleGL {
                 bone->setTransform(track->transform(animationTime % animation->duration()));
         }
         // update bones world transforms
-        mesh->bones().at(0)->updateWorldTransform();
+        if (mesh->bones().size())
+          mesh->bones().at(0)->updateWorldTransform();
       }
       // visit child nodes
       for (SceneNode *childNode: node->childNodes())
@@ -612,6 +613,23 @@ namespace SimpleGL {
       // write index data
       out.write(subMesh->indexData(), subMesh->indexSize() * subMesh->indexCount());
     }
+    // write bone count
+    out << uint16_t(mesh->bones().size());
+    // write bones
+    for (Bone *bone: mesh->bones()) {
+      // write bone name
+      out << bone->name();
+      cout << bone->name() << endl;
+      // write parent name
+      int boneIndex = -1;
+      if (bone->parentBone())
+        for (uint i = 0; i < mesh->bones().size(); ++i)
+          if (mesh->bones().at(i) == bone->parentBone())
+            boneIndex = i;
+      out << uint16_t(boneIndex);
+      // write transform and offset matrices
+      out << bone->transform() << bone->offsetMatrix();
+    }
   }
 
   void Root::load(const string &name, const string &path) {
@@ -649,7 +667,7 @@ namespace SimpleGL {
       // read index data
       char *indexData = new char[indexSize * indexCount];
       in.read(indexData, indexSize * indexCount);
-      // set subMesh data
+      // create submesh
       SubMesh *subMesh = mesh->createSubMesh();
       subMesh->setMaterial(material);
       subMesh->setVertexData((float *)vertexData, vertexCount, vertexFormat);
@@ -657,6 +675,27 @@ namespace SimpleGL {
       // clean up
       delete vertexData;
       delete indexData;
+    }
+    // read bone count
+    uint16_t boneCount = 0;
+    in >> boneCount;
+    // read bones
+    for (uint i = 0; i < boneCount; ++i) {
+      // read bone name and parent name
+      string name;
+      in >> name;
+      uint16_t parentIndex = 0;
+      in >> parentIndex;
+      // read transform and offset matrices
+      Matrix4f transform, offset;
+      in >> transform >> offset;
+      // create bone
+      Bone *parentBone = (parentIndex < mesh->bones().size()) ? mesh->bones().at(parentIndex) : nullptr;
+      Bone *bone = mesh->createBone(name, parentBone);
+      if (parentBone)
+        parentBone->attachBone(bone);
+      bone->setTransform(transform);
+      bone->setOffsetMatrix(offset);
     }
   }
 

@@ -27,7 +27,6 @@ namespace SimpleGL {
 
   Mesh::Mesh(const string &name) : d(new MeshPrivate()){
     d->name = name;
-    d->bones.push_back(new Bone("Root"));
   }
 
   Mesh::~Mesh() {
