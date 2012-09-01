@@ -12,6 +12,7 @@
 #include "Root.h"
 #include "SceneNode.h"
 #include "SpotLight.h"
+#include "SubMesh.h"
 #include "Window.h"
 #include "Viewport.h"
 
@@ -134,24 +135,26 @@ void MainWindow::initialized() {
       lightNode->attachObject(light);
     }
   }
-  {
-    // load model
-    AssimpImporter *importer = new AssimpImporter();
-    importer->import("MODEL", "/home/aavci/Documents/SimpleGL/bob/boblampclean.md5mesh");
-    // importer->import("MODEL", "/home/aavci/Documents/SimpleGL/Altair/Altair.3ds");
-    // importer->import("MODEL", "/home/aavci/Documents/SimpleGL/astroboy/astroboy_walk.dae");
-    // importer->import("MODEL", "/home/aavci/Documents/SimpleGL/dwarf/dwarf1.x");
-    // importer->import("MODEL", "/home/aavci/Documents/SimpleGL/hellknight/hellknight.md5mesh");
-    // importer->import("MODEL", "/home/aavci/Documents/SimpleGL/Sinbad/Sinbad.blend");
-    delete importer;
-    // create model node
-    SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
-    // attach model
-    modelNode->attachObject(Root::instance()->createInstance("MODEL", ""));
-    // scale model node
-    modelNode->setScale(3, 3, 3);
-    // modelNode->pitch(-90);
-  }
+  // import
+  AssimpImporter *importer = new AssimpImporter();
+  Mesh *mesh = importer->import("MODEL", "/home/aavci/Documents/SimpleGL/markus/markus.dae");
+  mesh->subMeshes().at(0)->setMaterial("Markus");
+  delete importer;
+  // save model
+  Root::instance()->save("MODEL", "markus.sglm");
+  // load model
+  Root::instance()->load("MARKUS", "markus.sglm");
+  // create model material
+  // create materials
+  Material *markusMaterial = Root::instance()->createMaterial("Markus");
+  markusMaterial->setProgram("Textured");
+  markusMaterial->addTexture("markus_diffuse");
+  Root::instance()->createTexture("markus_diffuse", "markus_diffuse.png");
+  // add model to the scene
+  SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
+  modelNode->setScale(3, 3, 3);
+  modelNode->pitch(-90);
+  modelNode->attachObject(Root::instance()->createInstance("MARKUS", ""));
 }
 
 void MainWindow::keyPressed(QKeyEvent *e) {

@@ -18,10 +18,12 @@ set (SOURCES
   src/Bone.cpp
   src/Camera.cpp
   src/DirectionalLight.cpp
+  src/InputStream.cpp
   src/Instance.cpp
   src/Light.cpp
   src/Material.cpp
   src/Mesh.cpp
+  src/OutputStream.cpp
   src/PointLight.cpp
   src/Program.cpp
   src/Renderable.cpp

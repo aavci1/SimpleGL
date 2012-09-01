@@ -5,10 +5,12 @@
 #include "Bone.h"
 #include "Camera.h"
 #include "DirectionalLight.h"
+#include "InputStream.h"
 #include "Instance.h"
 #include "Light.h"
 #include "Material.h"
 #include "Mesh.h"
+#include "OutputStream.h"
 #include "PointLight.h"
 #include "Program.h"
 #include "Root.h"
@@ -578,6 +580,84 @@ namespace SimpleGL {
     delete[] indices;
     // return mesh
     return mesh;
+  }
+
+  void Root::save(const string &name, const string &path) {
+    // find mesh
+    Mesh *mesh = nullptr;
+    for (Mesh *m: d->meshes)
+      if (m->name() == name)
+        mesh = m;
+    // check if mesh found
+    if (!mesh)
+      return;
+    // create output stream
+    OutputStream out(path);
+    // write magic bytes
+    out << 'S' << 'G' << 'L' << 'M';
+    // write version info
+    out << uint8_t(1) << uint8_t(0);
+    // write submesh count
+    out << uint16_t(mesh->subMeshes().size());
+    // write submeshes
+    for (SubMesh *subMesh: mesh->subMeshes()) {
+      // write material info
+      out << subMesh->material();
+      // write vertex description
+      out << subMesh->vertexFormat() << subMesh->vertexSize() << subMesh->vertexCount();
+      // write vertex data
+      out.write(subMesh->vertexData(), subMesh->vertexSize() * subMesh->vertexCount());
+      // write index description
+      out << subMesh->indexSize() << subMesh->indexCount();
+      // write index data
+      out.write(subMesh->indexData(), subMesh->indexSize() * subMesh->indexCount());
+    }
+  }
+
+  void Root::load(const string &name, const string &path) {
+    // create a new mesh
+    Mesh *mesh = Root::instance()->createMesh(name);
+    // create input stream
+    InputStream in(path);
+    // read magic bytes
+    char magic[4] = { 0 };
+    in >> magic[0] >> magic[1] >> magic[2] >> magic[3];
+    // read version info
+    uint8_t major = 0, minor = 0;
+    in >> major >> minor;
+    // debug info
+    cout << magic[0] << magic[1] << magic[2] << magic[3] << " " << int(major) << "." << int(minor) << endl;
+    // read submesh count
+    uint16_t subMeshCount = 0;
+    in >> subMeshCount;
+    // read subMeshes
+    for (uint i = 0; i < subMeshCount; ++i) {
+      // read material info
+      string material;
+      in >> material;
+      // read vertex description
+      uint16_t vertexFormat = 0, vertexSize = 0;
+      uint32_t vertexCount = 0;
+      in >> vertexFormat >> vertexSize >> vertexCount;
+      // read vertex data
+      char *vertexData = new char[vertexSize * vertexCount];
+      in.read(vertexData, vertexSize * vertexCount);
+      // read index description
+      uint16_t indexSize = 0;
+      uint32_t indexCount = 0;
+      in >> indexSize >> indexCount;
+      // read index data
+      char *indexData = new char[indexSize * indexCount];
+      in.read(indexData, indexSize * indexCount);
+      // set subMesh data
+      SubMesh *subMesh = mesh->createSubMesh();
+      subMesh->setMaterial(material);
+      subMesh->setVertexData((float *)vertexData, vertexCount, vertexFormat);
+      subMesh->setIndexData((uint32_t *)indexData, indexCount);
+      // clean up
+      delete vertexData;
+      delete indexData;
+    }
   }
 
   const vector<Mesh *> &Root::meshes() const {

@@ -60,6 +60,8 @@ namespace SimpleGL {
     Mesh *createCube(const string &name, float width = 1.0f, float height = 1.0f, float depth = 1.0f);
     Mesh *createCone(const string &name, float radius = 1.0f, float height = 1.0f, uint slices = 16, uint stacks = 16);
     Mesh *createSphere(const string &name, float radius = 1.0f, uint slices = 16, uint stacks = 16);
+    void save(const string &name, const string &path);
+    void load(const string &name, const string &path);
     const vector<Mesh *> &meshes() const;
 
     Instance *createInstance(const string &mesh, const string &material);
