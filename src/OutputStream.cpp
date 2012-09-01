@@ -61,4 +61,9 @@ namespace SimpleGL {
     d->stream->write(s.c_str(), s.length() + 1);
     return *this;
   }
+
+  OutputStream &OutputStream::operator << (const Matrix4f m) {
+    d->stream->write((char *)&m, sizeof(m));
+    return *this;
+  }
 }

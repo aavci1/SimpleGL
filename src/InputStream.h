@@ -20,6 +20,7 @@ namespace SimpleGL {
     InputStream &operator >> (float &f);
     InputStream &operator >> (double &f);
     InputStream &operator >> (string &s);
+    InputStream &operator >> (Matrix4f &m);
 
   private:
     InputStreamPrivate *d;

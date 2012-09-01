@@ -20,6 +20,7 @@ namespace SimpleGL {
     OutputStream &operator << (const float f);
     OutputStream &operator << (const double f);
     OutputStream &operator << (const string s);
+    OutputStream &operator << (const Matrix4f m);
 
   private:
     OutputStreamPrivate *d;

@@ -71,4 +71,9 @@ namespace SimpleGL {
     // return this
     return *this;
   }
+
+  InputStream &InputStream::operator >> (Matrix4f &m) {
+    d->stream->read((char *)&m, sizeof(m));
+    return *this;
+  }
 }
