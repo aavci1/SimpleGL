@@ -619,7 +619,6 @@ namespace SimpleGL {
     for (Bone *bone: mesh->bones()) {
       // write bone name
       out << bone->name();
-      cout << bone->name() << endl;
       // write parent name
       int boneIndex = -1;
       if (bone->parentBone())
@@ -662,6 +661,7 @@ namespace SimpleGL {
   }
 
   void Root::load(const string &name, const string &path) {
+    cout << "Root::load(\"" << name << "\", \"" << path << "\");" << endl;
     // create a new mesh
     Mesh *mesh = Root::instance()->createMesh(name);
     // create input stream
@@ -672,8 +672,6 @@ namespace SimpleGL {
     // read version info
     uint8_t major = 0, minor = 0;
     in >> major >> minor;
-    // debug info
-    cout << magic[0] << magic[1] << magic[2] << magic[3] << " " << int(major) << "." << int(minor) << endl;
     // read submesh count
     uint16_t subMeshCount = 0;
     in >> subMeshCount;
