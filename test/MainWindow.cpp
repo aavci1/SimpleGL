@@ -1,7 +1,6 @@
 #include "MainWindow.h"
 
 #include "Animation.h"
-#include "AssimpImporter.h"
 #include "Camera.h"
 #include "DirectionalLight.h"
 #include "Instance.h"
@@ -79,22 +78,18 @@ void MainWindow::initialized() {
   if (!skinned->loadShaderFromPath(ST_VERTEX, "media/skinned_vp.glsl")) cerr << skinned->log() << endl;
   if (!skinned->loadShaderFromPath(ST_FRAGMENT, "media/skinned_fp.glsl")) cerr << skinned->log() << endl;
   if (!skinned->link()) cerr << skinned->log() << endl;
-  // load textures
-  Root::instance()->createTexture("Laminate", "media/laminate.jpg");
-  Root::instance()->createTexture("Ceiling", "media/ceiling.jpg");
-  Root::instance()->createTexture("Ebony", "media/ebony.jpg");
   // create materials
   Material *floorMaterial = Root::instance()->createMaterial("Laminate");
   floorMaterial->setProgram("Textured");
-  floorMaterial->addTexture("Laminate");
+  floorMaterial->addTexture("media/laminate.jpg");
   // load materials
   Material *ceilingMaterial = Root::instance()->createMaterial("Ceiling");
   ceilingMaterial->setProgram("Textured");
-  ceilingMaterial->addTexture("Ceiling");
+  ceilingMaterial->addTexture("media/ceiling.jpg");
   // load materials
   Material *ebonyMaterial = Root::instance()->createMaterial("Ebony");
   ebonyMaterial->setProgram("Textured");
-  ebonyMaterial->addTexture("Ebony");
+  ebonyMaterial->addTexture("media/ebony.jpg");
   // create meshes
   Root::instance()->createPlane("Plane", 1000, 1000, 10, 10);
   Root::instance()->createSphere("Sphere", 10.0f);
@@ -135,21 +130,12 @@ void MainWindow::initialized() {
       lightNode->attachObject(light);
     }
   }
-  // import
-  AssimpImporter *importer = new AssimpImporter();
-  Mesh *mesh = importer->import("MODEL", "/home/aavci/Documents/SimpleGL/markus/markus.dae");
-  mesh->subMeshes().at(0)->setMaterial("Markus");
-  delete importer;
-  // save model
-  Root::instance()->save("MODEL", "markus.sglm");
   // load model
-  Root::instance()->load("MARKUS", "markus.sglm");
-  // create texture
-  Root::instance()->createTexture("markus_diffuse", "markus_diffuse.png");
+  Root::instance()->load("MARKUS", "/home/aavci/Documents/SimpleGL/markus/markus.sglm");
   // create material
   Material *markusMaterial = Root::instance()->createMaterial("Markus");
   markusMaterial->setProgram("Skinned");
-  markusMaterial->addTexture("markus_diffuse");
+  markusMaterial->addTexture("/home/aavci/Documents/SimpleGL/markus/markus_diffuse.png");
   // add model to the scene
   SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
   modelNode->setScale(3, 3, 3);

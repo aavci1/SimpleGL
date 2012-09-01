@@ -106,8 +106,6 @@ public:
       // generate texture path
       string texturePath = aitexturepath.data;
       texturePath = directory + "/" + texturePath.substr(texturePath.find_last_of("/") + 1);
-      // create texture
-      Root::instance()->createTexture(texturePath, texturePath);
       // add texture to the material
       material->addTexture(texturePath);
     }

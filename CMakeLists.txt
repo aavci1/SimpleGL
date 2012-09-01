@@ -32,7 +32,6 @@ set (SOURCES
   src/SceneObject.cpp
   src/SubMesh.cpp
   src/SpotLight.cpp
-  src/Texture.cpp
   src/Viewport.cpp
   src/Window.cpp
   test/AssimpImporter.cpp

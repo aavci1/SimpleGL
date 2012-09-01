@@ -2,7 +2,10 @@
 
 #include "Program.h"
 #include "Root.h"
-#include "Texture.h"
+
+#include <GL/glew.h>
+
+#include <FreeImage.h>
 
 #include <sstream>
 
@@ -17,7 +20,7 @@ namespace SimpleGL {
 
     string name { "" };
     string program { "" };
-    vector<string> textures;
+    vector<GLuint> textures;
   };
 
   Material::Material(const string &name) : d(new MaterialPrivate()) {
@@ -40,12 +43,54 @@ namespace SimpleGL {
     d->program = program;
   }
 
-  const vector<string> &Material::textures() const {
-    return d->textures;
-  }
-
-  void Material::addTexture(const string &texture) {
-    d->textures.push_back(texture);
+  void Material::addTexture(const string &path) {
+    GLuint id = 0;
+    // generate texture object
+    glGenTextures(1, &id);
+    // check file header to find image format
+    FREE_IMAGE_FORMAT fif = FreeImage_GetFileType(path.c_str(), 0);
+    // if cant find check extension
+    if (fif == FIF_UNKNOWN)
+      fif = FreeImage_GetFIFFromFilename(path.c_str());
+    // if still unknown, return fail
+    if (fif == FIF_UNKNOWN)
+      return;
+    // if file type not supported, return fail
+    if (!FreeImage_FIFSupportsReading(fif))
+      return;
+    // load image
+    FIBITMAP *dib = FreeImage_Load(fif, path.c_str());
+    // if can't load, return fail
+    if (!dib)
+      return;
+    // get image data
+    BYTE *imageData = FreeImage_GetBits(dib);
+    // set file data
+    uint width = FreeImage_GetWidth(dib);
+    uint height = FreeImage_GetHeight(dib);
+    uint bitsPerPixel = FreeImage_GetBPP(dib);
+    // if anything failed, return fail
+    if (imageData == NULL || width == 0 || height == 0)
+      return;
+    // bind texture
+    glBindTexture(GL_TEXTURE_2D, id);
+    // fill in texture data
+    if (bitsPerPixel == 32)
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
+    else if (bitsPerPixel == 24)
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, imageData);
+    else if (bitsPerPixel == 8)
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, imageData);
+    // generate mipmaps
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    // unbind texture
+    glBindTexture(GL_TEXTURE_2D, 0);
+    // unload image
+    FreeImage_Unload(dib);
+    // add texture to the list
+    d->textures.push_back(id);
   }
 
   const string tostring(const int number) {
@@ -62,10 +107,10 @@ namespace SimpleGL {
     program->bind();
     // bind textures
     for (uint j = 0; j < d->textures.size(); ++j) {
-      Texture *texture = Root::instance()->retrieveTexture(d->textures.at(j));
-      if (!texture)
-        continue;
-      texture->bind(j);
+      // bind texture
+      glActiveTexture(GL_TEXTURE0 + j);
+      glBindTexture(GL_TEXTURE_2D, d->textures.at(j));
+      // set uniform
       program->setUniform("texture" + tostring(j), j);
     }
     // set specular parameters
@@ -76,10 +121,8 @@ namespace SimpleGL {
   void Material::unbind() {
     // unbind textures
     for (uint j = 0; j < d->textures.size(); ++j) {
-      Texture *texture = Root::instance()->retrieveTexture(d->textures.at(j));
-      if (!texture)
-        continue;
-      texture->unbind();
+      glActiveTexture(GL_TEXTURE0 + j);
+      glBindTexture(GL_TEXTURE_2D, 0);
     }
     // unbind program
     Program *program = Root::instance()->retrieveProgram(d->program);

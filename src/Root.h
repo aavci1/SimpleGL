@@ -41,10 +41,6 @@ namespace SimpleGL {
     Camera *createCamera();
     const vector<Camera *> &cameras() const;
 
-    Texture *createTexture(const string &name, const string &path);
-    Texture *retrieveTexture(const string &name);
-    const vector<Texture *> &textures() const;
-
     Program *createProgram(const string &name);
     Program *retrieveProgram(const string &name);
     const vector<Program *> &programs() const;

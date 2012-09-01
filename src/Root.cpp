@@ -17,7 +17,6 @@
 #include "SceneNode.h"
 #include "SpotLight.h"
 #include "SubMesh.h"
-#include "Texture.h"
 #include "Viewport.h"
 #include "Window.h"
 
@@ -44,9 +43,6 @@ namespace SimpleGL {
       // delete cameras
       for (uint i = 0; i < cameras.size(); ++i)
         delete cameras[i];
-      // delete textures
-      for (uint i = 0; i < textures.size(); ++i)
-        delete textures[i];
       // delete programs
       for (uint i = 0; i < programs.size(); ++i)
         delete programs[i];
@@ -135,7 +131,6 @@ namespace SimpleGL {
     vector<SceneNode *> sceneNodes;
     vector<Light *> lights;
     vector<Camera *> cameras;
-    vector<Texture *> textures;
     vector<Program *> programs;
     vector<Material *> materials;
     vector<Mesh *> meshes;
@@ -240,29 +235,6 @@ namespace SimpleGL {
 
   const vector<Camera *> &Root::cameras() const {
     return d->cameras;
-  }
-
-  Texture *Root::createTexture(const string &name, const string &path) {
-    cout << "Root::createTexture(\"" << name << "\", \"" << path << "\");" << endl;
-
-    Texture *texture = new Texture(name, path);
-    // add to list
-    d->textures.push_back(texture);
-    // return texture
-    return texture;
-  }
-
-  Texture *Root::retrieveTexture(const string &name) {
-    if (name == "")
-      return 0;
-    for (uint i = 0; i < d->textures.size(); ++i)
-      if (d->textures.at(i)->name() == name)
-        return d->textures.at(i);
-    return 0;
-  }
-
-  const vector<Texture *> &Root::textures() const {
-    return d->textures;
   }
 
   Program *Root::createProgram(const string &name) {
