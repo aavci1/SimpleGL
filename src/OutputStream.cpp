@@ -47,6 +47,11 @@ namespace SimpleGL {
     return *this;
   }
 
+  OutputStream &OutputStream::operator << (const long l) {
+    d->stream->write((char *)&l, sizeof(l));
+    return *this;
+  }
+
   OutputStream &OutputStream::operator << (const float f) {
     d->stream->write((char *)&f, sizeof(f));
     return *this;
@@ -62,6 +67,15 @@ namespace SimpleGL {
     return *this;
   }
 
+  OutputStream &OutputStream::operator << (const Vector3f v) {
+    d->stream->write((char *)&v, sizeof(v));
+    return *this;
+  }
+
+  OutputStream &OutputStream::operator << (const Quaternion q) {
+    d->stream->write((char *)&q, sizeof(q));
+    return *this;
+  }
   OutputStream &OutputStream::operator << (const Matrix4f m) {
     d->stream->write((char *)&m, sizeof(m));
     return *this;

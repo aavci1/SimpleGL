@@ -630,6 +630,35 @@ namespace SimpleGL {
       // write transform and offset matrices
       out << bone->transform() << bone->offsetMatrix();
     }
+    // write animation count
+    out << uint16_t(mesh->animations().size());
+    // write animations
+    for (Animation *animation: mesh->animations()) {
+      // write name and duration
+      out << animation->name() << animation->duration();
+      // write track count
+      out << uint16_t(animation->tracks().size());
+      // write tracks
+      for (AnimationTrack *track: animation->tracks()) {
+        // write track name
+        out << track->name();
+        // write position key count
+        out << uint16_t(track->positionKeys().size());
+        // write position keys
+        for (auto key: track->positionKeys())
+          out << key.first << key.second;
+        // write orientation key count
+        out << uint16_t(track->orientationKeys().size());
+        // write orientation keys
+        for (auto key: track->orientationKeys())
+          out << key.first << key.second;
+        // write scale key count
+        out << uint16_t(track->scaleKeys().size());
+        // write scale keys
+        for (auto key: track->scaleKeys())
+          out << key.first << key.second;
+      }
+    }
   }
 
   void Root::load(const string &name, const string &path) {
@@ -681,9 +710,10 @@ namespace SimpleGL {
     in >> boneCount;
     // read bones
     for (uint i = 0; i < boneCount; ++i) {
-      // read bone name and parent name
+      // read name
       string name;
       in >> name;
+      // read parent index
       uint16_t parentIndex = 0;
       in >> parentIndex;
       // read transform and offset matrices
@@ -696,6 +726,61 @@ namespace SimpleGL {
         parentBone->attachBone(bone);
       bone->setTransform(transform);
       bone->setOffsetMatrix(offset);
+    }
+    // read animation count
+    uint16_t animationCount = 0;
+    in >> animationCount;
+    for (uint i = 0; i < animationCount; ++i) {
+      // read name
+      string name;
+      in >> name;
+      // read duration
+      long duration = 0;
+      in >> duration;
+      // create animation
+      Animation *animation = mesh->createAnimation(name);
+      animation->setDuration(duration);
+      // read track count
+      uint16_t trackCount = 0;
+      in >> trackCount;
+      // read tracks
+      for (uint j = 0; j < trackCount; ++j) {
+        // read name
+        string name;
+        in >> name;
+        // create track
+        AnimationTrack *track = animation->createTrack(name);
+        // read position key count
+        uint16_t positionKeyCount = 0;
+        in >> positionKeyCount;
+        // read position keys
+        for (uint k = 0; k < positionKeyCount; ++k) {
+          long time;
+          Vector3f value;
+          in >> time >> value;
+          track->createPositionKey(time, value);
+        }
+        // read orientation key count
+        uint16_t orientationKeyCount = 0;
+        in >> orientationKeyCount;
+        // read orientation keys
+        for (uint k = 0; k < orientationKeyCount; ++k) {
+          long time;
+          Quaternion value;
+          in >> time >> value;
+          track->createOrientationKey(time, value);
+        }
+        // read scale key count
+        uint16_t scaleKeyCount = 0;
+        in >> scaleKeyCount;
+        // read scale keys
+        for (uint k = 0; k < scaleKeyCount; ++k) {
+          long time;
+          Vector3f value;
+          in >> time >> value;
+          track->createScaleKey(time, value);
+        }
+      }
     }
   }
 

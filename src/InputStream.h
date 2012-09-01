@@ -17,9 +17,12 @@ namespace SimpleGL {
     InputStream &operator >> (uint8_t &u);
     InputStream &operator >> (uint16_t &u);
     InputStream &operator >> (uint32_t &u);
+    InputStream &operator >> (long &l);
     InputStream &operator >> (float &f);
     InputStream &operator >> (double &f);
     InputStream &operator >> (string &s);
+    InputStream &operator >> (Vector3f &v);
+    InputStream &operator >> (Quaternion &q);
     InputStream &operator >> (Matrix4f &m);
 
   private:

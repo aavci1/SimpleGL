@@ -47,6 +47,11 @@ namespace SimpleGL {
     return *this;
   }
 
+  InputStream &InputStream::operator >> (long &l) {
+    d->stream->read((char *)&l, sizeof(l));
+    return *this;
+  }
+
   InputStream &InputStream::operator >> (float &f) {
     d->stream->read((char *)&f, sizeof(f));
     return *this;
@@ -69,6 +74,16 @@ namespace SimpleGL {
     // create string
     s = string((char *)buffer);
     // return this
+    return *this;
+  }
+
+  InputStream &InputStream::operator >> (Vector3f &v) {
+    d->stream->read((char *)&v, sizeof(v));
+    return *this;
+  }
+
+  InputStream &InputStream::operator >> (Quaternion &q) {
+    d->stream->read((char *)&q, sizeof(q));
     return *this;
   }
 
