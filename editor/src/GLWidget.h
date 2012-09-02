@@ -4,18 +4,16 @@
 #include <QGLWidget>
 
 namespace SimpleGL {
+  class Camera;
+  class SceneNode;
   class Window;
 }
 
-class QSGLWidgetPrivate;
-
-class QSGLWidget : public QGLWidget {
+class GLWidget : public QGLWidget {
   Q_OBJECT
 public:
-  QSGLWidget(QWidget *parent = 0);
-  ~QSGLWidget();
-
-  SimpleGL::Window *sglWindow() const;
+  GLWidget(QWidget *parent = 0);
+  ~GLWidget();
 
 protected:
   void initializeGL();
@@ -31,20 +29,11 @@ protected:
 
   void wheelEvent(QWheelEvent *e);
 
-signals:
-  void initialized();
-
-  void keyPressed(QKeyEvent *e);
-  void keyReleased(QKeyEvent *e);
-
-  void mouseMoved(QMouseEvent *e);
-  void mousePressed(QMouseEvent *e);
-  void mouseReleased(QMouseEvent *e);
-
-  void wheelMoved(QWheelEvent *e);
-
-private:
-  QSGLWidgetPrivate *d;
+protected:
+  SimpleGL::Window *window { nullptr };
+  SimpleGL::Camera *camera { nullptr };
+  SimpleGL::SceneNode *cameraNode { nullptr };
+  QPoint mousePosition { 0, 0 };
 };
 
 #endif // QSGLWIDGET_H

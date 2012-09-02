@@ -8,26 +8,26 @@ set (QT_USE_QTOPENGL TRUE)
 # include qt use file
 include (${QT_USE_FILE})
 # include additional directories  needed for moc files etc.
-include_directories (../lib ${CMAKE_SOURCE_DIR}/editor ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/editor)
+include_directories (../lib ${CMAKE_SOURCE_DIR}/editor/src ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/editor)
 # set lib directories to contain build_directory/lib
 link_directories (${CMAKE_BINARY_DIR}/lib)
 # extra definitions
 add_definitions(-O2 -msse2 -Wall -std=c++11)
 # add sources
 set (SOURCES
-  AssimpImporter.cpp
-  Main.cpp
-  MainWindow.cpp
-  QSGLWidget.cpp
+  src/AssimpImporter.cpp
+  src/GLWidget.cpp
+  src/Main.cpp
+  src/MainWindow.cpp
 )
 # add ui files
 qt4_wrap_ui (UI_SOURCES
-  MainWindow.ui
+  src/MainWindow.ui
 )
 # add headers
 qt4_wrap_cpp (MOC_SOURCES
-  MainWindow.h
-  QSGLWidget.h
+  src/GLWidget.h
+  src/MainWindow.h
 )
 # add resources
 qt4_add_resources (RESOURCES

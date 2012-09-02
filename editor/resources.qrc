@@ -1,2 +1,11 @@
 <RCC>
+    <qresource prefix="/">
+        <file>icons/application-exit.png</file>
+        <file>icons/document-close.png</file>
+        <file>icons/document-import.png</file>
+        <file>icons/document-open.png</file>
+        <file>icons/document-save-as.png</file>
+        <file>icons/document-save.png</file>
+        <file>icons/system-about.png</file>
+    </qresource>
 </RCC>

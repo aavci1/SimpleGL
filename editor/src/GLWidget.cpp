@@ -1,5 +1,6 @@
-#include "MainWindow.h"
+#include "GLWidget.h"
 
+#include "AssimpImporter.h"
 #include "Animation.h"
 #include "Camera.h"
 #include "DirectionalLight.h"
@@ -12,45 +13,37 @@
 #include "SceneNode.h"
 #include "SpotLight.h"
 #include "SubMesh.h"
+#include "Types.h"
 #include "Window.h"
 #include "Viewport.h"
 
 #include <QKeyEvent>
 #include <QMouseEvent>
-#include <QTimer>
 #include <QWheelEvent>
 
 using namespace SimpleGL;
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
-  setupUi(this);
-  // connect signals
-  connect(widget, SIGNAL(initialized()), this, SLOT(initialized()));
-  connect(widget, SIGNAL(keyPressed(QKeyEvent*)), this, SLOT(keyPressed(QKeyEvent*)));
-  connect(widget, SIGNAL(keyReleased(QKeyEvent*)), this, SLOT(keyReleased(QKeyEvent*)));
-  connect(widget, SIGNAL(mouseMoved(QMouseEvent*)), this, SLOT(mouseMoved(QMouseEvent*)));
-  connect(widget, SIGNAL(mousePressed(QMouseEvent*)), this, SLOT(mousePressed(QMouseEvent*)));
-  connect(widget, SIGNAL(mouseReleased(QMouseEvent*)), this, SLOT(mouseReleased(QMouseEvent*)));
-  connect(widget, SIGNAL(wheelMoved(QWheelEvent*)), this, SLOT(wheelMoved(QWheelEvent*)));
-  timer = new QTimer();
-  timer->setInterval(10);
-  connect(timer, SIGNAL(timeout()), widget, SLOT(updateGL()));
-  timer->start();
+GLWidget::GLWidget(QWidget *parent) : QGLWidget(parent){
 }
 
-MainWindow::~MainWindow() {
-  delete timer;
+GLWidget::~GLWidget() {
+  // deinitialize SimpleGL
+  SimpleGL::destroy();
 }
 
-void MainWindow::initialized() {
+void GLWidget::initializeGL() {
+  // initialize SimpleGL
+  SimpleGL::initialize();
+  // create window
+  window = Root::instance()->createWindow(width(), height());
   // create a camera
   camera = Root::instance()->createCamera();
   // create camera node
   cameraNode = Root::instance()->rootSceneNode()->createChildSceneNode(Vector3f(0.0f, 170.0f, 300.0f));
   cameraNode->pitch(-10);
   cameraNode->attachObject(camera);
-  // create viewport
-  widget->sglWindow()->createViewport(camera);
+  // create a viewport
+  window->createViewport(camera);
   // load programs
   Program *pointLightProgram = Root::instance()->createProgram("PointLight");
   if (!pointLightProgram->loadShaderFromPath(ST_VERTEX, "media/point_light_vp.glsl")) cerr << pointLightProgram->log() << endl;
@@ -128,27 +121,40 @@ void MainWindow::initialized() {
       lightNode->attachObject(light);
     }
   }
-  // load model
-  Root::instance()->load("MARKUS", "/home/aavci/Documents/SimpleGL/markus/markus.sglm");
+//  // load model
+//  Root::instance()->load("MARKUS", "/home/aavci/Documents/SimpleGL/markus/markus.sglm");
   // create material
   Material *markusMaterial = Root::instance()->createMaterial("Markus");
   markusMaterial->setProgram("Skinned");
   markusMaterial->addTexture("/home/aavci/Documents/SimpleGL/markus/markus_diffuse.png");
-  // add model to the scene
-  SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
-  modelNode->setScale(3, 3, 3);
-  modelNode->attachObject(Root::instance()->createInstance("MARKUS", ""));
+//  // add model to the scene
+//  SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
+//  modelNode->setScale(3, 3, 3);
+//  modelNode->attachObject(Root::instance()->createInstance("MARKUS", ""));
 }
 
-void MainWindow::keyPressed(QKeyEvent *e) {
-
+void GLWidget::resizeGL(int width, int height) {
+  if (window)
+    window->setSize(width, height);
 }
 
-void MainWindow::keyReleased(QKeyEvent *e) {
-
+void GLWidget::paintGL() {
+  if (window)
+    window->update();
 }
 
-void MainWindow::mouseMoved(QMouseEvent *e) {
+
+void GLWidget::keyPressEvent(QKeyEvent *e) {
+  // update view
+  updateGL();
+}
+
+void GLWidget::keyReleaseEvent(QKeyEvent *e) {
+  // update view
+  updateGL();
+}
+
+void GLWidget::mouseMoveEvent(QMouseEvent *e) {
   if (e->buttons() == Qt::RightButton) {
     // pan camera
     cameraNode->moveRelative(Vector3f(mousePosition.x() - e->pos().x(), e->pos().y() - mousePosition.y(), 0));
@@ -166,23 +172,27 @@ void MainWindow::mouseMoved(QMouseEvent *e) {
   // update mouse position
   mousePosition = e->pos();
   // update view
-  widget->updateGL();
+  updateGL();
 }
 
-void MainWindow::mousePressed(QMouseEvent *e) {
+void GLWidget::mousePressEvent(QMouseEvent *e) {
   // update mouse position
   mousePosition = e->pos();
+  // update view
+  updateGL();
 }
 
-void MainWindow::mouseReleased(QMouseEvent *e) {
+void GLWidget::mouseReleaseEvent(QMouseEvent *e) {
   // update mouse position
   mousePosition = e->pos();
+  // update view
+  updateGL();
 }
 
-void MainWindow::wheelMoved(QWheelEvent *e) {
+void GLWidget::wheelEvent(QWheelEvent *e) {
   float altitude = cameraNode->position().y;
   cameraNode->moveRelative(Vector3f(0, 0, -0.4f * e->delta()));
   cameraNode->setPosition(cameraNode->position().x, altitude, cameraNode->position().z);
   // update view
-  widget->updateGL();
+  updateGL();
 }
