@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 
+#include "AssimpImporter.h"
 #include "Instance.h"
 #include "Mesh.h"
 #include "Root.h"
@@ -36,36 +37,51 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::fileOpen() {
-//  if (!confirmClose())
-//    return;
   QString path = QFileDialog::getOpenFileName(this, tr("Open Mesh"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Meshes (*.sglm)"));
   // return if open canceled
   if (path.isNull())
     return;
   // load mesh
-  Root::instance()->load("MODEL", path.toStdString());
+  Root::instance()->load(path.toStdString(), path.toStdString());
   // create an instance
-  Root::instance()->rootSceneNode()->createChildSceneNode()->attachObject(Root::instance()->createInstance("MODEL", "Markus"));
+  widget->instance()->setMesh(path.toStdString());
 }
 
 void MainWindow::fileSave() {
-
+  QString path = QFileDialog::getSaveFileName(this, tr("Save Mesh"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Meshes (*.sglm)"));
+  // return if open canceled
+  if (path.isNull())
+    return;
+  // load mesh
+  Root::instance()->save(widget->instance()->mesh(), path.toStdString());
 }
 
 void MainWindow::fileSaveAs() {
-
+  QString path = QFileDialog::getSaveFileName(this, tr("Save Mesh As"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Meshes (*.sglm)"));
+  // return if open canceled
+  if (path.isNull())
+    return;
+  // load mesh
+  Root::instance()->save(widget->instance()->mesh(), path.toStdString());
 }
 
 void MainWindow::fileImport() {
-
+  QString path = QFileDialog::getOpenFileName(this, tr("Import Mesh"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("All Files (*.*)"));
+  // return if open canceled
+  if (path.isNull())
+    return;
+  // load mesh
+  AssimpImporter::import(path.toStdString(), path.toStdString());
+  // create an instance
+  widget->instance()->setMesh(path.toStdString());
 }
 
 void MainWindow::fileClose() {
-
+  widget->instance()->setMesh("");
 }
 
 void MainWindow::fileExit() {
-
+  this->close();
 }
 
 void MainWindow::helpAbout() {

@@ -21,7 +21,7 @@ public slots:
   void helpAbout();
 
 private:
-  QTimer *timer;
+  QTimer *timer { nullptr };
 };
 
 #endif // MAINWINDOW_H

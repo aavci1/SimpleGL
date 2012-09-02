@@ -5,6 +5,7 @@
 
 namespace SimpleGL {
   class Camera;
+  class Instance;
   class SceneNode;
   class Window;
 }
@@ -14,6 +15,8 @@ class GLWidget : public QGLWidget {
 public:
   GLWidget(QWidget *parent = 0);
   ~GLWidget();
+
+  SimpleGL::Instance *instance() const;
 
 protected:
   void initializeGL();
@@ -33,6 +36,7 @@ protected:
   SimpleGL::Window *window { nullptr };
   SimpleGL::Camera *camera { nullptr };
   SimpleGL::SceneNode *cameraNode { nullptr };
+  SimpleGL::Instance *_instance { nullptr };
   QPoint mousePosition { 0, 0 };
 };
 

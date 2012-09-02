@@ -115,6 +115,8 @@ namespace SimpleGL {
           if (!material)
             material = Root::instance()->retrieveMaterial(subMesh->material());
           if (!material)
+            material = Root::instance()->retrieveMaterial("Default");
+          if (!material)
             continue;
           Program *program = Root::instance()->retrieveProgram(material->program());
           if (!program)

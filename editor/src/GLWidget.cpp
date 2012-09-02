@@ -31,6 +31,10 @@ GLWidget::~GLWidget() {
   SimpleGL::destroy();
 }
 
+Instance *GLWidget::instance() const {
+  return _instance;
+}
+
 void GLWidget::initializeGL() {
   // initialize SimpleGL
   SimpleGL::initialize();
@@ -44,7 +48,15 @@ void GLWidget::initializeGL() {
   cameraNode->attachObject(camera);
   // create a viewport
   window->createViewport(camera);
-  // load programs
+  // create default program
+  Program *defaultProgram = Root::instance()->createProgram("Default");
+  if (!defaultProgram->loadShaderFromPath(ST_VERTEX, "media/Default.vert")) cerr << defaultProgram->log() << endl;
+  if (!defaultProgram->loadShaderFromPath(ST_FRAGMENT, "media/Default.frag")) cerr << defaultProgram->log() << endl;
+  if (!defaultProgram->link()) cerr << defaultProgram->log() << endl;
+  // create default material
+  Material *defaultMaterial = Root::instance()->createMaterial("Default");
+  defaultMaterial->setProgram("Default");
+  // point light program
   Program *pointLightProgram = Root::instance()->createProgram("PointLight");
   if (!pointLightProgram->loadShaderFromPath(ST_VERTEX, "media/point_light_vp.glsl")) cerr << pointLightProgram->log() << endl;
   if (!pointLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/point_light_fp.glsl")) cerr << pointLightProgram->log() << endl;
@@ -123,14 +135,15 @@ void GLWidget::initializeGL() {
   }
 //  // load model
 //  Root::instance()->load("MARKUS", "/home/aavci/Documents/SimpleGL/markus/markus.sglm");
-  // create material
-  Material *markusMaterial = Root::instance()->createMaterial("Markus");
-  markusMaterial->setProgram("Skinned");
-  markusMaterial->addTexture("/home/aavci/Documents/SimpleGL/markus/markus_diffuse.png");
-//  // add model to the scene
-//  SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
-//  modelNode->setScale(3, 3, 3);
-//  modelNode->attachObject(Root::instance()->createInstance("MARKUS", ""));
+//  // create material
+//  Material *markusMaterial = Root::instance()->createMaterial("Markus");
+//  markusMaterial->setProgram("Skinned");
+//  markusMaterial->addTexture("/home/aavci/Documents/SimpleGL/markus/markus_diffuse.png");
+  // create an instance
+  _instance = Root::instance()->createInstance("MODEL", "");
+  // add model to the scene
+  SceneNode *modelNode = Root::instance()->rootSceneNode()->createChildSceneNode();
+  modelNode->attachObject(_instance);
 }
 
 void GLWidget::resizeGL(int width, int height) {
