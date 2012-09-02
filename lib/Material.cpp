@@ -18,6 +18,12 @@ namespace SimpleGL {
     ~MaterialPrivate() {
     }
 
+    const string toString(const int number) {
+      stringstream ss;
+      ss << number;
+      return ss.str();
+    }
+
     string name { "" };
     string program { "" };
     vector<GLuint> textures;
@@ -93,12 +99,6 @@ namespace SimpleGL {
     d->textures.push_back(id);
   }
 
-  const string tostring(const int number) {
-    stringstream ss;
-    ss << number;
-    return ss.str();
-  }
-
   void Material::bind() {
     // bind program
     Program *program = Root::instance()->retrieveProgram(d->program);
@@ -111,7 +111,7 @@ namespace SimpleGL {
       glActiveTexture(GL_TEXTURE0 + j);
       glBindTexture(GL_TEXTURE_2D, d->textures.at(j));
       // set uniform
-      program->setUniform("texture" + tostring(j), j);
+      program->setUniform("texture" + d->toString(j), j);
     }
     // set specular parameters
     program->setUniform("specularIntensity", 1.0f);
