@@ -40,8 +40,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
 MainWindow::~MainWindow() {
   delete timer;
-  // deinitialize SimpleGL
-  SimpleGL::Root::destroy();
 }
 
 void MainWindow::initialized() {

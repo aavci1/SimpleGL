@@ -12,6 +12,9 @@ QSGLWidget::QSGLWidget(QWidget *parent) : QGLWidget(parent), d(new QSGLWidgetPri
 }
 
 QSGLWidget::~QSGLWidget() {
+  // deinitialize SimpleGL
+  SimpleGL::destroy();
+  // delete private
   delete d;
 }
 
@@ -20,6 +23,8 @@ SimpleGL::Window *QSGLWidget::sglWindow() const {
 }
 
 void QSGLWidget::initializeGL() {
+  // initialize SimpleGL
+  SimpleGL::initialize();
   // create window
   d->window = SimpleGL::Root::instance()->createWindow(width(), height());
   // emit signal

@@ -18,14 +18,14 @@ namespace SimpleGL {
   class Viewport;
   class Window;
 
+  void initialize();
+  void destroy();
+
   class Root {
-  protected:
+  public:
     Root();
     ~Root();
 
-  public:
-    static void initialize();
-    static void destroy();
     static Root *instance();
 
     Window *createWindow(int width = 800, int height = 600);

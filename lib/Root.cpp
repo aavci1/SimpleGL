@@ -25,6 +25,16 @@
 namespace SimpleGL {
   static Root *_instance { nullptr };
 
+  void initialize() {
+    _instance = new Root();
+  }
+
+  void destroy() {
+    delete _instance;
+    // nullify instance
+    _instance = nullptr;
+  }
+
   class RootPrivate {
   public:
     RootPrivate() {
@@ -155,18 +165,7 @@ namespace SimpleGL {
     delete d;
   }
 
-  void Root::initialize() {
-    instance();
-  }
-
-  void Root::destroy() {
-    delete _instance;
-    _instance = 0;
-  }
-
   Root *Root::instance() {
-    if (_instance == 0)
-      _instance = new Root();
     return _instance;
   }
 
