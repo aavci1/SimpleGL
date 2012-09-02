@@ -8,7 +8,7 @@ set (QT_USE_QTOPENGL TRUE)
 # include qt use file
 include (${QT_USE_FILE})
 # include additional directories  needed for moc files etc.
-include_directories (../src ${CMAKE_SOURCE_DIR}/test ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/test)
+include_directories (../lib ${CMAKE_SOURCE_DIR}/viewer ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/viewer)
 # set lib directories to contain build_directory/lib
 link_directories (${CMAKE_BINARY_DIR}/lib)
 # extra definitions
@@ -35,4 +35,4 @@ qt4_add_resources (RESOURCES
 )
 # opengl target
 add_executable (SimpleGLTest WIN32 ${SOURCES} ${MOC_SOURCES} ${UI_SOURCES} ${RESOURCES} resources.rc)
-target_link_libraries (SimpleGLTest ${QT_LIBRARIES} SimpleGL assimp)
+target_link_libraries (SimpleGLTest SimpleGL ${QT_LIBRARIES} assimp)
