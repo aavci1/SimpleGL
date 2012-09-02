@@ -8,7 +8,7 @@ set (QT_USE_QTOPENGL TRUE)
 # include qt use file
 include (${QT_USE_FILE})
 # include additional directories  needed for moc files etc.
-include_directories (../lib ${CMAKE_SOURCE_DIR}/viewer ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/viewer)
+include_directories (../lib ${CMAKE_SOURCE_DIR}/editor ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/editor)
 # set lib directories to contain build_directory/lib
 link_directories (${CMAKE_BINARY_DIR}/lib)
 # extra definitions

@@ -3,4 +3,4 @@ project (SimpleGL)
 cmake_minimum_required (VERSION 2.8)
 # add subdirectories
 add_subdirectory(lib)
-add_subdirectory(viewer)
+add_subdirectory(editor)
