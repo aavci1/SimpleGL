@@ -4,10 +4,9 @@
 #include "Root.h"
 #include "Viewport.h"
 
-#include <QElapsedTimer>
-
 #include <GL/glew.h>
 
+#include <chrono>
 #include <algorithm>
 
 namespace SimpleGL {
@@ -36,14 +35,14 @@ namespace SimpleGL {
     GLuint texture0 { 0 };
     GLuint texture1 { 0 };
     GLuint texture2 { 0 };
-    QElapsedTimer timer;
+    chrono::high_resolution_clock::time_point lastTick, currentTick;
   };
 
   Window::Window(int width, int height) : d(new WindowPrivate()) {
     // generate textures
     setSize(width, height);
-    // start the timer
-    d->timer.start();
+    // start timing
+    d->lastTick = chrono::high_resolution_clock::now();
   }
 
   Window::~Window() {
@@ -117,8 +116,14 @@ namespace SimpleGL {
   }
 
   void Window::update() {
+    // get current time
+    d->currentTick = chrono::high_resolution_clock::now();
+    // calculate elapsed time
+    auto elapsed = d->currentTick - d->lastTick;
+    // update current time
+    d->lastTick = d->currentTick;
     // update scene transformations
-    Root::instance()->prepareRender(d->timer.elapsed());
+    Root::instance()->prepareRender(elapsed.count() / 1000);
     // set general state
     glEnable(GL_TEXTURE_2D);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

@@ -63,7 +63,7 @@ namespace SimpleGL {
     Instance *createInstance(const string &mesh, const string &material);
     const vector<Instance *> &instances() const;
 
-    void prepareRender(long time);
+    void prepareRender(long elapsed);
     void renderScene(Window *window, Viewport *viewport);
     void renderLights(Window *window, Viewport *viewport);
 

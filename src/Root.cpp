@@ -137,7 +137,6 @@ namespace SimpleGL {
     vector<Instance *> instances;
 
     Vector2i mousePosition { 0, 0 };
-    long time { 0 };
     long animationTime { 0 };
 
     long fpsTime { 0 };
@@ -770,15 +769,13 @@ namespace SimpleGL {
     return d->instances;
   }
 
-  void Root::prepareRender(long time) {
+  void Root::prepareRender(long elapsed) {
     // calculate time since last frame
-    long delta = (d->time == 0) ? 0 : (time - d->time);
-    d->time = time;
     // update fps
     d->fpsCount++;
-    d->fpsTime += delta;
+    d->fpsTime += elapsed;
     // update world transformations and animations
-    d->prepareRender(d->sceneNodes.at(0), delta);
+    d->prepareRender(d->sceneNodes.at(0), elapsed);
   }
 
   void Root::renderScene(Window *window, Viewport *viewport) {
