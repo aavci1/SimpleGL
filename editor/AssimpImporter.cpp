@@ -17,39 +17,22 @@
 
 using namespace SimpleGL;
 
-class Vertex {
-public:
-  Vector3f position { 0.0f, 0.0f, 0.0f };
-  Vector3f normal { 0.0f, 0.0f, 0.0f };
-  Vector3f tangent { 0.0f, 0.0f, 0.0f };
-  Vector3f bitangent { 0.0f, 0.0f, 0.0f };
-  Vector2f texCoord0 { 0.0f, 0.0f };
-  Vector2f texCoord1 { 0.0f, 0.0f };
-  Vector2f texCoord2 { 0.0f, 0.0f };
-  Vector2f texCoord3 { 0.0f, 0.0f };
-  Vector4i boneIds { 0, 0, 0, 0 };
-  Vector4f boneWeights { 0.0f, 0.0f, 0.0f, 0.0f };
-};
+namespace AssimpImporter {
+  class Vertex {
+  public:
+    Vector3f position { 0.0f, 0.0f, 0.0f };
+    Vector3f normal { 0.0f, 0.0f, 0.0f };
+    Vector3f tangent { 0.0f, 0.0f, 0.0f };
+    Vector3f bitangent { 0.0f, 0.0f, 0.0f };
+    Vector2f texCoord0 { 0.0f, 0.0f };
+    Vector2f texCoord1 { 0.0f, 0.0f };
+    Vector2f texCoord2 { 0.0f, 0.0f };
+    Vector2f texCoord3 { 0.0f, 0.0f };
+    Vector4i boneIds { 0, 0, 0, 0 };
+    Vector4f boneWeights { 0.0f, 0.0f, 0.0f, 0.0f };
+  };
 
-class AssimpImporterPrivate {
-public:
-  AssimpImporterPrivate() {
-
-  }
-
-  ~AssimpImporterPrivate() {
-    delete importer;
-  }
-
-  Assimp::Importer *importer { new Assimp::Importer() };
-  const aiScene *scene;
-  Mesh *mesh;
-  string path;
-  string directory;
-  map<int, SubMesh *> meshes;
-  map<int, Material *> materials;
-
-  const string tostring2(const int number) {
+  const string toString(const int number) {
     stringstream ss;
     ss << number;
     return ss.str();
@@ -88,35 +71,34 @@ public:
     return matrix;
   }
 
-  void importMaterial(uint index) {
-    aiMaterial *aimaterial = scene->mMaterials[index];
-    // get material name
-    aiString ainame;
-    aimaterial->Get(AI_MATKEY_NAME, ainame);
+  Material *importMaterial(aiMaterial *aimaterial, string baseDir, string name) {
     // TODO: get other material properties (specular, shininess etc.)
     //  create material
-    Material *material = Root::instance()->createMaterial(path + "$mat" + tostring2(index));
-    // put material into the list
-    materials[index] = material;
-    // extract diffuse maps
-    for (uint j = 0; j < aimaterial->GetTextureCount(aiTextureType_DIFFUSE); ++j) {
-      aiString aitexturepath;
-      // get texture path
-      aimaterial->GetTexture(aiTextureType_DIFFUSE, j, &aitexturepath);
-      // generate texture path
-      string texturePath = aitexturepath.data;
-      texturePath = directory + "/" + texturePath.substr(texturePath.find_last_of("/") + 1);
-      // add texture to the material
-      material->addTexture(texturePath);
+    Material *material = Root::instance()->createMaterial(name);
+    for (aiTextureType i: { aiTextureType_DIFFUSE, aiTextureType_SPECULAR, aiTextureType_NORMALS }) {
+      // extract diffuse maps
+      for (uint j = 0; j < aimaterial->GetTextureCount(i); ++j) {
+        aiString aitexturepath;
+        // get texture path
+        aimaterial->GetTexture(i, j, &aitexturepath);
+        // generate texture path
+        string texturePath = aitexturepath.data;
+        texturePath = baseDir + "/" + texturePath.substr(texturePath.find_last_of("/") + 1);
+        // debug
+        cout << texturePath << endl;
+        // add texture to the material
+        material->addTexture(texturePath);
+      }
     }
+    // return material
+    return material;
   }
 
-  void importMesh(uint index) {
+  void importMesh(const aiScene *scene, Mesh *mesh, map<int, Material *> materials, uint index) {
     if (index >= scene->mNumMeshes)
       return;
     aiMesh *aimesh = scene->mMeshes[index];
     SubMesh *subMesh = mesh->createSubMesh();
-    meshes[index] = subMesh;
     // create vertex buffer
     uint vertexCount = aimesh->mNumVertices;
     Vertex *vertices = new Vertex[vertexCount];
@@ -201,7 +183,7 @@ public:
     }
   }
 
-  void importNode(aiNode *_node, Bone *parent) {
+  void importNode(aiNode *_node, Mesh *mesh, Bone *parent) {
     Bone *bone = mesh->createBone(string(_node->mName.data), parent);
     // import node info
     if (parent)
@@ -209,7 +191,7 @@ public:
     bone->setTransform(toMatrix(_node->mTransformation));
     // import children
     for (uint i = 0; i < _node->mNumChildren; ++i)
-      importNode(_node->mChildren[i], bone);
+      importNode(_node->mChildren[i], mesh, bone);
   }
 
   AnimationTrack *importChannel(Animation *animation, aiNodeAnim *_channel, float ticksPerSecond) {
@@ -223,7 +205,7 @@ public:
     return track;
   }
 
-  void importAnimation(uint index) {
+  void importAnimation(const aiScene *scene, Mesh *mesh, uint index) {
     aiAnimation *_animation = scene->mAnimations[index];
     Animation *animation = mesh->createAnimation(_animation->mName.data);
     double ticksPerSecond = _animation->mTicksPerSecond;
@@ -233,54 +215,51 @@ public:
     for(uint i = 0; i < _animation->mNumChannels; ++i)
       importChannel(animation, _animation->mChannels[i], ticksPerSecond);
   }
-};
 
-AssimpImporter::AssimpImporter() : d(new AssimpImporterPrivate()) {
-}
+  Mesh *import(const string &name, const string &path) {
+    Assimp::Importer *importer = new Assimp::Importer();
+    // import scene
+    const aiScene *scene = importer->ReadFile(path.c_str(),
+                                              aiProcess_CalcTangentSpace |
+                                              aiProcess_JoinIdenticalVertices |
+                                              aiProcess_Triangulate |
+                                              aiProcess_GenSmoothNormals |
+                                              aiProcess_SplitLargeMeshes |
+                                              aiProcess_LimitBoneWeights |
+                                              aiProcess_ImproveCacheLocality |
+                                              aiProcess_RemoveRedundantMaterials |
+                                              aiProcess_FixInfacingNormals |
+                                              aiProcess_SortByPType |
+                                              aiProcess_FindDegenerates |
+                                              aiProcess_FindInvalidData |
+                                              aiProcess_GenUVCoords |
+                                              aiProcess_TransformUVCoords |
+                                              aiProcess_FindInstances |
+                                              aiProcess_OptimizeMeshes |
+                                              aiProcess_OptimizeGraph);
+    // check status
+    if (!scene)
+      return nullptr;
 
-AssimpImporter::~AssimpImporter() {
-  delete d;
-}
+    Mesh *mesh = Root::instance()->createMesh(name);
+    string baseDir = path.substr(0, path.find_last_of("/"));
+    map<int, Material *> materials;
+    // TODO: import textures
+    // import materials
+    for (uint i = 0; i < scene->mNumMaterials; ++i)
+      materials[i] = importMaterial(scene->mMaterials[i], baseDir, path + "$mat" + toString(i));
+    // import nodes
+    importNode(scene->mRootNode, mesh, nullptr);
+    // import meshes
+    for (uint i = 0; i < scene->mNumMeshes; ++i)
+      importMesh(scene, mesh, materials, i);
+    // import animations
+    for (uint i = 0; i < scene->mNumAnimations; ++i)
+      importAnimation(scene, mesh, i);
+    // clean up
+    delete importer;
+    // return mesh
+    return mesh;
+  }
 
-Mesh *AssimpImporter::import(const string &name, const string &path) {
-  // import scene
-  d->scene = d->importer->ReadFile(path.c_str(),
-                                   aiProcess_CalcTangentSpace |
-                                   aiProcess_JoinIdenticalVertices |
-                                   aiProcess_Triangulate |
-                                   aiProcess_GenSmoothNormals |
-                                   aiProcess_SplitLargeMeshes |
-                                   aiProcess_LimitBoneWeights |
-                                   aiProcess_ImproveCacheLocality |
-                                   aiProcess_RemoveRedundantMaterials |
-                                   aiProcess_FixInfacingNormals |
-                                   aiProcess_SortByPType |
-                                   aiProcess_FindDegenerates |
-                                   aiProcess_FindInvalidData |
-                                   aiProcess_GenUVCoords |
-                                   aiProcess_TransformUVCoords |
-                                   aiProcess_FindInstances |
-                                   aiProcess_OptimizeMeshes |
-                                   aiProcess_OptimizeGraph);
-  // check status
-  if (!d->scene)
-    return nullptr;
-  // extract base directory
-  d->mesh = Root::instance()->createMesh(name);
-  d->path = path;
-  d->directory = path.substr(0, path.find_last_of("/"));
-  // TODO: import textures
-  // import materials
-  for (uint i = 0; i < d->scene->mNumMaterials; ++i)
-    d->importMaterial(i);
-  // import nodes
-  d->importNode(d->scene->mRootNode, nullptr);
-  // import meshes
-  for (uint i = 0; i < d->scene->mNumMeshes; ++i)
-    d->importMesh(i);
-  // import animations
-  for (uint i = 0; i < d->scene->mNumAnimations; ++i)
-    d->importAnimation(i);
-  // return mesh
-  return d->mesh;
 }
