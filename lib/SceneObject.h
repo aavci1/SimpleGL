@@ -14,8 +14,8 @@ namespace SimpleGL {
 
     virtual string type() const = 0;
 
-    SceneNode *parent() const;
-    void setParent(SceneNode *parent);
+    shared_ptr<SceneNode> parent() const;
+    void setParent(shared_ptr<SceneNode> parent);
 
   private:
     SceneObjectPrivate *d;

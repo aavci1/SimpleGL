@@ -43,40 +43,16 @@ namespace SimpleGL {
     }
 
     ~RootPrivate() {
-      // delete windows
-      for (uint i = 0; i < windows.size(); ++i)
-        delete windows[i];
-      // delete sceneNodes
-      for (uint i = 0; i < sceneNodes.size(); ++i)
-        delete sceneNodes[i];
-      // delete lights
-      for (uint i = 0; i < lights.size(); ++i)
-        delete lights[i];
-      // delete cameras
-      for (uint i = 0; i < cameras.size(); ++i)
-        delete cameras[i];
-      // delete programs
-      for (uint i = 0; i < programs.size(); ++i)
-        delete programs[i];
-      // delete materials
-      for (uint i = 0; i < materials.size(); ++i)
-        delete materials[i];
-      // delete meshes
-      for (uint i = 0; i < meshes.size(); ++i)
-        delete meshes[i];
-      // delete instances
-      for (uint i = 0; i < instances.size(); ++i)
-        delete instances[i];
     }
 
-    vector<Window *> windows;
-    vector<SceneNode *> sceneNodes;
-    vector<Instance *> instances;
-    vector<Light *> lights;
-    vector<Camera *> cameras;
-    vector<Mesh *> meshes;
-    vector<Material *> materials;
-    vector<Program *> programs;
+    vector<shared_ptr<Window>> windows;
+    vector<shared_ptr<SceneNode>> sceneNodes;
+    vector<shared_ptr<Instance>> instances;
+    vector<shared_ptr<Light>> lights;
+    vector<shared_ptr<Camera>> cameras;
+    vector<shared_ptr<Mesh>> meshes;
+    vector<shared_ptr<Material>> materials;
+    vector<shared_ptr<Program>> programs;
 
     Vector2i mousePosition { 0, 0 };
     long animationTime { 0 };
@@ -88,7 +64,7 @@ namespace SimpleGL {
 
   Root::Root() : d(new RootPrivate()) {
     // create root scene node
-    d->sceneNodes.push_back(new SceneNode());
+    createSceneNode();
     // initialize glew
     glewInit();
   }
@@ -101,75 +77,75 @@ namespace SimpleGL {
     return _instance;
   }
 
-  Window *Root::createWindow(int width, int height) {
-    Window *window = new Window(width, height);
+  shared_ptr<Window>Root::createWindow(int width, int height) {
+    shared_ptr<Window> window(new Window(width, height));
     // add to list
     d->windows.push_back(window);
     // return window
     return window;
   }
 
-  const vector<Window *> &Root::windows() const {
-    return d->windows;
-  }
+//  const vector<shared_ptr<Window>> &Root::windows() const {
+//    return d->windows;
+//  }
 
-  SceneNode *Root::createSceneNode() {
-    SceneNode *sceneNode = new SceneNode();
+  shared_ptr<SceneNode> Root::createSceneNode() {
+    shared_ptr<SceneNode> sceneNode(new SceneNode());
     // add to list
     d->sceneNodes.push_back(sceneNode);
     // return scene node
     return sceneNode;
   }
 
-  SceneNode *Root::rootSceneNode() const {
+  shared_ptr<SceneNode> Root::rootSceneNode() const {
     return d->sceneNodes.at(0);
   }
 
-  const vector<SceneNode *> &Root::sceneNodes() const {
-    return d->sceneNodes;
-  }
+//  const vector<shared_ptr<SceneNode>> &Root::sceneNodes() const {
+//    return d->sceneNodes;
+//  }
 
-  Light *Root::createLight(string type) {
-    Light *light;
+  shared_ptr<Light> Root::createLight(string type) {
+    shared_ptr<Light> light;
     if (type == "Light/Point")
-      light = new PointLight();
+      light = shared_ptr<Light>(new PointLight());
     else if (type == "Light/Spot")
-      light = new SpotLight();
+      light = shared_ptr<Light>(new SpotLight());
     else if (type == "Light/Directional")
-      light = new DirectionalLight();
+      light = shared_ptr<Light>(new DirectionalLight());
     // add to list
     d->lights.push_back(light);
     // return light
     return light;
   }
 
-  const vector<Light *> &Root::lights() const {
-    return d->lights;
-  }
+//  const vector<Light *> &Root::lights() const {
+//    return d->lights;
+//  }
 
-  Camera *Root::createCamera() {
-    Camera *camera = new Camera();
+  shared_ptr<Camera> Root::createCamera() {
+    shared_ptr<Camera> camera { new Camera() };
     // add to list
     d->cameras.push_back(camera);
     // return camera
     return camera;
   }
 
-  const vector<Camera *> &Root::cameras() const {
-    return d->cameras;
-  }
+//  const vector<Camera *> &Root::cameras() const {
+//    return d->cameras;
+//  }
 
-  Program *Root::createProgram(const string &name) {
+  shared_ptr<Program> Root::createProgram(const string &name) {
     cout << "Root::createProgram(\"" << name << "\");" << endl;
 
-    Program *program = new Program(name);
+    shared_ptr<Program> program { new Program(name) };
     // add to list
     d->programs.push_back(program);
     // return program
     return program;
   }
 
-  Program *Root::retrieveProgram(const string &name) {
+  shared_ptr<Program> Root::retrieveProgram(const string &name) {
     if (name == "")
       return 0;
     for (uint i = 0; i < d->programs.size(); ++i)
@@ -178,21 +154,21 @@ namespace SimpleGL {
     return 0;
   }
 
-  const vector<Program *> &Root::programs() const {
-    return d->programs;
-  }
+//  const vector<Program *> &Root::programs() const {
+//    return d->programs;
+//  }
 
-  Material *Root::createMaterial(const string &name) {
+  shared_ptr<Material> Root::createMaterial(const string &name) {
     cout << "Root::createMaterial(\"" << name << "\");" << endl;
 
-    Material *material = new Material(name);
+    shared_ptr<Material> material { new Material(name) };
     // add to list
     d->materials.push_back(material);
     // return material
     return material;
   }
 
-  Material *Root::retrieveMaterial(const string &name) {
+  shared_ptr<Material> Root::retrieveMaterial(const string &name) {
     if (name == "")
       return 0;
     for (uint i = 0; i < d->materials.size(); ++i)
@@ -201,21 +177,21 @@ namespace SimpleGL {
     return 0;
   }
 
-  const vector<Material *> &Root::materials() const {
-    return d->materials;
-  }
+//  const vector<Material *> &Root::materials() const {
+//    return d->materials;
+//  }
 
-  Mesh *Root::createMesh(const string &name) {
+  shared_ptr<Mesh> Root::createMesh(const string &name) {
     cout << "Root::createMesh(\"" << name << "\");" << endl;
 
-    Mesh *mesh = new Mesh(name);
+    shared_ptr<Mesh> mesh(new Mesh(name));
     // add to list
     d->meshes.push_back(mesh);
     // return mesh
     return mesh;
   }
 
-  Mesh *Root::retrieveMesh(const string &name) {
+  shared_ptr<Mesh> Root::retrieveMesh(const string &name) {
     if (name == "")
       return 0;
     for (uint i = 0; i < d->meshes.size(); ++i)
@@ -224,8 +200,8 @@ namespace SimpleGL {
     return 0;
   }
 
-  Mesh *Root::createQuad(const string &name, float width, float height) {
-    Mesh *mesh = Root::instance()->createMesh(name);
+  shared_ptr<Mesh> Root::createQuad(const string &name, float width, float height) {
+    shared_ptr<Mesh> mesh = Root::instance()->createMesh(name);
     // calculate vertex and index data
     float vertices[] = {
       -1.0f * width, -1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
@@ -242,8 +218,8 @@ namespace SimpleGL {
     return mesh;
   }
 
-  Mesh *Root::createPlane(const string &name, float width, float height, float uTile, float vTile) {
-    Mesh *mesh = Root::instance()->createMesh(name);
+  shared_ptr<Mesh> Root::createPlane(const string &name, float width, float height, float uTile, float vTile) {
+    shared_ptr<Mesh> mesh = Root::instance()->createMesh(name);
     // calculate vertex and index data
     float vertices[] = {
       -1.0f * width, 0.0f, +1.0f * height, 0.0f, 1.0f, 0.0f, -1.0f * uTile, -1.0f * vTile,
@@ -260,8 +236,8 @@ namespace SimpleGL {
     return mesh;
   }
 
-  Mesh *Root::createCube(const string &name, float width, float height, float depth) {
-    Mesh *mesh = Root::instance()->createMesh(name);
+  shared_ptr<Mesh> Root::createCube(const string &name, float width, float height, float depth) {
+    shared_ptr<Mesh> mesh = Root::instance()->createMesh(name);
     // calculate vertex and index data
     float vertices[] = {
       -1.0f * width, -1.0f * height,  1.0f * depth, 0.0f, 0.0f, +1.0f, 0.0f, 0.0f,
@@ -321,8 +297,8 @@ namespace SimpleGL {
     return mesh;
   }
 
-  Mesh *Root::createCone(const string &name, float radius, float height, uint slices, uint stacks) {
-    Mesh *mesh = Root::instance()->createMesh(name);
+  shared_ptr<Mesh> Root::createCone(const string &name, float radius, float height, uint slices, uint stacks) {
+    shared_ptr<Mesh> mesh = Root::instance()->createMesh(name);
     // calculate vertex and index data
     // allocate the vertex buffer
     uint vertexCount = (stacks + 1) * (slices + 1) + 1 + slices + 1;
@@ -415,8 +391,8 @@ namespace SimpleGL {
     return mesh;
   }
 
-  Mesh *Root::createSphere(const string &name, float radius, uint slices, uint stacks) {
-    Mesh *mesh = Root::instance()->createMesh(name);
+  shared_ptr<Mesh> Root::createSphere(const string &name, float radius, uint slices, uint stacks) {
+    shared_ptr<Mesh> mesh = Root::instance()->createMesh(name);
     // calculate vertex and index data
     // allocate the vertex buffer
     uint vertexCount = (stacks + 1) * (slices + 1);
@@ -479,8 +455,8 @@ namespace SimpleGL {
 
   void Root::save(const string &name, const string &path) {
     // find mesh
-    Mesh *mesh = nullptr;
-    for (Mesh *m: d->meshes)
+    shared_ptr<Mesh> mesh = nullptr;
+    for (shared_ptr<Mesh> m: d->meshes)
       if (m->name() == name)
         mesh = m;
     // check if mesh found
@@ -557,7 +533,7 @@ namespace SimpleGL {
   void Root::load(const string &name, const string &path) {
     cout << "Root::load(\"" << name << "\", \"" << path << "\");" << endl;
     // create a new mesh
-    Mesh *mesh = Root::instance()->createMesh(name);
+    shared_ptr<Mesh> mesh = Root::instance()->createMesh(name);
     // create input stream
     InputStream in(path);
     // read magic bytes
@@ -676,41 +652,41 @@ namespace SimpleGL {
     }
   }
 
-  const vector<Mesh *> &Root::meshes() const {
-    return d->meshes;
-  }
+//  const vector<shared_ptr<Mesh> > &Root::meshes() const {
+//    return d->meshes;
+//  }
 
-  Instance *Root::createInstance(const string &mesh, const string &material) {
-    Instance *instance = new Instance(mesh, material);
+  shared_ptr<Instance>Root::createInstance(const string &mesh, const string &material) {
+    shared_ptr<Instance> instance { new Instance(mesh, material) };
     // add to list
     d->instances.push_back(instance);
     // return instance
     return instance;
   }
 
-  const vector<Instance *> &Root::instances() const {
-    return d->instances;
-  }
+//  const vector<Instance *> &Root::instances() const {
+//    return d->instances;
+//  }
 
   void Root::prepareRender(long elapsed) {
     // update fps
     d->fpsCount++;
     d->fpsTime += elapsed;
     // process nodes
-    queue<SceneNode *> processQueue;
+    queue<shared_ptr<SceneNode>> processQueue;
     // add root node to the updated Nodes
     processQueue.push(d->sceneNodes.at(0));
     // update nodes
     while (!processQueue.empty()) {
-      SceneNode *node = processQueue.front();
+      shared_ptr<SceneNode> node = processQueue.front();
       processQueue.pop();
       // process node
       node->updateWorldTransform();
       // update animations
-      for (Instance *instance: d->instances) {
+      for (shared_ptr<Instance> instance: d->instances) {
         if (instance->parent() != node)
           continue;
-        Mesh *mesh = Root::instance()->retrieveMesh(instance->mesh());
+        shared_ptr<Mesh> mesh = Root::instance()->retrieveMesh(instance->mesh());
         if (!mesh)
           continue;
         // update each animation
@@ -728,7 +704,7 @@ namespace SimpleGL {
           mesh->bones().at(0)->updateWorldTransform();
       }
       // queue child nodes for processing
-      for (SceneNode *childNode: d->sceneNodes)
+      for (shared_ptr<SceneNode> childNode: d->sceneNodes)
         if (childNode->parent() == node)
           processQueue.push(childNode);
     }
@@ -739,30 +715,30 @@ namespace SimpleGL {
       return;
     Camera *camera = viewport->camera();
     // render scene
-    std::queue<SceneNode *> processQueue;
+    std::queue<shared_ptr<SceneNode>> processQueue;
     // add root node to the updated Nodes
     processQueue.push(d->sceneNodes.at(0));
     // update nodes
     while (!processQueue.empty()) {
-      SceneNode *node = processQueue.front();
+      shared_ptr<SceneNode> node = processQueue.front();
       processQueue.pop();
       // render instances
-      for (Instance *instance: d->instances) {
+      for (shared_ptr<Instance> instance: d->instances) {
         if (instance->parent() != node)
           continue;
-        Mesh *mesh = Root::instance()->retrieveMesh(instance->mesh());
+        shared_ptr<Mesh> mesh = Root::instance()->retrieveMesh(instance->mesh());
         if (!mesh)
           continue;
         // draw sub meshes
         for (SubMesh *subMesh: mesh->subMeshes()) {
-          Material *material = Root::instance()->retrieveMaterial(instance->material());
+          shared_ptr<Material> material = Root::instance()->retrieveMaterial(instance->material());
           if (!material)
             material = Root::instance()->retrieveMaterial(subMesh->material());
           if (!material)
             material = Root::instance()->retrieveMaterial("Default");
           if (!material)
             continue;
-          Program *program = Root::instance()->retrieveProgram(material->program());
+          shared_ptr<Program> program = Root::instance()->retrieveProgram(material->program());
           if (!program)
             continue;
           // bind the material
@@ -782,7 +758,7 @@ namespace SimpleGL {
         }
       }
       // queue child nodes for processing
-      for (SceneNode *childNode: d->sceneNodes)
+      for (shared_ptr<SceneNode> childNode: d->sceneNodes)
         if (childNode->parent() == node)
           processQueue.push(childNode);
     }
@@ -794,8 +770,8 @@ namespace SimpleGL {
     // get camera
     Camera *camera = viewport->camera();
     // render lights
-    for (Light *light: d->lights) {
-      Program *program = Root::instance()->retrieveProgram(light->type());
+    for (shared_ptr<Light> light: d->lights) {
+      shared_ptr<Program> program = Root::instance()->retrieveProgram(light->type());
       if (!program)
         continue;
       // bine the program

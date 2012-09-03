@@ -1,6 +1,9 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include <list>
+#include <map>
+#include <memory>
 #include <string>
 #include <vector>
 

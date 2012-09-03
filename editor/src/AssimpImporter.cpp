@@ -71,10 +71,10 @@ namespace AssimpImporter {
     return matrix;
   }
 
-  Material *importMaterial(aiMaterial *aimaterial, string baseDir, string name) {
+  shared_ptr<Material> importMaterial(aiMaterial *aimaterial, string baseDir, string name) {
     // TODO: get other material properties (specular, shininess etc.)
     //  create material
-    Material *material = Root::instance()->createMaterial(name);
+    shared_ptr<Material> material = Root::instance()->createMaterial(name);
     for (aiTextureType i: { aiTextureType_DIFFUSE, aiTextureType_SPECULAR, aiTextureType_NORMALS }) {
       // extract diffuse maps
       for (uint j = 0; j < aimaterial->GetTextureCount(i); ++j) {
@@ -94,7 +94,7 @@ namespace AssimpImporter {
     return material;
   }
 
-  void importMesh(const aiScene *scene, Mesh *mesh, map<int, Material *> materials, uint index) {
+  void importMesh(const aiScene *scene, shared_ptr<Mesh>  mesh, map<int, shared_ptr<Material>> materials, uint index) {
     if (index >= scene->mNumMeshes)
       return;
     aiMesh *aimesh = scene->mMeshes[index];
@@ -183,7 +183,7 @@ namespace AssimpImporter {
     }
   }
 
-  void importNode(aiNode *_node, Mesh *mesh, Bone *parent) {
+  void importNode(aiNode *_node, shared_ptr<Mesh>  mesh, Bone *parent) {
     Bone *bone = mesh->createBone(string(_node->mName.data), parent);
     // import node info
     if (parent)
@@ -205,7 +205,7 @@ namespace AssimpImporter {
     return track;
   }
 
-  void importAnimation(const aiScene *scene, Mesh *mesh, uint index) {
+  void importAnimation(const aiScene *scene, shared_ptr<Mesh>  mesh, uint index) {
     aiAnimation *_animation = scene->mAnimations[index];
     Animation *animation = mesh->createAnimation(_animation->mName.data);
     double ticksPerSecond = _animation->mTicksPerSecond;
@@ -216,7 +216,7 @@ namespace AssimpImporter {
       importChannel(animation, _animation->mChannels[i], ticksPerSecond);
   }
 
-  Mesh *import(const string &name, const string &path) {
+  shared_ptr<Mesh>  import(const string &name, const string &path) {
     Assimp::Importer *importer = new Assimp::Importer();
     // import scene
     const aiScene *scene = importer->ReadFile(path.c_str(),
@@ -241,9 +241,9 @@ namespace AssimpImporter {
     if (!scene)
       return nullptr;
 
-    Mesh *mesh = Root::instance()->createMesh(name);
+    shared_ptr<Mesh> mesh = Root::instance()->createMesh(name);
     string baseDir = path.substr(0, path.find_last_of("/"));
-    map<int, Material *> materials;
+    map<int, shared_ptr<Material>> materials;
     // TODO: import textures
     // import materials
     for (uint i = 0; i < scene->mNumMaterials; ++i)

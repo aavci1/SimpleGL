@@ -8,7 +8,7 @@ namespace SimpleGL {
 }
 
 namespace AssimpImporter {
-  SimpleGL::Mesh *import(const string &name, const string &path);
+  shared_ptr<SimpleGL::Mesh> import(const string &name, const string &path);
 }
 
 #endif // ASSIMPIMPORTER_H

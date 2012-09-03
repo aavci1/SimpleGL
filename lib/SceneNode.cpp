@@ -36,18 +36,6 @@ namespace SimpleGL {
     return "SceneNode";
   }
 
-  SceneNode *SceneNode::createChildSceneNode(Vector3f position, Quaternion orientation, Vector3f scale) {
-    SceneNode *sceneNode = Root::instance()->createSceneNode();
-    // set nodes parent
-    sceneNode->setParent(this);
-    // set position/orientation/scale
-    sceneNode->setPosition(position);
-    sceneNode->setOrientation(orientation);
-    sceneNode->setScale(scale);
-    // return node
-    return sceneNode;
-  }
-
   const Vector3f &SceneNode::position() const {
     return d->position;
   }

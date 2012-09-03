@@ -14,8 +14,6 @@ namespace SimpleGL {
 
     string type() const;
 
-    SceneNode *createChildSceneNode(Vector3f position = Vector3f(0.0f, 0.0f, 0.0f), Quaternion orientation = Quaternion(1.0f, 0.0f, 0.0f, 0.0f), Vector3f scale = Vector3f(1.0f, 1.0f, 1.0f));
-
     const Vector3f &position() const;
     void setPosition(const Vector3f &position);
     void setPosition(float x, float y, float z);

@@ -3,6 +3,8 @@
 
 #include <QGLWidget>
 
+#include "Types.h"
+
 namespace SimpleGL {
   class Camera;
   class Instance;
@@ -15,8 +17,6 @@ class GLWidget : public QGLWidget {
 public:
   GLWidget(QWidget *parent = 0);
   ~GLWidget();
-
-  SimpleGL::Instance *instance() const;
 
 protected:
   void initializeGL();
@@ -33,10 +33,10 @@ protected:
   void wheelEvent(QWheelEvent *e);
 
 protected:
-  SimpleGL::Window *window { nullptr };
-  SimpleGL::Camera *camera { nullptr };
-  SimpleGL::SceneNode *cameraNode { nullptr };
-  SimpleGL::Instance *_instance { nullptr };
+  shared_ptr<SimpleGL::Window> window { nullptr };
+  shared_ptr<SimpleGL::Camera> camera { nullptr };
+  shared_ptr<SimpleGL::SceneNode> cameraNode { nullptr };
+  shared_ptr<SimpleGL::Instance> _instance { nullptr };
   QPoint mousePosition { 0, 0 };
 };
 

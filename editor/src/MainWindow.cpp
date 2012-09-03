@@ -42,9 +42,7 @@ void MainWindow::fileOpen() {
   if (path.isNull())
     return;
   // load mesh
-  Root::instance()->load(path.toStdString(), path.toStdString());
-  // create an instance
-  widget->instance()->setMesh(path.toStdString());
+  Root::instance()->load("MODEL", path.toStdString());
 }
 
 void MainWindow::fileSave() {
@@ -53,7 +51,7 @@ void MainWindow::fileSave() {
   if (path.isNull())
     return;
   // load mesh
-  Root::instance()->save(widget->instance()->mesh(), path.toStdString());
+  Root::instance()->save("MODEL", path.toStdString());
 }
 
 void MainWindow::fileSaveAs() {
@@ -62,7 +60,7 @@ void MainWindow::fileSaveAs() {
   if (path.isNull())
     return;
   // load mesh
-  Root::instance()->save(widget->instance()->mesh(), path.toStdString());
+  Root::instance()->save("MODEL", path.toStdString());
 }
 
 void MainWindow::fileImport() {
@@ -71,13 +69,11 @@ void MainWindow::fileImport() {
   if (path.isNull())
     return;
   // load mesh
-  AssimpImporter::import(path.toStdString(), path.toStdString());
-  // create an instance
-  widget->instance()->setMesh(path.toStdString());
+  AssimpImporter::import("MODEL", path.toStdString());
 }
 
 void MainWindow::fileClose() {
-  widget->instance()->setMesh("");
+  // widget->instance()->setMesh("");
 }
 
 void MainWindow::fileExit() {
