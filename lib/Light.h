@@ -23,7 +23,7 @@ namespace SimpleGL {
     const float specularIntensity() const;
     void setSpecularIntensity(const float intensity);
 
-    virtual void render(Camera *camera) = 0;
+    virtual void render(shared_ptr<Camera> camera) = 0;
 
   private:
     LightPrivate *d;

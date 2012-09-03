@@ -44,7 +44,7 @@ namespace SimpleGL {
     setDirection(Vector3f(x, y, z));
   }
 
-  void DirectionalLight::render(Camera *camera) {
+  void DirectionalLight::render(shared_ptr<Camera> camera) {
     // get program of the material
     shared_ptr<Program> program = Root::instance()->retrieveProgram("Light/Directional");
     if (!program)

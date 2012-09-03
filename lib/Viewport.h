@@ -1,17 +1,19 @@
 #ifndef VIEWPORT_H
 #define VIEWPORT_H
 
+#include "Types.h"
+
 namespace SimpleGL {
   class ViewportPrivate;
   class Camera;
 
   class Viewport {
   public:
-    Viewport(Camera *camera);
+    Viewport(shared_ptr<Camera> camera);
     ~Viewport();
 
-    Camera *camera() const;
-    void setCamera(Camera *camera);
+    shared_ptr<Camera> camera() const;
+    void setCamera(shared_ptr<Camera> camera);
 
     const float left() const;
     const float top() const;

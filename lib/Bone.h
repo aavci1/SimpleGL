@@ -10,16 +10,13 @@ namespace SimpleGL {
 
   class Bone {
   public:
-    Bone(const string &name, Bone *parent = nullptr);
+    Bone(const string &name);
     ~Bone();
 
     const string &name() const;
 
-    Bone *parentBone() const;
-    void setParentBone(Bone *parent);
-
-    const vector<Bone *> &childBones() const;
-    void attachBone(Bone *bone);
+    shared_ptr<Bone> parent() const;
+    void setParent(shared_ptr<Bone> parent);
 
     const Matrix4f &offsetMatrix() const;
     void setOffsetMatrix(const Matrix4f &offsetMatrix);

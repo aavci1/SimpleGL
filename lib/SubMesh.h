@@ -27,7 +27,7 @@ namespace SimpleGL {
     const bool setVertexData(float *vertexData, uint vertexCount, uint vertexFormat);
     const bool setIndexData(uint32_t *indexData, uint indexCount);
 
-    void render(Camera *camera);
+    void render(shared_ptr<Camera> camera);
 
   private:
     SubMeshPrivate *d;

@@ -20,12 +20,9 @@ namespace SimpleGL {
     ~WindowPrivate() {
       // delete frame buffer
       glDeleteFramebuffers(1, &frameBuffer);
-      // delete viewports
-      for (uint i = 0; i < viewports.size(); ++i)
-        delete viewports[i];
     }
 
-    vector<Viewport *> viewports;
+    vector<shared_ptr<Viewport>> viewports;
     uint32_t width { 0 };
     uint32_t height { 0 };
     // frame buffer handle
@@ -99,16 +96,16 @@ namespace SimpleGL {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   }
 
-  const vector<Viewport *> &Window::viewports() const {
+  const vector<shared_ptr<Viewport>> &Window::viewports() const {
     return d->viewports;
   }
 
-  Viewport *Window::createViewport(Camera *camera) {
-    Viewport *viewport = new Viewport(camera);
+  shared_ptr<Viewport> Window::createViewport(shared_ptr<Camera> camera) {
+    shared_ptr<Viewport> viewport { new Viewport(camera) };
     // add to list
     d->viewports.push_back(viewport);
     // sort viewports
-    sort(d->viewports.begin(), d->viewports.end(), [](const Viewport * v1, const Viewport * v2) {
+    sort(d->viewports.begin(), d->viewports.end(), [](const shared_ptr<Viewport> v1, const shared_ptr<Viewport> v2) {
          return v1->zIndex() < v2->zIndex();
     });
     // return viewport
@@ -138,7 +135,7 @@ namespace SimpleGL {
     // unbind framebuffer
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     // render through each viewport
-    for (Viewport *viewport: d->viewports) {
+    for (shared_ptr<Viewport> viewport: d->viewports) {
       // calculate viewport dimension in pixels;
       float left = viewport->left() * d->width;
       float top = viewport->top() * d->height;
@@ -147,7 +144,7 @@ namespace SimpleGL {
       // set up viewport
       glViewport(left, top, width, height);
       // get viewport camera
-      Camera *camera = viewport->camera();
+      shared_ptr<Camera> camera = viewport->camera();
       if (!camera)
         continue;
       // update camera's aspect ratio
@@ -166,7 +163,7 @@ namespace SimpleGL {
       // disable blending
       glDisable(GL_BLEND);
       // render scene
-      Root::instance()->renderScene(this, viewport);
+      Root::instance()->renderScene(this, viewport.get());
       // unbind frame buffer
       glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 #if 0
@@ -205,7 +202,7 @@ namespace SimpleGL {
       glActiveTexture(GL_TEXTURE2);
       glBindTexture(GL_TEXTURE_2D, d->texture2);
       // render lights
-      Root::instance()->renderLights(this, viewport);
+      Root::instance()->renderLights(this, viewport.get());
       // unbind textures
       glActiveTexture(GL_TEXTURE0);
       glBindTexture(GL_TEXTURE_2D, 0);

@@ -19,7 +19,7 @@ namespace SimpleGL {
     const float attenuationQuadratic() const;
     void setAttenuation(const float range, const float constant = 0.0f, const float linear = 0.0f, const float quadratic = 1.0f);
 
-    void render(Camera *camera);
+    void render(shared_ptr<Camera> camera);
 
   private:
     PointLightPrivate *d;

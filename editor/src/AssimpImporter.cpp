@@ -98,7 +98,7 @@ namespace AssimpImporter {
     if (index >= scene->mNumMeshes)
       return;
     aiMesh *aimesh = scene->mMeshes[index];
-    SubMesh *subMesh = mesh->createSubMesh();
+    shared_ptr<SubMesh> subMesh = mesh->createSubMesh();
     // create vertex buffer
     uint vertexCount = aimesh->mNumVertices;
     Vertex *vertices = new Vertex[vertexCount];
@@ -183,18 +183,17 @@ namespace AssimpImporter {
     }
   }
 
-  void importNode(aiNode *_node, shared_ptr<Mesh>  mesh, Bone *parent) {
-    Bone *bone = mesh->createBone(string(_node->mName.data), parent);
+  void importNode(aiNode *_node, shared_ptr<Mesh>  mesh, shared_ptr<Bone> parent) {
+    shared_ptr<Bone> bone = mesh->createBone(string(_node->mName.data));
     // import node info
-    if (parent)
-      parent->attachBone(bone);
+    bone->setParent(parent);
     bone->setTransform(toMatrix(_node->mTransformation));
     // import children
     for (uint i = 0; i < _node->mNumChildren; ++i)
       importNode(_node->mChildren[i], mesh, bone);
   }
 
-  AnimationTrack *importChannel(Animation *animation, aiNodeAnim *_channel, float ticksPerSecond) {
+  AnimationTrack *importChannel(shared_ptr<Animation> animation, aiNodeAnim *_channel, float ticksPerSecond) {
     AnimationTrack *track = animation->createTrack(_channel->mNodeName.data);
     for (uint i = 0; i < _channel->mNumPositionKeys; ++i)
       track->createPositionKey(_channel->mPositionKeys[i].mTime / ticksPerSecond * 1000, toVector(_channel->mPositionKeys[i].mValue));
@@ -207,7 +206,7 @@ namespace AssimpImporter {
 
   void importAnimation(const aiScene *scene, shared_ptr<Mesh>  mesh, uint index) {
     aiAnimation *_animation = scene->mAnimations[index];
-    Animation *animation = mesh->createAnimation(_animation->mName.data);
+    shared_ptr<Animation> animation = mesh->createAnimation(_animation->mName.data);
     double ticksPerSecond = _animation->mTicksPerSecond;
     if (ticksPerSecond == 0)
       ticksPerSecond = 10;

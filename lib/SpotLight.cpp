@@ -96,7 +96,7 @@ namespace SimpleGL {
     d->cone = Root::instance()->createCone("", tanf((d->innerAngle + d->outerAngle) * M_PI / 180) * d->attenuationRange, d->attenuationRange);
   }
 
-  void SpotLight::render(Camera *camera) {
+  void SpotLight::render(shared_ptr<Camera> camera) {
     shared_ptr<Program> program = Root::instance()->retrieveProgram("Light/Spot");
     if (!program)
       return;

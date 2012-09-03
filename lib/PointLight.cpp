@@ -63,7 +63,7 @@ namespace SimpleGL {
     d->sphere = Root::instance()->createSphere("", d->attenuationRange, 32, 32);
   }
 
-  void PointLight::render(Camera *camera) {
+  void PointLight::render(shared_ptr<Camera> camera) {
     // get program of the material
     shared_ptr<Program> program = Root::instance()->retrieveProgram("Light/Point");
     if (!program)

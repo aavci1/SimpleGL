@@ -45,7 +45,7 @@ void GLWidget::initializeGL() {
   camera = Root::instance()->createCamera();
   camera->setParent(cameraNode);
   // create a viewport
-  window->createViewport(camera.get());
+  window->createViewport(camera);
   // create default program
   shared_ptr<Program> defaultProgram = Root::instance()->createProgram("Default");
   if (!defaultProgram->loadShaderFromPath(ST_VERTEX, "media/Default.vert")) cerr << defaultProgram->log() << endl;
