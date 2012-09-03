@@ -12,7 +12,7 @@ namespace SimpleGL {
   };
 
   InputStream::InputStream(const string &path) : d(new InputStreamPrivate()) {
-      d->stream = new fstream(path, ios::binary | ios::in);
+    d->stream = new fstream(path, ios::binary | ios::in);
   }
 
   InputStream::~InputStream() {

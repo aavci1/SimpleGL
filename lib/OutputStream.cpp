@@ -12,7 +12,7 @@ namespace SimpleGL {
   };
 
   OutputStream::OutputStream(const string &path) : d(new OutputStreamPrivate()) {
-      d->stream = new fstream(path, ios::binary | ios::out | ios::trunc);
+    d->stream = new fstream(path, ios::binary | ios::out | ios::trunc);
   }
 
   OutputStream::~OutputStream() {

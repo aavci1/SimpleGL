@@ -21,7 +21,7 @@ namespace SimpleGL {
     vector<SubMeshPtr> subMeshes;
   };
 
-  Mesh::Mesh(const string &name) : d(new MeshPrivate()){
+  Mesh::Mesh(const string &name) : d(new MeshPrivate()) {
     d->name = name;
   }
 

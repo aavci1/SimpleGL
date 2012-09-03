@@ -106,7 +106,7 @@ namespace SimpleGL {
     d->viewports.push_back(viewport);
     // sort viewports
     sort(d->viewports.begin(), d->viewports.end(), [](const ViewportPtr v1, const ViewportPtr v2) {
-         return v1->zIndex() < v2->zIndex();
+      return v1->zIndex() < v2->zIndex();
     });
     // return viewport
     return viewport;

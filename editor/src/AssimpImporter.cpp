@@ -209,7 +209,7 @@ namespace AssimpImporter {
     if (ticksPerSecond == 0)
       ticksPerSecond = 10;
     animation->setDuration((_animation->mDuration / ticksPerSecond) * 1000);
-    for(uint i = 0; i < _animation->mNumChannels; ++i)
+    for (uint i = 0; i < _animation->mNumChannels; ++i)
       importChannel(animation, _animation->mChannels[i], ticksPerSecond);
   }
 
@@ -217,23 +217,23 @@ namespace AssimpImporter {
     Assimp::Importer importer;
     // import scene
     const aiScene *scene = importer.ReadFile(path.c_str(),
-                                              aiProcess_CalcTangentSpace |
-                                              aiProcess_JoinIdenticalVertices |
-                                              aiProcess_Triangulate |
-                                              aiProcess_GenSmoothNormals |
-                                              aiProcess_SplitLargeMeshes |
-                                              aiProcess_LimitBoneWeights |
-                                              aiProcess_ImproveCacheLocality |
-                                              aiProcess_RemoveRedundantMaterials |
-                                              aiProcess_FixInfacingNormals |
-                                              aiProcess_SortByPType |
-                                              aiProcess_FindDegenerates |
-                                              aiProcess_FindInvalidData |
-                                              aiProcess_GenUVCoords |
-                                              aiProcess_TransformUVCoords |
-                                              aiProcess_FindInstances |
-                                              aiProcess_OptimizeMeshes |
-                                              aiProcess_OptimizeGraph);
+                           aiProcess_CalcTangentSpace |
+                           aiProcess_JoinIdenticalVertices |
+                           aiProcess_Triangulate |
+                           aiProcess_GenSmoothNormals |
+                           aiProcess_SplitLargeMeshes |
+                           aiProcess_LimitBoneWeights |
+                           aiProcess_ImproveCacheLocality |
+                           aiProcess_RemoveRedundantMaterials |
+                           aiProcess_FixInfacingNormals |
+                           aiProcess_SortByPType |
+                           aiProcess_FindDegenerates |
+                           aiProcess_FindInvalidData |
+                           aiProcess_GenUVCoords |
+                           aiProcess_TransformUVCoords |
+                           aiProcess_FindInstances |
+                           aiProcess_OptimizeMeshes |
+                           aiProcess_OptimizeGraph);
     // check status
     if (!scene)
       return nullptr;

@@ -23,7 +23,7 @@
 
 using namespace SimpleGL;
 
-GLWidget::GLWidget(QWidget *parent) : QGLWidget(parent){
+GLWidget::GLWidget(QWidget *parent) : QGLWidget(parent) {
 }
 
 GLWidget::~GLWidget() {
@@ -119,11 +119,10 @@ void GLWidget::initializeGL() {
       // create light node
       SceneNodePtr lightNode = Root::instance()->createSceneNode();
       lightNode->setParent(Root::instance()->rootSceneNode());
-      lightNode->setPosition(Vector3f(j * 180.0f, 290.0f, i * 180.0f));
+      lightNode->setPosition(j * 180.0f, 290.0f, i * 180.0f);
       // attach a sphere
       Root::instance()->createInstance("Sphere", "Ceiling")->setParent(lightNode);
       // attach a light
-
       shared_ptr<PointLight> light = static_pointer_cast<PointLight>(Root::instance()->createLight("Light/Point"));
       // shared_ptr<SpotLight> light = static_pointer_cast<SpotLight>(Root::instance()->createLight("Light/Spot"));
       // light->setInnerAngle(10);
@@ -153,7 +152,6 @@ void GLWidget::paintGL() {
   if (window)
     window->update();
 }
-
 
 void GLWidget::keyPressEvent(QKeyEvent *e) {
   // update view
