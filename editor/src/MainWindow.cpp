@@ -43,6 +43,10 @@ void MainWindow::fileOpen() {
     return;
   // load mesh
   Root::instance()->load("MODEL", path.toStdString());
+  // enable actions
+  actionSave->setEnabled(true);
+  actionSaveAs->setEnabled(true);
+  actionClose->setEnabled(true);
 }
 
 void MainWindow::fileSave() {
@@ -70,10 +74,18 @@ void MainWindow::fileImport() {
     return;
   // load mesh
   AssimpImporter::import("MODEL", path.toStdString());
+  // enable actions
+  actionSave->setEnabled(true);
+  actionSaveAs->setEnabled(true);
+  actionClose->setEnabled(true);
 }
 
 void MainWindow::fileClose() {
   Root::instance()->destroyMesh("MODEL");
+  // enable actions
+  actionSave->setEnabled(false);
+  actionSaveAs->setEnabled(false);
+  actionClose->setEnabled(false);
 }
 
 void MainWindow::fileExit() {
