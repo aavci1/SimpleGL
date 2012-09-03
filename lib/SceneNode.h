@@ -1,27 +1,20 @@
 #ifndef SCENENODE_H
 #define SCENENODE_H
 
+#include "SceneObject.h"
 #include "Types.h"
 
 namespace SimpleGL {
   class SceneNodePrivate;
-  class SceneObject;
 
-  class SceneNode {
+  class SceneNode : public SceneObject {
   public:
     SceneNode();
     ~SceneNode();
 
-    SceneNode *parentSceneNode() const;
-    void setParentSceneNode(SceneNode *node);
+    string type() const;
 
     SceneNode *createChildSceneNode(Vector3f position = Vector3f(0.0f, 0.0f, 0.0f), Quaternion orientation = Quaternion(1.0f, 0.0f, 0.0f, 0.0f), Vector3f scale = Vector3f(1.0f, 1.0f, 1.0f));
-
-    const vector<SceneNode *> &childNodes() const;
-    void attachNode(SceneNode *childNode);
-
-    const vector<SceneObject *> &attachedObjects() const;
-    void attachObject(SceneObject *object);
 
     const Vector3f &position() const;
     void setPosition(const Vector3f &position);

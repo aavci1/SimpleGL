@@ -35,7 +35,7 @@ namespace SimpleGL {
     SceneNode *rootSceneNode() const;
     const vector<SceneNode *> &sceneNodes() const;
 
-    Light *createLight(LightType type);
+    Light *createLight(string type);
     const vector<Light *> &lights() const;
 
     Camera *createCamera();

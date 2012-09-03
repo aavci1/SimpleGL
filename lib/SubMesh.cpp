@@ -13,6 +13,8 @@ namespace SimpleGL {
       delete indexData;
     }
 
+    string material { "" };
+
     GLuint vertexArray { 0 };
     GLuint vertexBuffer { 0 };
     GLuint indexBuffer { 0 };
@@ -45,6 +47,14 @@ namespace SimpleGL {
     glDeleteBuffers(1, &d->indexBuffer);
     // delete data
     delete d;
+  }
+
+  const string &SubMesh::material() const {
+    return d->material;
+  }
+
+  void SubMesh::setMaterial(const string &name) {
+    d->material = name;
   }
 
   const uint16_t SubMesh::vertexFormat() const {

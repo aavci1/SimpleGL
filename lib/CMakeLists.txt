@@ -18,7 +18,6 @@ set (SOURCES
   OutputStream.cpp
   PointLight.cpp
   Program.cpp
-  Renderable.cpp
   Root.cpp
   SceneNode.cpp
   SceneObject.cpp

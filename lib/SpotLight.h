@@ -11,7 +11,7 @@ namespace SimpleGL {
     SpotLight();
     ~SpotLight();
 
-    const LightType type() const;
+    string type() const;
 
     const Vector3f &direction() const;
     void setDirection(const Vector3f &direction);

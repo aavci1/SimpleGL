@@ -12,6 +12,8 @@ namespace SimpleGL {
     Camera();
     ~Camera();
 
+    string type() const;
+
     const float fov() const;
     void setFov(const float fov);
 

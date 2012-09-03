@@ -28,8 +28,8 @@ namespace SimpleGL {
     delete d;
   }
 
-  const LightType DirectionalLight::type() const {
-    return LT_DIRECTIONAL;
+  string DirectionalLight::type() const {
+    return "Light/Directional";
   }
 
   const Vector3f &DirectionalLight::direction() const {
@@ -46,7 +46,7 @@ namespace SimpleGL {
 
   void DirectionalLight::render(Camera *camera) {
     // get program of the material
-    Program *program = Root::instance()->retrieveProgram("DirectionalLight");
+    Program *program = Root::instance()->retrieveProgram("Light/Directional");
     if (!program)
       return;
     // set light properties

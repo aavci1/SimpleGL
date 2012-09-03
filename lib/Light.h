@@ -1,19 +1,17 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 
-#include "Renderable.h"
 #include "SceneObject.h"
 #include "Types.h"
 
 namespace SimpleGL {
   class LightPrivate;
+  class Camera;
 
-  class Light : public Renderable, public SceneObject {
+  class Light : public SceneObject {
   public:
     Light();
     virtual ~Light();
-
-    virtual const LightType type() const = 0;
 
     const Vector3f &color() const;
     void setColor(const Vector3f &color);
@@ -24,6 +22,8 @@ namespace SimpleGL {
 
     const float specularIntensity() const;
     void setSpecularIntensity(const float intensity);
+
+    virtual void render(Camera *camera) = 0;
 
   private:
     LightPrivate *d;

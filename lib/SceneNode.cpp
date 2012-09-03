@@ -12,11 +12,6 @@ namespace SimpleGL {
     ~SceneNodePrivate() {
     }
 
-    SceneNode *parentSceneNode { nullptr };
-
-    vector<SceneNode *> childNodes;
-    vector<SceneObject *> attachedObjects;
-
     Vector3f position { 0.0f, 0.0f, 0.0f };
     Quaternion orientation { 1.0f, 0.0f, 0.0f, 0.0f };
     Vector3f scale { 1.0f, 1.0f, 1.0f };
@@ -37,46 +32,20 @@ namespace SimpleGL {
     delete d;
   }
 
-  SceneNode *SceneNode::parentSceneNode() const {
-    return d->parentSceneNode;
-  }
-
-  void SceneNode::setParentSceneNode(SceneNode *node) {
-    d->parentSceneNode = node;
+  string SceneNode::type() const {
+    return "SceneNode";
   }
 
   SceneNode *SceneNode::createChildSceneNode(Vector3f position, Quaternion orientation, Vector3f scale) {
     SceneNode *sceneNode = Root::instance()->createSceneNode();
-    // set parent
-    attachNode(sceneNode);
+    // set nodes parent
+    sceneNode->setParent(this);
     // set position/orientation/scale
     sceneNode->setPosition(position);
     sceneNode->setOrientation(orientation);
     sceneNode->setScale(scale);
     // return node
     return sceneNode;
-  }
-
-  const vector<SceneNode *> &SceneNode::childNodes() const {
-    return d->childNodes;
-  }
-
-  void SceneNode::attachNode(SceneNode *childNode) {
-    // add to the list
-    d->childNodes.push_back(childNode);
-    // set child nodes parent
-    childNode->setParentSceneNode(this);
-  }
-
-  const vector<SceneObject *> &SceneNode::attachedObjects() const {
-    return d->attachedObjects;
-  }
-
-  void SceneNode::attachObject(SceneObject *object) {
-    // add to the list
-    d->attachedObjects.push_back(object);
-    // set child objects parent
-    object->setParentSceneNode(this);
   }
 
   const Vector3f &SceneNode::position() const {
@@ -178,10 +147,10 @@ namespace SimpleGL {
   }
 
   void SceneNode::updateWorldTransform() {
-    if (d->parentSceneNode) {
-      d->worldOrientation = d->parentSceneNode->worldOrientation() * d->orientation;
-      d->worldScale = d->parentSceneNode->worldScale() * d->scale;
-      d->worldPosition = d->parentSceneNode->worldPosition() + parentSceneNode()->worldOrientation() * parentSceneNode()->worldScale() * d->position;
+    if (parent()) {
+      d->worldOrientation = parent()->worldOrientation() * d->orientation;
+      d->worldScale = parent()->worldScale() * d->scale;
+      d->worldPosition = parent()->worldPosition() + parent()->worldOrientation() * parent()->worldScale() * d->position;
       d->worldTransform = glm::translate(d->worldPosition) * glm::mat4_cast(d->worldOrientation) * glm::scale(d->worldScale);
     } else {
       d->worldPosition = d->position;

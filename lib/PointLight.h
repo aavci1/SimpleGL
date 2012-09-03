@@ -11,7 +11,7 @@ namespace SimpleGL {
     PointLight();
     ~PointLight();
 
-    const LightType type() const;
+    string type() const;
 
     const float attenuationRange() const;
     const float attenuationConstant() const;

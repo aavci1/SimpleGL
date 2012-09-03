@@ -12,6 +12,8 @@ namespace SimpleGL {
     Instance(const string &mesh, const string &material);
     ~Instance();
 
+    string type() const;
+
     const string &mesh() const;
     void setMesh(const string &mesh);
 

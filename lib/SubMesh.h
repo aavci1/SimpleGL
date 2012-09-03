@@ -1,16 +1,19 @@
 #ifndef SUBMESH_H
 #define SUBMESH_H
 
-#include "Renderable.h"
 #include "Types.h"
 
 namespace SimpleGL {
   class SubMeshPrivate;
+  class Camera;
 
-  class SubMesh : public Renderable {
+  class SubMesh {
   public:
     SubMesh();
     ~SubMesh();
+
+    const string &material() const;
+    void setMaterial(const string &name);
 
     const uint16_t vertexFormat() const;
     const uint16_t vertexSize() const;

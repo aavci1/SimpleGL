@@ -9,7 +9,7 @@ namespace SimpleGL {
     ~SceneObjectPrivate() {
     }
 
-    SceneNode *parentSceneNode { nullptr };
+    SceneNode *parent { nullptr };
   };
 
   SceneObject::SceneObject() : d(new SceneObjectPrivate()) {
@@ -19,11 +19,11 @@ namespace SimpleGL {
     delete d;
   }
 
-  SceneNode *SceneObject::parentSceneNode() const {
-    return d->parentSceneNode;
+  SceneNode *SceneObject::parent() const {
+    return d->parent;
   }
 
-  void SceneObject::setParentSceneNode(SceneNode *node) {
-    d->parentSceneNode = node;
+  void SceneObject::setParent(SceneNode *parent) {
+    d->parent = parent;
   }
 }

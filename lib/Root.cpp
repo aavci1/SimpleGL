@@ -22,6 +22,8 @@
 
 #include <GL/glew.h>
 
+#include <queue>
+
 namespace SimpleGL {
   static Root *_instance { nullptr };
 
@@ -67,86 +69,14 @@ namespace SimpleGL {
         delete instances[i];
     }
 
-    void prepareRender(SceneNode *node, long delta) {
-      // update world transform
-      node->updateWorldTransform();
-      // update animations
-      for (SceneObject *object: node->attachedObjects()) {
-        Instance *instance = dynamic_cast<Instance *>(object);
-        if (!instance)
-          continue;
-        Mesh *mesh = Root::instance()->retrieveMesh(instance->mesh());
-        if (!mesh)
-          continue;
-        // update each animation
-        for (Animation *animation: mesh->animations()) {
-          // add time delta
-          animationTime += delta;
-          // update bone transforms
-          for (AnimationTrack *track: animation->tracks())
-            for (Bone *bone: mesh->bones())
-              if (bone->name() == track->name())
-                bone->setTransform(track->transform(animationTime % animation->duration()));
-        }
-        // update bones world transforms
-        if (mesh->bones().size())
-          mesh->bones().at(0)->updateWorldTransform();
-      }
-      // visit child nodes
-      for (SceneNode *childNode: node->childNodes())
-        prepareRender(childNode, delta);
-    }
-
-    void renderScene(Camera *camera, SceneNode *node) {
-      // visit child nodes
-      for (SceneNode *childNode: node->childNodes())
-        renderScene(camera, childNode);
-      // render meshes
-      for (SceneObject *object: node->attachedObjects()) {
-        Instance *instance = dynamic_cast<Instance *>(object);
-        if (!instance)
-          continue;
-        Mesh *mesh = Root::instance()->retrieveMesh(instance->mesh());
-        if (!mesh)
-          continue;
-        // draw sub meshes
-        for (SubMesh *subMesh: mesh->subMeshes()) {
-          Material *material = Root::instance()->retrieveMaterial(instance->material());
-          if (!material)
-            material = Root::instance()->retrieveMaterial(subMesh->material());
-          if (!material)
-            material = Root::instance()->retrieveMaterial("Default");
-          if (!material)
-            continue;
-          Program *program = Root::instance()->retrieveProgram(material->program());
-          if (!program)
-            continue;
-          // bind the material
-          material->bind();
-          // set uniforms
-          program->setUniform("ModelMatrix", node->worldTransform());
-          program->setUniform("ModelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * node->worldTransform());
-          for (uint l = 0; l < mesh->bones().size(); ++l) {
-            char boneName[12] = { 0 };
-            snprintf(boneName, sizeof(boneName), "Bones[%d]", l);
-            program->setUniform(boneName, mesh->bones().at(l)->worldTransform() * mesh->bones().at(l)->offsetMatrix());
-          }
-          // render the mesh
-          subMesh->render(camera);
-          // unbind material
-          material->unbind();
-        }
-      }
-    }
-
     vector<Window *> windows;
     vector<SceneNode *> sceneNodes;
+    vector<Instance *> instances;
     vector<Light *> lights;
     vector<Camera *> cameras;
-    vector<Program *> programs;
-    vector<Material *> materials;
     vector<Mesh *> meshes;
-    vector<Instance *> instances;
+    vector<Material *> materials;
+    vector<Program *> programs;
 
     Vector2i mousePosition { 0, 0 };
     long animationTime { 0 };
@@ -199,22 +129,14 @@ namespace SimpleGL {
     return d->sceneNodes;
   }
 
-  Light *Root::createLight(LightType type) {
+  Light *Root::createLight(string type) {
     Light *light;
-    switch (type) {
-    case LT_DIRECTIONAL:
-      light = new DirectionalLight();
-      light->setMaterial("DirectionalLight");
-      break;
-    case LT_POINT:
+    if (type == "Light/Point")
       light = new PointLight();
-      light->setMaterial("PointLight");
-      break;
-    case LT_SPOT:
+    else if (type == "Light/Spot")
       light = new SpotLight();
-      light->setMaterial("SpotLight");
-      break;
-    }
+    else if (type == "Light/Directional")
+      light = new DirectionalLight();
     // add to list
     d->lights.push_back(light);
     // return light
@@ -771,19 +693,99 @@ namespace SimpleGL {
   }
 
   void Root::prepareRender(long elapsed) {
-    // calculate time since last frame
     // update fps
     d->fpsCount++;
     d->fpsTime += elapsed;
-    // update world transformations and animations
-    d->prepareRender(d->sceneNodes.at(0), elapsed);
+    // process nodes
+    queue<SceneNode *> processQueue;
+    // add root node to the updated Nodes
+    processQueue.push(d->sceneNodes.at(0));
+    // update nodes
+    while (!processQueue.empty()) {
+      SceneNode *node = processQueue.front();
+      processQueue.pop();
+      // process node
+      node->updateWorldTransform();
+      // update animations
+      for (Instance *instance: d->instances) {
+        if (instance->parent() != node)
+          continue;
+        Mesh *mesh = Root::instance()->retrieveMesh(instance->mesh());
+        if (!mesh)
+          continue;
+        // update each animation
+        for (Animation *animation: mesh->animations()) {
+          // add time elapsed
+          d->animationTime += elapsed;
+          // update bone transforms
+          for (AnimationTrack *track: animation->tracks())
+            for (Bone *bone: mesh->bones())
+              if (bone->name() == track->name())
+                bone->setTransform(track->transform(d->animationTime % animation->duration()));
+        }
+        // update bones world transforms
+        if (mesh->bones().size())
+          mesh->bones().at(0)->updateWorldTransform();
+      }
+      // queue child nodes for processing
+      for (SceneNode *childNode: d->sceneNodes)
+        if (childNode->parent() == node)
+          processQueue.push(childNode);
+    }
   }
 
   void Root::renderScene(Window *window, Viewport *viewport) {
     if (viewport == nullptr || viewport->camera() == nullptr)
       return;
+    Camera *camera = viewport->camera();
     // render scene
-    d->renderScene(viewport->camera(), d->sceneNodes.at(0));
+    std::queue<SceneNode *> processQueue;
+    // add root node to the updated Nodes
+    processQueue.push(d->sceneNodes.at(0));
+    // update nodes
+    while (!processQueue.empty()) {
+      SceneNode *node = processQueue.front();
+      processQueue.pop();
+      // render instances
+      for (Instance *instance: d->instances) {
+        if (instance->parent() != node)
+          continue;
+        Mesh *mesh = Root::instance()->retrieveMesh(instance->mesh());
+        if (!mesh)
+          continue;
+        // draw sub meshes
+        for (SubMesh *subMesh: mesh->subMeshes()) {
+          Material *material = Root::instance()->retrieveMaterial(instance->material());
+          if (!material)
+            material = Root::instance()->retrieveMaterial(subMesh->material());
+          if (!material)
+            material = Root::instance()->retrieveMaterial("Default");
+          if (!material)
+            continue;
+          Program *program = Root::instance()->retrieveProgram(material->program());
+          if (!program)
+            continue;
+          // bind the material
+          material->bind();
+          // set uniforms
+          program->setUniform("ModelMatrix", node->worldTransform());
+          program->setUniform("ModelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * node->worldTransform());
+          for (uint l = 0; l < mesh->bones().size(); ++l) {
+            char boneName[12] = { 0 };
+            snprintf(boneName, sizeof(boneName), "Bones[%d]", l);
+            program->setUniform(boneName, mesh->bones().at(l)->worldTransform() * mesh->bones().at(l)->offsetMatrix());
+          }
+          // render the mesh
+          subMesh->render(camera);
+          // unbind material
+          material->unbind();
+        }
+      }
+      // queue child nodes for processing
+      for (SceneNode *childNode: d->sceneNodes)
+        if (childNode->parent() == node)
+          processQueue.push(childNode);
+    }
   }
 
   void Root::renderLights(Window *window, Viewport *viewport) {
@@ -792,27 +794,21 @@ namespace SimpleGL {
     // get camera
     Camera *camera = viewport->camera();
     // render lights
-    for (int type = LT_DIRECTIONAL; type <= LT_SPOT; ++type) {
-      Program *program = 0;
-      if (type == LT_DIRECTIONAL)
-        program = Root::instance()->retrieveProgram("DirectionalLight");
-      else if (type == LT_POINT)
-        program = Root::instance()->retrieveProgram("PointLight");
-      else if (type == LT_SPOT)
-        program = Root::instance()->retrieveProgram("SpotLight");
+    for (Light *light: d->lights) {
+      Program *program = Root::instance()->retrieveProgram(light->type());
       if (!program)
         continue;
+      // bine the program
       program->bind();
+      // set parameters
       program->setUniform("texture0", 0);
       program->setUniform("texture1", 1);
       program->setUniform("texture2", 2);
       program->setUniform("viewportSize", Vector2f(viewport->width() * window->width(), viewport->height() * window->height()));
-      program->setUniform("cameraPos", camera->parentSceneNode()->worldPosition());
+      program->setUniform("cameraPos", camera->parent()->worldPosition());
       // render the light
-      for (uint k = 0; k < d->lights.size(); ++k)
-        if (d->lights.at(k)->type() == type)
-          d->lights.at(k)->render(camera);
-      // deselect material
+      light->render(camera);
+      // unbind the program
       program->unbind();
     }
   }

@@ -34,8 +34,8 @@ namespace SimpleGL {
     delete d;
   }
 
-  const LightType PointLight::type() const {
-    return LT_POINT;
+  string PointLight::type() const {
+    return "Light/Point";
   }
 
   const float PointLight::attenuationRange() const {
@@ -65,16 +65,16 @@ namespace SimpleGL {
 
   void PointLight::render(Camera *camera) {
     // get program of the material
-    Program *program = Root::instance()->retrieveProgram("PointLight");
+    Program *program = Root::instance()->retrieveProgram("Light/Point");
     if (!program)
       return;
     // adjust face culling
-    if (glm::length(camera->parentSceneNode()->worldPosition() - parentSceneNode()->worldPosition()) < d->attenuationRange)
+    if (glm::length(camera->parent()->worldPosition() - parent()->worldPosition()) < d->attenuationRange)
       glCullFace(GL_FRONT);
     else
       glCullFace(GL_BACK);
     // set program parameters
-    program->setUniform("lightPos", parentSceneNode()->worldPosition());
+    program->setUniform("lightPos", parent()->worldPosition());
     program->setUniform("lightColor", color());
     program->setUniform("lightDiffuseIntensity", diffuseIntensity());
     program->setUniform("lightSpecularIntensity", specularIntensity());
@@ -82,7 +82,7 @@ namespace SimpleGL {
     program->setUniform("lightAttenuationConstant", d->attenuationConstant);
     program->setUniform("lightAttenuationLinear", d->attenuationLinear);
     program->setUniform("lightAttenuationQuadratic", d->attenuationQuadratic);
-    program->setUniform("modelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * parentSceneNode()->worldTransform());
+    program->setUniform("modelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * parent()->worldTransform());
     // render a sphere
     d->sphere->render(camera);
     // reset flags

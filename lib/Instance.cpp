@@ -22,6 +22,10 @@ namespace SimpleGL {
     delete d;
   }
 
+  string Instance::type() const {
+    return "Instance";
+  }
+
   const string &Instance::mesh() const {
     return d->mesh;
   }

@@ -27,6 +27,10 @@ namespace SimpleGL {
     delete d;
   }
 
+  string Camera::type() const {
+    return "Camera";
+  }
+
   const float Camera::fov() const {
     return d->fov;
   }
@@ -63,10 +67,10 @@ namespace SimpleGL {
     // set default parameters
     Vector3f eye = Vector3f(0.0f, 0.0f, 0.0f), lookAt = Vector3f(0.0f, 0.0f, -1.0f), up = Vector3f(0.0f, 1.0f, 0.0f);
     // adjust parameters with parent node
-    if (parentSceneNode()) {
-      eye = parentSceneNode()->worldPosition();
-      lookAt = parentSceneNode()->worldPosition() + parentSceneNode()->worldOrientation() * lookAt;
-      up = parentSceneNode()->worldOrientation() * up;
+    if (parent()) {
+      eye = parent()->worldPosition();
+      lookAt = parent()->worldPosition() + parent()->worldOrientation() * lookAt;
+      up = parent()->worldOrientation() * up;
     }
     // calculate view matrix
     d->viewMatrix = glm::lookAt(eye, lookAt, up);

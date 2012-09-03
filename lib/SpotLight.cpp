@@ -37,8 +37,8 @@ namespace SimpleGL {
     delete d;
   }
 
-  const LightType SpotLight::type() const {
-    return LT_SPOT;
+  string SpotLight::type() const {
+    return "Light/Spot";
   }
 
   const Vector3f &SpotLight::direction() const {
@@ -97,13 +97,13 @@ namespace SimpleGL {
   }
 
   void SpotLight::render(Camera *camera) {
-    Program *program = Root::instance()->retrieveProgram("SpotLight");
+    Program *program = Root::instance()->retrieveProgram("Light/Spot");
     if (!program)
       return;
     // adjust face culling
     Vector3f direction = d->direction;
     float cos = cosf((d->innerAngle + d->outerAngle) * M_PI / 180);
-    Vector3f cameraDir = glm::normalize(camera->parentSceneNode()->worldPosition() - parentSceneNode()->worldPosition());
+    Vector3f cameraDir = glm::normalize(camera->parent()->worldPosition() - parent()->worldPosition());
     if (glm::dot(cameraDir, direction) >= cos)
       glCullFace(GL_FRONT);
     else
@@ -112,15 +112,15 @@ namespace SimpleGL {
     program->setUniform("lightColor", color());
     program->setUniform("lightDiffuseIntensity", diffuseIntensity());
     program->setUniform("lightSpecularIntensity", specularIntensity());
-    program->setUniform("lightPos", parentSceneNode()->worldPosition());
-    program->setUniform("lightDirection", parentSceneNode()->worldOrientation() * direction);
+    program->setUniform("lightPos", parent()->worldPosition());
+    program->setUniform("lightDirection", parent()->worldOrientation() * direction);
     program->setUniform("lightInnerAngle", float(d->innerAngle * M_PI / 180.0f));
     program->setUniform("lightOuterAngle", float(d->outerAngle * M_PI / 180.0f));
     program->setUniform("lightAttenuationRange", d->attenuationRange);
     program->setUniform("lightAttenuationConstant", d->attenuationConstant);
     program->setUniform("lightAttenuationLinear", d->attenuationLinear);
     program->setUniform("lightAttenuationQuadratic", d->attenuationQuadratic);
-    program->setUniform("modelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * parentSceneNode()->transform());
+    program->setUniform("modelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * parent()->transform());
     // render a cone
     d->cone->render(camera);
     // reset flags

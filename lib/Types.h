@@ -54,12 +54,6 @@ namespace SimpleGL {
     AP_BONEWEIGHTS = 10
   };
 
-  enum LightType {
-    LT_DIRECTIONAL,
-    LT_POINT,
-    LT_SPOT
-  };
-
   enum ShaderType {
     ST_VERTEX,
     ST_GEOMETRY,
