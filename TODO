@@ -28,9 +28,7 @@
 * Particle Effects
 	* Emitters
 * Scene Graph
-	* Create a common base for object attachable to scene nodes
-	* Inherit transformations from parent
-	* Entity/Instance class to hold per instance properties of a mesh (material etc)
+	* Instances should hold state of the animation
 
 * Optimizations
 	* Culling
@@ -42,11 +40,6 @@
 	* Impostors
 
 * Mesh format
-	* Proprietary format directly sendable to the GPU
-	* Use collada as an intermediate format
-	* Position/Normal/Tangent/Bitangent/Joint Weights/TexCoords
-	* Skeleton information
-	* Animation key frame information
 	* Morph animations
 	* Level of detail
 
