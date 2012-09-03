@@ -22,6 +22,7 @@
 
 #include <GL/glew.h>
 
+#include <map>
 #include <queue>
 
 namespace SimpleGL {
@@ -51,9 +52,9 @@ namespace SimpleGL {
     vector<InstancePtr> instances;
     vector<LightPtr> lights;
     vector<CameraPtr> cameras;
-    vector<MeshPtr> meshes;
-    vector<MaterialPtr> materials;
-    vector<ProgramPtr> programs;
+    map<string, MeshPtr> meshes;
+    map<string, MaterialPtr> materials;
+    map<string, ProgramPtr> programs;
 
     Vector2i mousePosition { 0, 0 };
     long animationTime { 0 };
@@ -85,7 +86,7 @@ namespace SimpleGL {
   }
 
   SceneNodePtr Root::createSceneNode() {
-    SceneNodePtr sceneNode(new SceneNode());
+    SceneNodePtr sceneNode { new SceneNode() };
     // add to list
     d->sceneNodes.push_back(sceneNode);
     // return scene node
@@ -121,52 +122,46 @@ namespace SimpleGL {
   ProgramPtr Root::createProgram(const string &name) {
     ProgramPtr program { new Program(name) };
     // add to list
-    d->programs.push_back(program);
+    if (!name.empty())
+      d->programs[name] = program;
     // return program
     return program;
   }
 
   ProgramPtr Root::retrieveProgram(const string &name) {
-    if (name == "")
-      return 0;
-    for (uint i = 0; i < d->programs.size(); ++i)
-      if (d->programs.at(i)->name() == name)
-        return d->programs.at(i);
-    return 0;
+    if (name.empty() || d->programs.count(name) == 0)
+      return nullptr;
+    return d->programs[name];
   }
 
   MaterialPtr Root::createMaterial(const string &name) {
     MaterialPtr material { new Material(name) };
     // add to list
-    d->materials.push_back(material);
+    if (!name.empty())
+      d->materials[name] = material;
     // return material
     return material;
   }
 
   MaterialPtr Root::retrieveMaterial(const string &name) {
-    if (name == "")
-      return 0;
-    for (uint i = 0; i < d->materials.size(); ++i)
-      if (d->materials.at(i)->name() == name)
-        return d->materials.at(i);
-    return 0;
+    if (name.empty() || d->materials.count(name) == 0)
+      return nullptr;
+    return d->materials[name];
   }
 
   MeshPtr Root::createMesh(const string &name) {
-    MeshPtr mesh(new Mesh(name));
+    MeshPtr mesh { new Mesh(name) };
     // add to list
-    d->meshes.push_back(mesh);
+    if (!name.empty())
+      d->meshes[name] = mesh;
     // return mesh
     return mesh;
   }
 
   MeshPtr Root::retrieveMesh(const string &name) {
-    if (name == "")
-      return 0;
-    for (uint i = 0; i < d->meshes.size(); ++i)
-      if (d->meshes.at(i)->name() == name)
-        return d->meshes.at(i);
-    return 0;
+    if (name.empty() || d->meshes.count(name) == 0)
+      return nullptr;
+    return d->meshes[name];
   }
 
   MeshPtr Root::createQuad(const string &name, float width, float height) {
@@ -424,13 +419,9 @@ namespace SimpleGL {
 
   void Root::save(const string &name, const string &path) {
     // find mesh
-    MeshPtr mesh = nullptr;
-    for (MeshPtr m: d->meshes)
-      if (m->name() == name)
-        mesh = m;
-    // check if mesh found
-    if (!mesh)
+    if (d->meshes.count(name) == 0)
       return;
+    MeshPtr mesh = d->meshes[name];
     // create output stream
     OutputStream out(path);
     // write magic bytes
