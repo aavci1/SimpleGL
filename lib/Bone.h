@@ -4,8 +4,6 @@
 #include "Types.h"
 
 namespace SimpleGL {
-  class SubMesh;
-
   class BonePrivate;
 
   class Bone {
@@ -15,8 +13,8 @@ namespace SimpleGL {
 
     const string &name() const;
 
-    shared_ptr<Bone> parent() const;
-    void setParent(shared_ptr<Bone> parent);
+    BonePtr parent() const;
+    void setParent(BonePtr parent);
 
     const Matrix4f &offsetMatrix() const;
     void setOffsetMatrix(const Matrix4f &offsetMatrix);

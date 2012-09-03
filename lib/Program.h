@@ -5,7 +5,6 @@
 
 namespace SimpleGL {
   class ProgramPrivate;
-  class Shader;
 
   class Program {
   public:

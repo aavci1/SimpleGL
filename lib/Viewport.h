@@ -5,15 +5,14 @@
 
 namespace SimpleGL {
   class ViewportPrivate;
-  class Camera;
 
   class Viewport {
   public:
-    Viewport(shared_ptr<Camera> camera);
+    Viewport(CameraPtr camera);
     ~Viewport();
 
-    shared_ptr<Camera> camera() const;
-    void setCamera(shared_ptr<Camera> camera);
+    CameraPtr camera() const;
+    void setCamera(CameraPtr camera);
 
     const float left() const;
     const float top() const;

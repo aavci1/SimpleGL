@@ -101,7 +101,7 @@ namespace SimpleGL {
 
   void Material::bind() {
     // bind program
-    shared_ptr<Program> program = Root::instance()->retrieveProgram(d->program);
+    ProgramPtr program = Root::instance()->retrieveProgram(d->program);
     if (!program)
       return;
     program->bind();
@@ -125,7 +125,7 @@ namespace SimpleGL {
       glBindTexture(GL_TEXTURE_2D, 0);
     }
     // unbind program
-    shared_ptr<Program> program = Root::instance()->retrieveProgram(d->program);
+    ProgramPtr program = Root::instance()->retrieveProgram(d->program);
     if (program)
       program->unbind();
   }

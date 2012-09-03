@@ -5,8 +5,6 @@
 
 namespace SimpleGL {
   class WindowPrivate;
-  class Camera;
-  class Viewport;
 
   class Window {
   public:
@@ -17,8 +15,8 @@ namespace SimpleGL {
     uint32_t height();
     void setSize(const int width, const int height);
 
-    const vector<shared_ptr<Viewport>> &viewports() const;
-    shared_ptr<Viewport> createViewport(shared_ptr<Camera> camera);
+    const vector<ViewportPtr> &viewports() const;
+    ViewportPtr createViewport(CameraPtr camera);
 
     void update();
 

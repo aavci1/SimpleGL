@@ -5,8 +5,6 @@
 
 namespace SimpleGL {
   class MaterialPrivate;
-  class Program;
-  class Texture;
 
   class Material {
   public:

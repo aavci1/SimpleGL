@@ -22,7 +22,7 @@ namespace SimpleGL {
       glDeleteFramebuffers(1, &frameBuffer);
     }
 
-    vector<shared_ptr<Viewport>> viewports;
+    vector<ViewportPtr> viewports;
     uint32_t width { 0 };
     uint32_t height { 0 };
     // frame buffer handle
@@ -96,16 +96,16 @@ namespace SimpleGL {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
   }
 
-  const vector<shared_ptr<Viewport>> &Window::viewports() const {
+  const vector<ViewportPtr> &Window::viewports() const {
     return d->viewports;
   }
 
-  shared_ptr<Viewport> Window::createViewport(shared_ptr<Camera> camera) {
-    shared_ptr<Viewport> viewport { new Viewport(camera) };
+  ViewportPtr Window::createViewport(CameraPtr camera) {
+    ViewportPtr viewport { new Viewport(camera) };
     // add to list
     d->viewports.push_back(viewport);
     // sort viewports
-    sort(d->viewports.begin(), d->viewports.end(), [](const shared_ptr<Viewport> v1, const shared_ptr<Viewport> v2) {
+    sort(d->viewports.begin(), d->viewports.end(), [](const ViewportPtr v1, const ViewportPtr v2) {
          return v1->zIndex() < v2->zIndex();
     });
     // return viewport
@@ -135,7 +135,7 @@ namespace SimpleGL {
     // unbind framebuffer
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     // render through each viewport
-    for (shared_ptr<Viewport> viewport: d->viewports) {
+    for (ViewportPtr viewport: d->viewports) {
       // calculate viewport dimension in pixels;
       float left = viewport->left() * d->width;
       float top = viewport->top() * d->height;
@@ -144,7 +144,7 @@ namespace SimpleGL {
       // set up viewport
       glViewport(left, top, width, height);
       // get viewport camera
-      shared_ptr<Camera> camera = viewport->camera();
+      CameraPtr camera = viewport->camera();
       if (!camera)
         continue;
       // update camera's aspect ratio

@@ -9,7 +9,7 @@ namespace SimpleGL {
     ~ViewportPrivate() {
     }
 
-    shared_ptr<Camera> camera { nullptr };
+    CameraPtr camera { nullptr };
 
     float left { 0.0f };
     float top { 0.0f };
@@ -18,7 +18,7 @@ namespace SimpleGL {
     int zIndex { 0 };
   };
 
-  Viewport::Viewport(shared_ptr<Camera> camera) : d(new ViewportPrivate()) {
+  Viewport::Viewport(CameraPtr camera) : d(new ViewportPrivate()) {
     d->camera = camera;
   }
 
@@ -26,11 +26,11 @@ namespace SimpleGL {
     delete d;
   }
 
-  shared_ptr<Camera> Viewport::camera() const {
+  CameraPtr Viewport::camera() const {
     return d->camera;
   }
 
-  void Viewport::setCamera(shared_ptr<Camera> camera) {
+  void Viewport::setCamera(CameraPtr camera) {
     d->camera = camera;
   }
 

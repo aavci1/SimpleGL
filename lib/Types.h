@@ -1,8 +1,6 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include <list>
-#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -13,6 +11,34 @@
 using namespace std;
 
 namespace SimpleGL {
+  class Animation;
+  class AnimationTrack;
+  class Bone;
+  class Camera;
+  class Instance;
+  class Light;
+  class Material;
+  class Mesh;
+  class Program;
+  class SceneNode;
+  class SubMesh;
+  class Viewport;
+  class Window;
+
+  typedef shared_ptr<Animation> AnimationPtr;
+  typedef shared_ptr<AnimationTrack> AnimationTrackPtr;
+  typedef shared_ptr<Bone> BonePtr;
+  typedef shared_ptr<Camera> CameraPtr;
+  typedef shared_ptr<Instance> InstancePtr;
+  typedef shared_ptr<Light> LightPtr;
+  typedef shared_ptr<Material> MaterialPtr;
+  typedef shared_ptr<Mesh> MeshPtr;
+  typedef shared_ptr<Program> ProgramPtr;
+  typedef shared_ptr<SceneNode> SceneNodePtr;
+  typedef shared_ptr<SubMesh> SubMeshPtr;
+  typedef shared_ptr<Viewport> ViewportPtr;
+  typedef shared_ptr<Window> WindowPtr;
+
   typedef glm::detail::tvec2<int> Vector2i;
   typedef glm::detail::tvec3<int> Vector3i;
   typedef glm::detail::tvec4<int> Vector4i;

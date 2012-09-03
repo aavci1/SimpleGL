@@ -211,7 +211,7 @@ namespace SimpleGL {
     return true;
   }
 
-  void SubMesh::render(shared_ptr<Camera> camera) {
+  void SubMesh::render(CameraPtr camera) {
     // bind vertex array
     glBindVertexArray(d->vertexArray);
     // draw triangles

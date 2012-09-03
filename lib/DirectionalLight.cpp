@@ -17,7 +17,7 @@ namespace SimpleGL {
     ~DirectionalLightPrivate() {
     }
 
-    shared_ptr<Mesh> quad { nullptr };
+    MeshPtr quad { nullptr };
     Vector3f direction { 0.0f, 0.0f, -1.0f };
   };
 
@@ -44,9 +44,9 @@ namespace SimpleGL {
     setDirection(Vector3f(x, y, z));
   }
 
-  void DirectionalLight::render(shared_ptr<Camera> camera) {
+  void DirectionalLight::render(CameraPtr camera) {
     // get program of the material
-    shared_ptr<Program> program = Root::instance()->retrieveProgram("Light/Directional");
+    ProgramPtr program = Root::instance()->retrieveProgram("Light/Directional");
     if (!program)
       return;
     // set light properties

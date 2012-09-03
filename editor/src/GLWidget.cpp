@@ -47,48 +47,48 @@ void GLWidget::initializeGL() {
   // create a viewport
   window->createViewport(camera);
   // create default program
-  shared_ptr<Program> defaultProgram = Root::instance()->createProgram("Default");
+  ProgramPtr defaultProgram = Root::instance()->createProgram("Default");
   if (!defaultProgram->loadShaderFromPath(ST_VERTEX, "media/Default.vert")) cerr << defaultProgram->log() << endl;
   if (!defaultProgram->loadShaderFromPath(ST_FRAGMENT, "media/Default.frag")) cerr << defaultProgram->log() << endl;
   if (!defaultProgram->link()) cerr << defaultProgram->log() << endl;
   // create default material
-  shared_ptr<Material> defaultMaterial = Root::instance()->createMaterial("Default");
+  MaterialPtr defaultMaterial = Root::instance()->createMaterial("Default");
   defaultMaterial->setProgram("Default");
   // point light program
-  shared_ptr<Program> pointLightProgram = Root::instance()->createProgram("Light/Point");
+  ProgramPtr pointLightProgram = Root::instance()->createProgram("Light/Point");
   if (!pointLightProgram->loadShaderFromPath(ST_VERTEX, "media/point_light_vp.glsl")) cerr << pointLightProgram->log() << endl;
   if (!pointLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/point_light_fp.glsl")) cerr << pointLightProgram->log() << endl;
   if (!pointLightProgram->link()) cerr << pointLightProgram->log() << endl;
   // spot light program
-  shared_ptr<Program> spotLightProgram = Root::instance()->createProgram("Light/Spot");
+  ProgramPtr spotLightProgram = Root::instance()->createProgram("Light/Spot");
   if (!spotLightProgram->loadShaderFromPath(ST_VERTEX, "media/spot_light_vp.glsl")) cerr << spotLightProgram->log() << endl;
   if (!spotLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/spot_light_fp.glsl")) cerr << spotLightProgram->log() << endl;
   if (!spotLightProgram->link()) cerr << spotLightProgram->log() << endl;
   // directional light program
-  shared_ptr<Program> directionalLightProgram = Root::instance()->createProgram("Light/Directional");
+  ProgramPtr directionalLightProgram = Root::instance()->createProgram("Light/Directional");
   if (!directionalLightProgram->loadShaderFromPath(ST_VERTEX, "media/directional_light_vp.glsl")) cerr << directionalLightProgram->log() << endl;
   if (!directionalLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/directional_light_fp.glsl")) cerr << directionalLightProgram->log() << endl;
   if (!directionalLightProgram->link()) cerr << directionalLightProgram->log() << endl;
   // load texturing program
-  shared_ptr<Program> textured = Root::instance()->createProgram("Textured");
+  ProgramPtr textured = Root::instance()->createProgram("Textured");
   if (!textured->loadShaderFromPath(ST_VERTEX, "media/textured_vp.glsl")) cerr << textured->log() << endl;
   if (!textured->loadShaderFromPath(ST_FRAGMENT, "media/textured_fp.glsl")) cerr << textured->log() << endl;
   if (!textured->link()) cerr << textured->log() << endl;
   // load skinning program
-  shared_ptr<Program> skinned = Root::instance()->createProgram("Skinned");
+  ProgramPtr skinned = Root::instance()->createProgram("Skinned");
   if (!skinned->loadShaderFromPath(ST_VERTEX, "media/skinned_vp.glsl")) cerr << skinned->log() << endl;
   if (!skinned->loadShaderFromPath(ST_FRAGMENT, "media/skinned_fp.glsl")) cerr << skinned->log() << endl;
   if (!skinned->link()) cerr << skinned->log() << endl;
   // create materials
-  shared_ptr<Material> floorMaterial = Root::instance()->createMaterial("Laminate");
+  MaterialPtr floorMaterial = Root::instance()->createMaterial("Laminate");
   floorMaterial->setProgram("Textured");
   floorMaterial->addTexture("media/laminate.jpg");
   // load materials
-  shared_ptr<Material> ceilingMaterial = Root::instance()->createMaterial("Ceiling");
+  MaterialPtr ceilingMaterial = Root::instance()->createMaterial("Ceiling");
   ceilingMaterial->setProgram("Textured");
   ceilingMaterial->addTexture("media/ceiling.jpg");
   // load materials
-  shared_ptr<Material> ebonyMaterial = Root::instance()->createMaterial("Ebony");
+  MaterialPtr ebonyMaterial = Root::instance()->createMaterial("Ebony");
   ebonyMaterial->setProgram("Textured");
   ebonyMaterial->addTexture("media/ebony.jpg");
   // create meshes
@@ -96,11 +96,11 @@ void GLWidget::initializeGL() {
   Root::instance()->createSphere("Sphere", 10.0f);
   Root::instance()->createCube("Cube", 50.0f, 50.0f, 50.0f);
   // create floor object
-  shared_ptr<SceneNode> floorNode = Root::instance()->createSceneNode();
+  SceneNodePtr floorNode = Root::instance()->createSceneNode();
   floorNode->setParent(Root::instance()->rootSceneNode());
   Root::instance()->createInstance("Plane", "Laminate")->setParent(floorNode);
   // create ceiling object
-  shared_ptr<SceneNode> ceilingNode = Root::instance()->createSceneNode();
+  SceneNodePtr ceilingNode = Root::instance()->createSceneNode();
   ceilingNode->setParent(Root::instance()->rootSceneNode());
   ceilingNode->setPosition(0.0f, 300.0f, 0.0f);
   ceilingNode->roll(180.0f);
@@ -117,7 +117,7 @@ void GLWidget::initializeGL() {
   for (int i = -5; i <= 5; ++i) {
     for (int j = -5; j <= 5; ++j) {
       // create light node
-      shared_ptr<SceneNode> lightNode = Root::instance()->createSceneNode();
+      SceneNodePtr lightNode = Root::instance()->createSceneNode();
       lightNode->setParent(Root::instance()->rootSceneNode());
       lightNode->setPosition(Vector3f(j * 180.0f, 290.0f, i * 180.0f));
       // attach a sphere
@@ -136,11 +136,11 @@ void GLWidget::initializeGL() {
     }
   }
   // create an instance
-  _instance = Root::instance()->createInstance("MODEL", "");
+  InstancePtr instance = Root::instance()->createInstance("MODEL", "");
   // add model to the scene
-  shared_ptr<SceneNode> modelNode = Root::instance()->createSceneNode();
+  SceneNodePtr modelNode = Root::instance()->createSceneNode();
   modelNode->setParent(Root::instance()->rootSceneNode());
-  _instance->setParent(modelNode);
+  instance->setParent(modelNode);
 }
 
 void GLWidget::resizeGL(int width, int height) {

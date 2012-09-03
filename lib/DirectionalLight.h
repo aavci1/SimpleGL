@@ -17,7 +17,7 @@ namespace SimpleGL {
     void setDirection(const Vector3f &direction);
     void setDirection(const float x, const float y, const float z);
 
-    void render(shared_ptr<Camera> camera);
+    void render(CameraPtr camera);
 
   private:
     DirectionalLightPrivate *d;

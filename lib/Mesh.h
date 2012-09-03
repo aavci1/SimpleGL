@@ -4,11 +4,6 @@
 #include "Types.h"
 
 namespace SimpleGL {
-  class Animation;
-  class Bone;
-  class Camera;
-  class SubMesh;
-
   class MeshPrivate;
 
   class Mesh {
@@ -18,17 +13,17 @@ namespace SimpleGL {
 
     const string &name() const;
 
-    const vector<shared_ptr<Animation>> &animations() const;
-    shared_ptr<Animation> createAnimation(const string &name);
+    const vector<AnimationPtr> &animations() const;
+    AnimationPtr createAnimation(const string &name);
 
-    const vector<shared_ptr<Bone>> &bones() const;
-    shared_ptr<Bone> createBone(const string &name);
+    const vector<BonePtr> &bones() const;
+    BonePtr createBone(const string &name);
 
-    const vector<shared_ptr<SubMesh>> &subMeshes() const;
-    shared_ptr<SubMesh> createSubMesh();
+    const vector<SubMeshPtr> &subMeshes() const;
+    SubMeshPtr createSubMesh();
 
     void updateBones();
-    void render(shared_ptr<Camera> camera);
+    void render(CameraPtr camera);
 
   private:
     MeshPrivate *d;

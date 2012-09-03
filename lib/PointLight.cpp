@@ -19,7 +19,7 @@ namespace SimpleGL {
     ~PointLightPrivate() {
     }
 
-    shared_ptr<Mesh> sphere { nullptr };
+    MeshPtr sphere { nullptr };
 
     float attenuationRange { 256.0f };
     float attenuationConstant { 0.0f };
@@ -63,9 +63,9 @@ namespace SimpleGL {
     d->sphere = Root::instance()->createSphere("", d->attenuationRange, 32, 32);
   }
 
-  void PointLight::render(shared_ptr<Camera> camera) {
+  void PointLight::render(CameraPtr camera) {
     // get program of the material
-    shared_ptr<Program> program = Root::instance()->retrieveProgram("Light/Point");
+    ProgramPtr program = Root::instance()->retrieveProgram("Light/Point");
     if (!program)
       return;
     // adjust face culling

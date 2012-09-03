@@ -1,7 +1,5 @@
 #include "Bone.h"
 
-#include "SubMesh.h"
-
 namespace SimpleGL {
   class BonePrivate {
   public:
@@ -12,7 +10,7 @@ namespace SimpleGL {
     }
 
     string name { "" };
-    shared_ptr<Bone> parent { nullptr };
+    BonePtr parent { nullptr };
     Matrix4f offsetMatrix;
     Matrix4f transform;
     Matrix4f worldTransform;
@@ -30,11 +28,11 @@ namespace SimpleGL {
     return d->name;
   }
 
-  shared_ptr<Bone> Bone::parent() const {
+  BonePtr Bone::parent() const {
     return d->parent;
   }
 
-  void Bone::setParent(shared_ptr<Bone> parent) {
+  void Bone::setParent(BonePtr parent) {
     d->parent = parent;
   }
 

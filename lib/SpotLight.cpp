@@ -19,7 +19,7 @@ namespace SimpleGL {
     ~SpotLightPrivate() {
     }
 
-    shared_ptr<Mesh> cone { nullptr };
+    MeshPtr cone { nullptr };
 
     Vector3f direction { 0.0f, 0.0f, -1.0f };
     float innerAngle { 30.0f };
@@ -96,8 +96,8 @@ namespace SimpleGL {
     d->cone = Root::instance()->createCone("", tanf((d->innerAngle + d->outerAngle) * M_PI / 180) * d->attenuationRange, d->attenuationRange);
   }
 
-  void SpotLight::render(shared_ptr<Camera> camera) {
-    shared_ptr<Program> program = Root::instance()->retrieveProgram("Light/Spot");
+  void SpotLight::render(CameraPtr camera) {
+    ProgramPtr program = Root::instance()->retrieveProgram("Light/Spot");
     if (!program)
       return;
     // adjust face culling

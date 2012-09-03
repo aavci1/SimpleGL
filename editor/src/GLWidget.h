@@ -5,13 +5,6 @@
 
 #include "Types.h"
 
-namespace SimpleGL {
-  class Camera;
-  class Instance;
-  class SceneNode;
-  class Window;
-}
-
 class GLWidget : public QGLWidget {
   Q_OBJECT
 public:
@@ -33,10 +26,9 @@ protected:
   void wheelEvent(QWheelEvent *e);
 
 protected:
-  shared_ptr<SimpleGL::Window> window { nullptr };
-  shared_ptr<SimpleGL::Camera> camera { nullptr };
-  shared_ptr<SimpleGL::SceneNode> cameraNode { nullptr };
-  shared_ptr<SimpleGL::Instance> _instance { nullptr };
+  SimpleGL::WindowPtr window { nullptr };
+  SimpleGL::CameraPtr camera { nullptr };
+  SimpleGL::SceneNodePtr cameraNode { nullptr };
   QPoint mousePosition { 0, 0 };
 };
 

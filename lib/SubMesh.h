@@ -5,7 +5,6 @@
 
 namespace SimpleGL {
   class SubMeshPrivate;
-  class Camera;
 
   class SubMesh {
   public:
@@ -27,7 +26,7 @@ namespace SimpleGL {
     const bool setVertexData(float *vertexData, uint vertexCount, uint vertexFormat);
     const bool setIndexData(uint32_t *indexData, uint indexCount);
 
-    void render(shared_ptr<Camera> camera);
+    void render(CameraPtr camera);
 
   private:
     SubMeshPrivate *d;

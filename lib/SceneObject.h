@@ -5,7 +5,6 @@
 
 namespace SimpleGL {
   class SceneObjectPrivate;
-  class SceneNode;
 
   class SceneObject {
   public:
@@ -14,8 +13,8 @@ namespace SimpleGL {
 
     virtual string type() const = 0;
 
-    shared_ptr<SceneNode> parent() const;
-    void setParent(shared_ptr<SceneNode> parent);
+    SceneNodePtr parent() const;
+    void setParent(SceneNodePtr parent);
 
   private:
     SceneObjectPrivate *d;

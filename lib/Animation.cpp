@@ -9,13 +9,11 @@ namespace SimpleGL {
     }
 
     ~AnimationPrivate() {
-      for (uint i = 0; i < tracks.size(); ++i)
-        delete tracks[i];
     }
 
     string name { "" };
     long duration { 0 };
-    vector<AnimationTrack *> tracks;
+    vector<AnimationTrackPtr> tracks;
   };
 
   Animation::Animation(const string &name) : d(new AnimationPrivate()) {
@@ -38,12 +36,12 @@ namespace SimpleGL {
     d->duration = duration;
   }
 
-  const vector<AnimationTrack *> &Animation::tracks() const {
+  const vector<AnimationTrackPtr> &Animation::tracks() const {
     return d->tracks;
   }
 
-  AnimationTrack *Animation::createTrack(const string &name) {
-    AnimationTrack *track = new AnimationTrack(name);
+  AnimationTrackPtr Animation::createTrack(const string &name) {
+    AnimationTrackPtr track { new AnimationTrack(name) };
     // add to list
     d->tracks.push_back(track);
     // return mesh

@@ -4,8 +4,6 @@
 #include "Types.h"
 
 namespace SimpleGL {
-  class AnimationTrack;
-
   class AnimationPrivate;
 
   class Animation {
@@ -18,8 +16,8 @@ namespace SimpleGL {
     const long duration() const;
     void setDuration(const long duration);
 
-    const vector<AnimationTrack *> &tracks() const;
-    AnimationTrack *createTrack(const string &name);
+    const vector<AnimationTrackPtr> &tracks() const;
+    AnimationTrackPtr createTrack(const string &name);
 
   private:
     AnimationPrivate *d;

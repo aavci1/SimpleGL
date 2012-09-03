@@ -71,10 +71,10 @@ namespace AssimpImporter {
     return matrix;
   }
 
-  shared_ptr<Material> importMaterial(aiMaterial *aimaterial, string baseDir, string name) {
+  MaterialPtr importMaterial(aiMaterial *aimaterial, string baseDir, string name) {
     // TODO: get other material properties (specular, shininess etc.)
     //  create material
-    shared_ptr<Material> material = Root::instance()->createMaterial(name);
+    MaterialPtr material = Root::instance()->createMaterial(name);
     for (aiTextureType i: { aiTextureType_DIFFUSE, aiTextureType_SPECULAR, aiTextureType_NORMALS }) {
       // extract diffuse maps
       for (uint j = 0; j < aimaterial->GetTextureCount(i); ++j) {
@@ -94,11 +94,11 @@ namespace AssimpImporter {
     return material;
   }
 
-  void importMesh(const aiScene *scene, shared_ptr<Mesh>  mesh, map<int, shared_ptr<Material>> materials, uint index) {
+  void importMesh(const aiScene *scene, MeshPtr  mesh, map<int, MaterialPtr> materials, uint index) {
     if (index >= scene->mNumMeshes)
       return;
     aiMesh *aimesh = scene->mMeshes[index];
-    shared_ptr<SubMesh> subMesh = mesh->createSubMesh();
+    SubMeshPtr subMesh = mesh->createSubMesh();
     // create vertex buffer
     uint vertexCount = aimesh->mNumVertices;
     Vertex *vertices = new Vertex[vertexCount];
@@ -183,8 +183,8 @@ namespace AssimpImporter {
     }
   }
 
-  void importNode(aiNode *_node, shared_ptr<Mesh>  mesh, shared_ptr<Bone> parent) {
-    shared_ptr<Bone> bone = mesh->createBone(string(_node->mName.data));
+  void importNode(aiNode *_node, MeshPtr  mesh, BonePtr parent) {
+    BonePtr bone = mesh->createBone(string(_node->mName.data));
     // import node info
     bone->setParent(parent);
     bone->setTransform(toMatrix(_node->mTransformation));
@@ -193,8 +193,8 @@ namespace AssimpImporter {
       importNode(_node->mChildren[i], mesh, bone);
   }
 
-  AnimationTrack *importChannel(shared_ptr<Animation> animation, aiNodeAnim *_channel, float ticksPerSecond) {
-    AnimationTrack *track = animation->createTrack(_channel->mNodeName.data);
+  AnimationTrackPtr importChannel(AnimationPtr animation, aiNodeAnim *_channel, float ticksPerSecond) {
+    AnimationTrackPtr track = animation->createTrack(_channel->mNodeName.data);
     for (uint i = 0; i < _channel->mNumPositionKeys; ++i)
       track->createPositionKey(_channel->mPositionKeys[i].mTime / ticksPerSecond * 1000, toVector(_channel->mPositionKeys[i].mValue));
     for (uint i = 0; i < _channel->mNumRotationKeys; ++i)
@@ -204,9 +204,9 @@ namespace AssimpImporter {
     return track;
   }
 
-  void importAnimation(const aiScene *scene, shared_ptr<Mesh>  mesh, uint index) {
+  void importAnimation(const aiScene *scene, MeshPtr  mesh, uint index) {
     aiAnimation *_animation = scene->mAnimations[index];
-    shared_ptr<Animation> animation = mesh->createAnimation(_animation->mName.data);
+    AnimationPtr animation = mesh->createAnimation(_animation->mName.data);
     double ticksPerSecond = _animation->mTicksPerSecond;
     if (ticksPerSecond == 0)
       ticksPerSecond = 10;
@@ -215,7 +215,7 @@ namespace AssimpImporter {
       importChannel(animation, _animation->mChannels[i], ticksPerSecond);
   }
 
-  shared_ptr<Mesh>  import(const string &name, const string &path) {
+  MeshPtr  import(const string &name, const string &path) {
     Assimp::Importer *importer = new Assimp::Importer();
     // import scene
     const aiScene *scene = importer->ReadFile(path.c_str(),
@@ -240,9 +240,9 @@ namespace AssimpImporter {
     if (!scene)
       return nullptr;
 
-    shared_ptr<Mesh> mesh = Root::instance()->createMesh(name);
+    MeshPtr mesh = Root::instance()->createMesh(name);
     string baseDir = path.substr(0, path.find_last_of("/"));
-    map<int, shared_ptr<Material>> materials;
+    map<int, MaterialPtr> materials;
     // TODO: import textures
     // import materials
     for (uint i = 0; i < scene->mNumMaterials; ++i)
