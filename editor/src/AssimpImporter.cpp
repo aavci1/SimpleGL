@@ -84,8 +84,6 @@ namespace AssimpImporter {
         // generate texture path
         string texturePath = aitexturepath.data;
         texturePath = baseDir + "/" + texturePath.substr(texturePath.find_last_of("/") + 1);
-        // debug
-        cout << texturePath << endl;
         // add texture to the material
         material->addTexture(texturePath);
       }

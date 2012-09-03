@@ -119,8 +119,6 @@ namespace SimpleGL {
   }
 
   ProgramPtr Root::createProgram(const string &name) {
-    cout << "Root::createProgram(\"" << name << "\");" << endl;
-
     ProgramPtr program { new Program(name) };
     // add to list
     d->programs.push_back(program);
@@ -138,8 +136,6 @@ namespace SimpleGL {
   }
 
   MaterialPtr Root::createMaterial(const string &name) {
-    cout << "Root::createMaterial(\"" << name << "\");" << endl;
-
     MaterialPtr material { new Material(name) };
     // add to list
     d->materials.push_back(material);
@@ -157,8 +153,6 @@ namespace SimpleGL {
   }
 
   MeshPtr Root::createMesh(const string &name) {
-    cout << "Root::createMesh(\"" << name << "\");" << endl;
-
     MeshPtr mesh(new Mesh(name));
     // add to list
     d->meshes.push_back(mesh);
@@ -506,7 +500,6 @@ namespace SimpleGL {
   }
 
   void Root::load(const string &name, const string &path) {
-    cout << "Root::load(\"" << name << "\", \"" << path << "\");" << endl;
     // create a new mesh
     MeshPtr mesh = Root::instance()->createMesh(name);
     // create input stream
@@ -759,7 +752,6 @@ namespace SimpleGL {
       d->fps = d->fpsCount / (d->fpsTime * 0.001f);
       d->fpsCount = 0;
       d->fpsTime = 0;
-      cout << "FPS: " << d->fps << endl;
     }
     // return fps
     return d->fps;
