@@ -640,6 +640,8 @@ namespace SimpleGL {
     // update fps
     d->fpsCount++;
     d->fpsTime += elapsed;
+    // increase animation time
+    d->animationTime += elapsed;
     // process nodes
     queue<SceneNodePtr> processQueue;
     // add root node to the updated Nodes
@@ -659,8 +661,6 @@ namespace SimpleGL {
           continue;
         // update each animation
         for (AnimationPtr animation: mesh->animations()) {
-          // add time elapsed
-          d->animationTime += elapsed;
           // update bone transforms
           for (AnimationTrackPtr track: animation->tracks())
             for (BonePtr bone: mesh->bones())
