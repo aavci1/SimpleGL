@@ -1,4 +1,4 @@
-project (SimpleGLTest)
+project (SimpleGL-Editor)
 # set cmake minimum cmake version
 cmake_minimum_required (VERSION 2.8)
 # find qt
@@ -34,5 +34,5 @@ qt4_add_resources (RESOURCES
   resources.qrc
 )
 # opengl target
-add_executable (SimpleGLTest WIN32 ${SOURCES} ${MOC_SOURCES} ${UI_SOURCES} ${RESOURCES} resources.rc)
-target_link_libraries (SimpleGLTest SimpleGL ${QT_LIBRARIES} assimp)
+add_executable (SimpleGL-Editor WIN32 ${SOURCES} ${MOC_SOURCES} ${UI_SOURCES} ${RESOURCES} resources.rc)
+target_link_libraries (SimpleGL-Editor SimpleGL ${QT_LIBRARIES} assimp)
