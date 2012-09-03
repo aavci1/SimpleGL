@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "Root.h"
 #include "SceneNode.h"
+#include "SubMesh.h"
 
 #include <QDesktopServices>
 #include <QFileDialog>
@@ -43,6 +44,17 @@ void MainWindow::fileOpen() {
     return;
   // load mesh
   Root::instance()->load("MODEL", path.toStdString());
+  // retrieve mesh
+  MeshPtr mesh = Root::instance()->retrieveMesh("MODEL");
+  if (mesh) {
+    uint vertexCount = 0, indexCount = 0;
+    for (SubMeshPtr subMesh: mesh->subMeshes()) {
+      vertexCount += subMesh->vertexCount();
+      indexCount += subMesh->indexCount();
+    }
+    lblVertexCount->setText(QString::number(vertexCount));
+    lblTriangleCount->setText(QString::number(indexCount / 3));
+  }
   // enable actions
   actionSave->setEnabled(true);
   actionSaveAs->setEnabled(true);
@@ -74,6 +86,17 @@ void MainWindow::fileImport() {
     return;
   // load mesh
   AssimpImporter::import("MODEL", path.toStdString());
+  // retrieve mesh
+  MeshPtr mesh = Root::instance()->retrieveMesh("MODEL");
+  if (mesh) {
+    uint vertexCount = 0, indexCount = 0;
+    for (SubMeshPtr subMesh: mesh->subMeshes()) {
+      vertexCount += subMesh->vertexCount();
+      indexCount += subMesh->indexCount();
+    }
+    lblVertexCount->setText(QString::number(vertexCount));
+    lblTriangleCount->setText(QString::number(indexCount / 3));
+  }
   // enable actions
   actionSave->setEnabled(true);
   actionSaveAs->setEnabled(true);
@@ -82,6 +105,9 @@ void MainWindow::fileImport() {
 
 void MainWindow::fileClose() {
   Root::instance()->destroyMesh("MODEL");
+  // update vertex and face counts
+  lblVertexCount->setText("");
+  lblTriangleCount->setText("");
   // enable actions
   actionSave->setEnabled(false);
   actionSaveAs->setEnabled(false);
