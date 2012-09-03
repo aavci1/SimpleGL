@@ -27,12 +27,16 @@ namespace SimpleGL {
 
     ProgramPtr createProgram(const string &name);
     ProgramPtr retrieveProgram(const string &name);
+    void destroyProgram(const string &name);
 
     MaterialPtr createMaterial(const string &name);
     MaterialPtr retrieveMaterial(const string &name);
+    void destroyMaterial(const string &name);
 
     MeshPtr createMesh(const string &name);
     MeshPtr retrieveMesh(const string &name);
+    void destroyMesh(const string &name);
+
     MeshPtr createQuad(const string &name, float width = 1.0f, float height = 1.0f);
     MeshPtr createPlane(const string &name, float width = 1.0f, float height = 1.0f, float uTile = 1.0f, float vTile = 1.0f);
     MeshPtr createCube(const string &name, float width = 1.0f, float height = 1.0f, float depth = 1.0f);
@@ -44,8 +48,8 @@ namespace SimpleGL {
     InstancePtr createInstance(const string &mesh, const string &material);
 
     void prepareRender(long elapsed);
-    void renderScene(Window *window, Viewport *viewport);
-    void renderLights(Window *window, Viewport *viewport);
+    void renderScene(CameraPtr camera);
+    void renderLights(CameraPtr camera, Vector2f viewportSize);
 
     const float fps() const;
   private:

@@ -163,7 +163,7 @@ namespace SimpleGL {
       // disable blending
       glDisable(GL_BLEND);
       // render scene
-      Root::instance()->renderScene(this, viewport.get());
+      Root::instance()->renderScene(viewport->camera());
       // unbind frame buffer
       glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 #if 0
@@ -202,7 +202,7 @@ namespace SimpleGL {
       glActiveTexture(GL_TEXTURE2);
       glBindTexture(GL_TEXTURE_2D, d->texture2);
       // render lights
-      Root::instance()->renderLights(this, viewport.get());
+      Root::instance()->renderLights(viewport->camera(), Vector2f(this->width() * viewport->width(), this->height() * viewport->height()));
       // unbind textures
       glActiveTexture(GL_TEXTURE0);
       glBindTexture(GL_TEXTURE_2D, 0);

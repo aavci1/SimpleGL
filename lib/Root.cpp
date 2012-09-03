@@ -134,6 +134,12 @@ namespace SimpleGL {
     return d->programs[name];
   }
 
+  void Root::destroyProgram(const string &name) {
+    if (d->programs.count(name) == 0)
+      return;
+    d->programs.erase(name);
+  }
+
   MaterialPtr Root::createMaterial(const string &name) {
     MaterialPtr material { new Material(name) };
     // add to list
@@ -149,6 +155,12 @@ namespace SimpleGL {
     return d->materials[name];
   }
 
+  void Root::destroyMaterial(const string &name) {
+    if (d->materials.count(name) == 0)
+      return;
+    d->materials.erase(name);
+  }
+
   MeshPtr Root::createMesh(const string &name) {
     MeshPtr mesh { new Mesh(name) };
     // add to list
@@ -162,6 +174,12 @@ namespace SimpleGL {
     if (name.empty() || d->meshes.count(name) == 0)
       return nullptr;
     return d->meshes[name];
+  }
+
+  void Root::destroyMesh(const string &name) {
+    if (d->meshes.count(name) == 0)
+      return;
+    d->meshes.erase(name);
   }
 
   MeshPtr Root::createQuad(const string &name, float width, float height) {
@@ -659,10 +677,9 @@ namespace SimpleGL {
     }
   }
 
-  void Root::renderScene(Window *window, Viewport *viewport) {
-    if (viewport == nullptr || viewport->camera() == nullptr)
+  void Root::renderScene(CameraPtr camera) {
+    if (!camera)
       return;
-    CameraPtr camera = viewport->camera();
     // render scene
     std::queue<SceneNodePtr> processQueue;
     // add root node to the updated Nodes
@@ -713,11 +730,9 @@ namespace SimpleGL {
     }
   }
 
-  void Root::renderLights(Window *window, Viewport *viewport) {
-    if (viewport == nullptr || viewport->camera() == nullptr)
+  void Root::renderLights(CameraPtr camera, Vector2f viewportSize) {
+    if (!camera)
       return;
-    // get camera
-    CameraPtr camera = viewport->camera();
     // render lights
     for (LightPtr light: d->lights) {
       ProgramPtr program = Root::instance()->retrieveProgram(light->type());
@@ -729,7 +744,7 @@ namespace SimpleGL {
       program->setUniform("texture0", 0);
       program->setUniform("texture1", 1);
       program->setUniform("texture2", 2);
-      program->setUniform("viewportSize", Vector2f(viewport->width() * window->width(), viewport->height() * window->height()));
+      program->setUniform("viewportSize", viewportSize);
       program->setUniform("cameraPos", camera->parent()->worldPosition());
       // render the light
       light->render(camera);

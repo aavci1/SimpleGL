@@ -106,7 +106,7 @@ void GLWidget::initializeGL() {
   ceilingNode->roll(180.0f);
   Root::instance()->createInstance("Plane", "Ceiling")->setParent(ceilingNode);
   // add a directional light
-  DirectionalLight *directionalLight = static_cast<DirectionalLight *>(Root::instance()->createLight("Light/Directional").get());
+  shared_ptr<DirectionalLight> directionalLight = static_pointer_cast<DirectionalLight>(Root::instance()->createLight("Light/Directional"));
   directionalLight->setColor(1.0f, 1.0f, 1.0f);
   directionalLight->setDiffuseIntensity(1.0f);
   directionalLight->setSpecularIntensity(0.0f);
@@ -123,8 +123,9 @@ void GLWidget::initializeGL() {
       // attach a sphere
       Root::instance()->createInstance("Sphere", "Ceiling")->setParent(lightNode);
       // attach a light
-      PointLight *light = static_cast<PointLight *>(Root::instance()->createLight("Light/Point").get());
-      // SpotLight *light = static_cast<SpotLight *>(Root::instance()->createLight("Light/Spot").get());
+
+      shared_ptr<PointLight> light = static_pointer_cast<PointLight>(Root::instance()->createLight("Light/Point"));
+      // shared_ptr<SpotLight> light = static_pointer_cast<SpotLight>(Root::instance()->createLight("Light/Spot"));
       // light->setInnerAngle(10);
       // light->setOuterAngle(40);
       light->setColor(float(rand()) / RAND_MAX, float(rand()) / RAND_MAX, float(rand()) / RAND_MAX);

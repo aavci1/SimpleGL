@@ -73,7 +73,7 @@ void MainWindow::fileImport() {
 }
 
 void MainWindow::fileClose() {
-  // widget->instance()->setMesh("");
+  Root::instance()->destroyMesh("MODEL");
 }
 
 void MainWindow::fileExit() {
