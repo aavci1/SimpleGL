@@ -214,9 +214,9 @@ namespace AssimpImporter {
   }
 
   MeshPtr  import(const string &name, const string &path) {
-    Assimp::Importer *importer = new Assimp::Importer();
+    Assimp::Importer importer;
     // import scene
-    const aiScene *scene = importer->ReadFile(path.c_str(),
+    const aiScene *scene = importer.ReadFile(path.c_str(),
                                               aiProcess_CalcTangentSpace |
                                               aiProcess_JoinIdenticalVertices |
                                               aiProcess_Triangulate |
@@ -253,8 +253,6 @@ namespace AssimpImporter {
     // import animations
     for (uint i = 0; i < scene->mNumAnimations; ++i)
       importAnimation(scene, mesh, i);
-    // clean up
-    delete importer;
     // return mesh
     return mesh;
   }
