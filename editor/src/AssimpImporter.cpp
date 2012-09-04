@@ -13,7 +13,6 @@
 #include <assimp/postprocess.h>
 
 #include <map>
-#include <sstream>
 
 using namespace SimpleGL;
 
@@ -31,12 +30,6 @@ namespace AssimpImporter {
     Vector4i boneIds { 0, 0, 0, 0 };
     Vector4f boneWeights { 0.0f, 0.0f, 0.0f, 0.0f };
   };
-
-  const string toString(const int number) {
-    stringstream ss;
-    ss << number;
-    return ss.str();
-  }
 
   Vector3f toVector(aiVector3D aivector) {
     return Vector3f(aivector.x, aivector.y, aivector.z);
@@ -244,8 +237,11 @@ namespace AssimpImporter {
     map<int, MaterialPtr> materials;
     // TODO: import textures
     // import materials
-    for (uint i = 0; i < scene->mNumMaterials; ++i)
-      materials[i] = importMaterial(scene->mMaterials[i], baseDir, path + "$mat" + toString(i));
+    for (uint i = 0; i < scene->mNumMaterials; ++i) {
+      char materialName[256];
+      snprintf(materialName, 256, "%s$mat%d", path.c_str(), i);
+      materials[i] = importMaterial(scene->mMaterials[i], baseDir, materialName);
+    }
     // import nodes
     importNode(scene->mRootNode, model, nullptr);
     // import meshes

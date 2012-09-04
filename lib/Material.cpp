@@ -7,8 +7,6 @@
 
 #include <FreeImage.h>
 
-#include <sstream>
-
 namespace SimpleGL {
   class MaterialPrivate {
   public:
@@ -16,12 +14,6 @@ namespace SimpleGL {
     }
 
     ~MaterialPrivate() {
-    }
-
-    const string toString(const int number) {
-      stringstream ss;
-      ss << number;
-      return ss.str();
     }
 
     string name { "" };
@@ -111,7 +103,9 @@ namespace SimpleGL {
       glActiveTexture(GL_TEXTURE0 + j);
       glBindTexture(GL_TEXTURE_2D, d->textures.at(j));
       // set uniform
-      program->setUniform("texture" + d->toString(j), j);
+      char buffer[8];
+      snprintf(buffer, 8, "texture%d", j);
+      program->setUniform(buffer, j);
     }
     // set specular parameters
     program->setUniform("specularIntensity", 1.0f);

@@ -24,7 +24,6 @@
 
 #include <map>
 #include <queue>
-#include <sstream>
 
 namespace SimpleGL {
   static Root *_instance { nullptr };
@@ -45,12 +44,6 @@ namespace SimpleGL {
     }
 
     ~RootPrivate() {
-    }
-
-    const string toString(const int number) {
-      stringstream ss;
-      ss << number;
-      return ss.str();
     }
 
     vector<WindowPtr> windows;
