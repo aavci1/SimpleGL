@@ -14,6 +14,12 @@ namespace SimpleGL {
 
     string type() const;
 
+    void attachNode(SceneNodePtr node);
+    const vector<SceneNodePtr> &attachedNodes() const;
+
+    void attachObject(SceneObjectPtr object);
+    const vector<SceneObjectPtr> &attachedObjects() const;
+
     const Vector3f &position() const;
     void setPosition(const Vector3f &position);
     void setPosition(float x, float y, float z);

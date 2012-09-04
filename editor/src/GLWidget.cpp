@@ -38,12 +38,12 @@ void GLWidget::initializeGL() {
   window = Root::instance()->createWindow(width(), height());
   // create camera node
   SceneNodePtr cameraNode = Root::instance()->createSceneNode();
-  cameraNode->setParent(Root::instance()->rootSceneNode());
+  Root::instance()->rootSceneNode()->attachNode(cameraNode);
   cameraNode->setPosition(Vector3f(0.0f, 170.0f, 1000.0f));
   cameraNode->pitch(-10);
   // create a camera
   CameraPtr camera = Root::instance()->createCamera("FpsCamera");
-  camera->setParent(cameraNode);
+  cameraNode->attachObject(camera);
   // create a viewport
   window->createViewport(camera);
   // create default program
@@ -97,31 +97,31 @@ void GLWidget::initializeGL() {
   Root::instance()->createCube("Cube", 50.0f, 50.0f, 50.0f);
   // create floor object
   SceneNodePtr floorNode = Root::instance()->createSceneNode();
-  floorNode->setParent(Root::instance()->rootSceneNode());
-  Root::instance()->createInstance("Plane", "Laminate")->setParent(floorNode);
+  Root::instance()->rootSceneNode()->attachNode(floorNode);
+  floorNode->attachObject(Root::instance()->createInstance("Plane", "Laminate"));
   // create ceiling object
   SceneNodePtr ceilingNode = Root::instance()->createSceneNode();
-  ceilingNode->setParent(Root::instance()->rootSceneNode());
+  Root::instance()->rootSceneNode()->attachNode(ceilingNode);
   ceilingNode->setPosition(0.0f, 300.0f, 0.0f);
   ceilingNode->roll(180.0f);
-  Root::instance()->createInstance("Plane", "Ceiling")->setParent(ceilingNode);
+  ceilingNode->attachObject(Root::instance()->createInstance("Plane", "Ceiling"));
   // add a directional light
   shared_ptr<DirectionalLight> directionalLight = static_pointer_cast<DirectionalLight>(Root::instance()->createLight("Light/Directional"));
   directionalLight->setColor(1.0f, 1.0f, 1.0f);
   directionalLight->setDiffuseIntensity(1.0f);
   directionalLight->setSpecularIntensity(0.0f);
   directionalLight->setDirection(0, -1, -1);
-  directionalLight->setParent(Root::instance()->rootSceneNode());
+  Root::instance()->rootSceneNode()->attachObject(directionalLight);
   // create lots of point lights
   srand(0);
   for (int i = -5; i <= 5; ++i) {
     for (int j = -5; j <= 5; ++j) {
       // create light node
       SceneNodePtr lightNode = Root::instance()->createSceneNode();
-      lightNode->setParent(Root::instance()->rootSceneNode());
+      Root::instance()->rootSceneNode()->attachNode(lightNode);
       lightNode->setPosition(j * 180.0f, 290.0f, i * 180.0f);
       // attach a sphere
-      Root::instance()->createInstance("Sphere", "Ceiling")->setParent(lightNode);
+      lightNode->attachObject(Root::instance()->createInstance("Sphere", "Ceiling"));
       // attach a light
       shared_ptr<PointLight> light = static_pointer_cast<PointLight>(Root::instance()->createLight("Light/Point"));
       // shared_ptr<SpotLight> light = static_pointer_cast<SpotLight>(Root::instance()->createLight("Light/Spot"));
@@ -132,15 +132,15 @@ void GLWidget::initializeGL() {
       light->setSpecularIntensity(1.0f);
       light->setAttenuation(400.0f);
       // lightNode->pitch(-90, TS_WORLD); // needed for spots
-      light->setParent(lightNode);
+      lightNode->attachObject(light);
       // create an instance
       InstancePtr instance = Root::instance()->createInstance("MODEL", "");
       // add model to the scene
       SceneNodePtr modelNode = Root::instance()->createSceneNode();
-      modelNode->setParent(Root::instance()->rootSceneNode());
+      Root::instance()->rootSceneNode()->attachNode(modelNode);
       modelNode->setPosition(j * 180.0f, 0.0f, i * 180.0f);
       modelNode->setScale(3.0f, 3.0f, 3.0f);
-      instance->setParent(modelNode);
+      modelNode->attachObject(instance);
     }
   }
 }
@@ -169,7 +169,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *e) {
   CameraPtr camera = Root::instance()->retrieveCamera("FpsCamera");
   if (!camera)
     return;
-  SceneNodePtr cameraNode = camera->parent();
+  SceneNode *cameraNode = camera->parent();
   if (!cameraNode)
     return;
   if (e->buttons() == Qt::RightButton) {
@@ -210,7 +210,7 @@ void GLWidget::wheelEvent(QWheelEvent *e) {
   CameraPtr camera = Root::instance()->retrieveCamera("FpsCamera");
   if (!camera)
     return;
-  SceneNodePtr cameraNode = camera->parent();
+  SceneNode *cameraNode = camera->parent();
   if (!cameraNode)
     return;
   float altitude = cameraNode->position().y;

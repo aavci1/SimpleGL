@@ -10,7 +10,10 @@ namespace SimpleGL {
     }
 
     string name { "" };
-    BonePtr parent { nullptr };
+
+    Bone *parent { nullptr };
+    vector<BonePtr> bones;
+
     Matrix4f offsetMatrix;
     Matrix4f transform;
     Matrix4f worldTransform;
@@ -28,12 +31,17 @@ namespace SimpleGL {
     return d->name;
   }
 
-  BonePtr Bone::parent() const {
+  Bone *Bone::parent() const {
     return d->parent;
   }
 
-  void Bone::setParent(BonePtr parent) {
-    d->parent = parent;
+  void Bone::attach(BonePtr bone) {
+    d->bones.push_back(bone);
+    bone->d->parent = this;
+  }
+
+  const vector<BonePtr> &Bone::bones() const {
+    return d->bones;
   }
 
   const Matrix4f &Bone::offsetMatrix() const {
@@ -56,9 +64,10 @@ namespace SimpleGL {
     return d->worldTransform;
   }
 
-  void Bone::updateWorldTransform() {
-    d->worldTransform = d->transform;
-    if (d->parent)
-      d->worldTransform = d->parent->worldTransform() * d->transform;
+  void Bone::updateWorldTransform(const Matrix4f &parentTransform) {
+    d->worldTransform = parentTransform * d->transform;
+    // update attached bones
+    for (BonePtr bone: d->bones)
+      bone->updateWorldTransform(d->worldTransform);
   }
 }

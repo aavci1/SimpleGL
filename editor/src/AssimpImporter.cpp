@@ -184,7 +184,8 @@ namespace AssimpImporter {
   void importNode(aiNode *_node, ModelPtr  model, BonePtr parent) {
     BonePtr bone = model->createBone(string(_node->mName.data));
     // import node info
-    bone->setParent(parent);
+    if (parent)
+      parent->attach(bone);
     bone->setTransform(toMatrix(_node->mTransformation));
     // import children
     for (uint i = 0; i < _node->mNumChildren; ++i)

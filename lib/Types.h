@@ -22,6 +22,7 @@ namespace SimpleGL {
   class Model;
   class Program;
   class SceneNode;
+  class SceneObject;
   class Viewport;
   class Window;
 
@@ -35,6 +36,7 @@ namespace SimpleGL {
   typedef shared_ptr<Model> ModelPtr;
   typedef shared_ptr<Program> ProgramPtr;
   typedef shared_ptr<SceneNode> SceneNodePtr;
+  typedef shared_ptr<SceneObject> SceneObjectPtr;
   typedef shared_ptr<Mesh> MeshPtr;
   typedef shared_ptr<Viewport> ViewportPtr;
   typedef shared_ptr<Window> WindowPtr;

@@ -61,21 +61,8 @@ namespace SimpleGL {
     // update skeleton
     if (d->bones.size() == 0)
       return;
-    // process bones
-    queue<BonePtr> processQueue;
-    // add root bone
-    processQueue.push(d->bones.at(0));
-    // process bones
-    while (!processQueue.empty()) {
-      BonePtr bone = processQueue.front();
-      processQueue.pop();
-      // process bone
-      bone->updateWorldTransform();
-      // add child bones for processing
-      for (BonePtr childBone: d->bones)
-        if (childBone->parent() == bone)
-          processQueue.push(childBone);
-    }
+    // process bone
+    d->bones.at(0)->updateWorldTransform();
   }
 
   const vector<BonePtr> &Model::bones() const {

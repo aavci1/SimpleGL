@@ -13,8 +13,8 @@ namespace SimpleGL {
 
     virtual string type() const = 0;
 
-    SceneNodePtr parent() const;
-    void setParent(SceneNodePtr parent);
+    SceneNode *parent() const;
+    void setParent(SceneNode *parent);
 
   private:
     SceneObjectPrivate *d;

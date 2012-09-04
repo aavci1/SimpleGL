@@ -12,6 +12,9 @@ namespace SimpleGL {
     ~SceneNodePrivate() {
     }
 
+    vector<SceneNodePtr> attachedNodes;
+    vector<SceneObjectPtr> attachedObjects;
+
     Vector3f position { 0.0f, 0.0f, 0.0f };
     Quaternion orientation { 1.0f, 0.0f, 0.0f, 0.0f };
     Vector3f scale { 1.0f, 1.0f, 1.0f };
@@ -30,6 +33,24 @@ namespace SimpleGL {
 
   SceneNode::~SceneNode() {
     delete d;
+  }
+
+  void SceneNode::attachNode(SceneNodePtr node) {
+    d->attachedNodes.push_back(node);
+    node->setParent(this);
+  }
+
+  const vector<SceneNodePtr> &SceneNode::attachedNodes() const {
+    return d->attachedNodes;
+  }
+
+  void SceneNode::attachObject(SceneObjectPtr object) {
+    d->attachedObjects.push_back(object);
+    object->setParent(this);
+  }
+
+  const vector<SceneObjectPtr> &SceneNode::attachedObjects() const {
+    return d->attachedObjects;
   }
 
   string SceneNode::type() const {

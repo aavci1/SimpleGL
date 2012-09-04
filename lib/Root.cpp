@@ -490,7 +490,7 @@ namespace SimpleGL {
       int boneIndex = -1;
       if (bone->parent())
         for (uint i = 0; i < model->bones().size(); ++i)
-          if (model->bones().at(i) == bone->parent())
+          if (model->bones().at(i).get() == bone->parent())
             boneIndex = i;
       out << uint16_t(boneIndex);
       // write transform and offset matrices
@@ -586,7 +586,8 @@ namespace SimpleGL {
       // create bone
       BonePtr parent = (parentIndex < model->bones().size()) ? model->bones().at(parentIndex) : nullptr;
       BonePtr bone = model->createBone(name);
-      bone->setParent(parent);
+      if (parent)
+        parent->attach(bone);
       bone->setTransform(transform);
       bone->setOffsetMatrix(offset);
     }
@@ -669,21 +670,13 @@ namespace SimpleGL {
       processQueue.pop();
       // process node
       node->updateWorldTransform();
-      // update animations
-      for (InstancePtr instance: d->instances) {
-        if (instance->parent() != node)
-          continue;
-        ModelPtr model = Root::instance()->retrieveModel(instance->model());
-        if (!model)
-          continue;
-        // update animations
-        model->updateAnimations(elapsed);
-      }
       // queue child nodes for processing
-      for (SceneNodePtr childNode: d->sceneNodes)
-        if (childNode->parent() == node)
+      for (SceneNodePtr childNode: node->attachedNodes())
           processQueue.push(childNode);
     }
+    // update animations
+    for (auto it: d->models)
+      it.second->updateAnimations(elapsed);
   }
 
   void Root::renderScene(CameraPtr camera) {
@@ -699,11 +692,12 @@ namespace SimpleGL {
       processQueue.pop();
       // render instances
       for (InstancePtr instance: d->instances) {
-        if (instance->parent() != node)
+        if (instance->parent() != node.get())
           continue;
         ModelPtr model = Root::instance()->retrieveModel(instance->model());
         if (!model)
           continue;
+        vector<Matrix4f> boneTransforms = model->boneTransforms();
         // draw meshes
         for (MeshPtr mesh: model->meshes()) {
           MaterialPtr material = Root::instance()->retrieveMaterial(instance->material());
@@ -721,7 +715,6 @@ namespace SimpleGL {
           // set uniforms
           program->setUniform("ModelMatrix", node->worldTransform());
           program->setUniform("ModelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * node->worldTransform());
-          vector<Matrix4f> boneTransforms = model->boneTransforms();
           for (uint l = 0; l < boneTransforms.size(); ++l)
             program->setUniform(string("Bones[") + d->toString(l) + string("]"), boneTransforms[l]);
           // render the mesh
@@ -731,8 +724,7 @@ namespace SimpleGL {
         }
       }
       // queue child nodes for processing
-      for (SceneNodePtr childNode: d->sceneNodes)
-        if (childNode->parent() == node)
+      for (SceneNodePtr childNode: node->attachedNodes())
           processQueue.push(childNode);
     }
   }
