@@ -1,6 +1,8 @@
 project (SimpleGL-Editor)
 # set cmake minimum cmake version
 cmake_minimum_required (VERSION 2.8)
+# extra definitions
+add_definitions(-Wall -std=c++11 -O2 -msse2)
 # find qt
 find_package (Qt4 REQUIRED)
 # use qt opengl module
@@ -11,8 +13,6 @@ include (${QT_USE_FILE})
 include_directories (../lib ${CMAKE_SOURCE_DIR}/editor/src ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/editor)
 # set lib directories to contain build_directory/lib
 link_directories (${CMAKE_BINARY_DIR}/lib)
-# extra definitions
-add_definitions(-O2 -msse2 -Wall -std=c++11)
 # add sources
 set (SOURCES
   src/AssimpImporter.cpp
