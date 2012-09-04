@@ -688,6 +688,8 @@ namespace SimpleGL {
       snprintf(buffer, 100, "Bones[%d]", i);
       boneNames.push_back(string(buffer));
     }
+    // cache viewProjMatrix
+    Matrix4f viewProjMatrix = camera->projectionMatrix() * camera->viewMatrix();
     // render scene
     std::queue<SceneNodePtr> processQueue;
     // add root node to the updated Nodes
@@ -720,7 +722,7 @@ namespace SimpleGL {
           material->bind();
           // set uniforms
           program->setUniform("ModelMatrix", node->worldTransform());
-          program->setUniform("ModelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * node->worldTransform());
+          program->setUniform("ModelViewProjMatrix", viewProjMatrix * node->worldTransform());
           for (uint l = 0; l < boneTransforms.size(); ++l)
             program->setUniform(boneNames[l], boneTransforms[l]);
           // render the mesh
