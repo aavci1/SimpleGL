@@ -1,8 +1,6 @@
 project (SimpleGL-Editor)
 # set cmake minimum cmake version
 cmake_minimum_required (VERSION 2.8)
-# extra definitions
-add_definitions(-Wall -std=c++11 -O2 -msse2)
 # find qt
 find_package (Qt4 REQUIRED)
 # use qt opengl module
