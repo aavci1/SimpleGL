@@ -741,8 +741,8 @@ namespace SimpleGL {
     if (!camera)
       return;
     // render lights
-    for (LightPtr light: d->lights) {
-      ProgramPtr program = Root::instance()->retrieveProgram(light->type());
+    for (const string type: { "Light/Directional", "Light/Point", "Light/Spot" }) {
+      ProgramPtr program = Root::instance()->retrieveProgram(type);
       if (!program)
         continue;
       // bine the program
@@ -753,8 +753,10 @@ namespace SimpleGL {
       program->setUniform("texture2", 2);
       program->setUniform("viewportSize", viewportSize);
       program->setUniform("cameraPos", camera->parent()->worldPosition());
-      // render the light
-      light->render(camera);
+      // render lights
+      for (LightPtr light: d->lights)
+        if (light->type() == type)
+          light->render(camera);
       // unbind the program
       program->unbind();
     }
