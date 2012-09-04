@@ -682,6 +682,12 @@ namespace SimpleGL {
   void Root::renderScene(CameraPtr camera) {
     if (!camera)
       return;
+    vector<string> boneNames;
+    char buffer[20] = { 0 };
+    for (uint i = 0; i < 100; ++i) {
+      snprintf(buffer, 100, "Bones[%d]", i);
+      boneNames.push_back(string(buffer));
+    }
     // render scene
     std::queue<SceneNodePtr> processQueue;
     // add root node to the updated Nodes
@@ -716,7 +722,7 @@ namespace SimpleGL {
           program->setUniform("ModelMatrix", node->worldTransform());
           program->setUniform("ModelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * node->worldTransform());
           for (uint l = 0; l < boneTransforms.size(); ++l)
-            program->setUniform(string("Bones[") + d->toString(l) + string("]"), boneTransforms[l]);
+            program->setUniform(boneNames[l], boneTransforms[l]);
           // render the mesh
           mesh->render(camera);
           // unbind material
