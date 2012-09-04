@@ -718,7 +718,7 @@ namespace SimpleGL {
           program->setUniform("ModelMatrix", node->worldTransform());
           program->setUniform("ModelViewProjMatrix", viewProjMatrix * node->worldTransform());
           for (uint l = 0; l < boneTransforms.size(); ++l)
-            program->setUniform(boneNames[l], boneTransforms[l]);
+            program->setUniform(boneNames[l].c_str(), boneTransforms[l]);
           // render the mesh
           mesh->render(camera);
           // unbind material

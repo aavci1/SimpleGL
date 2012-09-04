@@ -142,9 +142,9 @@ namespace SimpleGL {
     return d->log;
   }
 
-  const bool Program::setUniform(const string &name, uint value) const {
+  const bool Program::setUniform(const char *name, uint value) const {
     // get uniform location
-    GLint location = glGetUniformLocation(d->id, name.c_str());
+    GLint location = glGetUniformLocation(d->id, name);
     if (location == -1)
       return false;
     // set uniform value
@@ -153,9 +153,9 @@ namespace SimpleGL {
     return true;
   }
 
-  const bool Program::setUniform(const string &name, int value) const {
+  const bool Program::setUniform(const char *name, int value) const {
     // get uniform location
-    GLint location = glGetUniformLocation(d->id, name.c_str());
+    GLint location = glGetUniformLocation(d->id, name);
     if (location == -1)
       return false;
     // set uniform value
@@ -164,9 +164,9 @@ namespace SimpleGL {
     return true;
   }
 
-  const bool Program::setUniform(const string &name, float value) const {
+  const bool Program::setUniform(const char *name, float value) const {
     // get uniform location
-    GLint location = glGetUniformLocation(d->id, name.c_str());
+    GLint location = glGetUniformLocation(d->id, name);
     if (location == -1)
       return false;
     // set uniform value
@@ -175,9 +175,9 @@ namespace SimpleGL {
     return true;
   }
 
-  const bool Program::setUniform(const string &name, const Vector2f &value) const {
+  const bool Program::setUniform(const char *name, const Vector2f &value) const {
     // get uniform location
-    GLint location = glGetUniformLocation(d->id, name.c_str());
+    GLint location = glGetUniformLocation(d->id, name);
     if (location == -1)
       return false;
     // set uniform value
@@ -186,9 +186,9 @@ namespace SimpleGL {
     return true;
   }
 
-  const bool Program::setUniform(const string &name, const Vector3f &value) const {
+  const bool Program::setUniform(const char *name, const Vector3f &value) const {
     // get uniform location
-    GLint location = glGetUniformLocation(d->id, name.c_str());
+    GLint location = glGetUniformLocation(d->id, name);
     if (location == -1)
       return false;
     // set uniform value
@@ -197,9 +197,9 @@ namespace SimpleGL {
     return true;
   }
 
-  const bool Program::setUniform(const string &name, const Matrix4f &value) const {
+  const bool Program::setUniform(const char *name, const Matrix4f &value) const {
     // get uniform location
-    GLint location = glGetUniformLocation(d->id, name.c_str());
+    GLint location = glGetUniformLocation(d->id, name);
     if (location == -1)
       return false;
     // set uniform value

@@ -20,12 +20,12 @@ namespace SimpleGL {
 
     const string &log() const;
 
-    const bool setUniform(const string &name, uint value) const;
-    const bool setUniform(const string &name, int value) const;
-    const bool setUniform(const string &name, float value) const;
-    const bool setUniform(const string &name, const Vector2f &value) const;
-    const bool setUniform(const string &name, const Vector3f &value) const;
-    const bool setUniform(const string &name, const Matrix4f &value) const;
+    const bool setUniform(const char *name, uint value) const;
+    const bool setUniform(const char *name, int value) const;
+    const bool setUniform(const char *name, float value) const;
+    const bool setUniform(const char *name, const Vector2f &value) const;
+    const bool setUniform(const char *name, const Vector3f &value) const;
+    const bool setUniform(const char *name, const Matrix4f &value) const;
 
     const bool bind() const;
     const bool unbind() const;
