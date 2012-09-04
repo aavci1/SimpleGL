@@ -13,16 +13,17 @@ namespace SimpleGL {
 
     const string &name() const;
 
-    const vector<AnimationPtr> &animations() const;
-    AnimationPtr createAnimation(const string &name);
+    const vector<MeshPtr> &meshes() const;
+    MeshPtr createMesh();
 
     const vector<BonePtr> &bones() const;
     BonePtr createBone(const string &name);
 
-    const vector<MeshPtr> &meshes() const;
-    MeshPtr createMesh();
+    const vector<AnimationPtr> &animations() const;
+    AnimationPtr createAnimation(const string &name);
 
-    void updateBones();
+    void updateAnimations(const long delta);
+
     void render(CameraPtr camera);
 
   private:

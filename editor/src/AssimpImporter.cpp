@@ -256,5 +256,4 @@ namespace AssimpImporter {
     // return model
     return model;
   }
-
 }

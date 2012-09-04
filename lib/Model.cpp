@@ -1,6 +1,7 @@
 #include "Model.h"
 
 #include "Animation.h"
+#include "AnimationTrack.h"
 #include "Bone.h"
 #include "Mesh.h"
 
@@ -19,6 +20,7 @@ namespace SimpleGL {
     vector<AnimationPtr> animations;
     vector<BonePtr> bones;
     vector<MeshPtr> meshes;
+    long animationTime { 0 };
   };
 
   Model::Model(const string &name) : d(new ModelPrivate()) {
@@ -45,6 +47,37 @@ namespace SimpleGL {
     return animation;
   }
 
+  void Model::updateAnimations(const long delta) {
+    // increase animation time
+    d->animationTime += delta;
+    // update each animation
+    for (AnimationPtr animation: d->animations) {
+      // update bone transforms
+      for (AnimationTrackPtr track: animation->tracks())
+        for (BonePtr bone: d->bones)
+          if (bone->name() == track->name())
+            bone->setTransform(track->transform(d->animationTime % animation->duration()));
+    }
+    // update skeleton
+    if (d->bones.size() == 0)
+      return;
+    // process bones
+    queue<BonePtr> processQueue;
+    // add root bone
+    processQueue.push(d->bones.at(0));
+    // process bones
+    while (!processQueue.empty()) {
+      BonePtr bone = processQueue.front();
+      processQueue.pop();
+      // process bone
+      bone->updateWorldTransform();
+      // add child bones for processing
+      for (BonePtr childBone: d->bones)
+        if (childBone->parent() == bone)
+          processQueue.push(childBone);
+    }
+  }
+
   const vector<BonePtr> &Model::bones() const {
     return d->bones;
   }
@@ -67,26 +100,6 @@ namespace SimpleGL {
     d->meshes.push_back(mesh);
     // return mesh
     return mesh;
-  }
-
-  void Model::updateBones() {
-    if (d->bones.size() == 0)
-      return;
-    // process bones
-    queue<BonePtr> processQueue;
-    // add root bone
-    processQueue.push(d->bones.at(0));
-    // process bones
-    while (!processQueue.empty()) {
-      BonePtr bone = processQueue.front();
-      processQueue.pop();
-      // process bone
-      bone->updateWorldTransform();
-      // add child bones for processing
-      for (BonePtr childBone: d->bones)
-        if (childBone->parent() == bone)
-          processQueue.push(childBone);
-    }
   }
 
   void Model::render(CameraPtr camera) {

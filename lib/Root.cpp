@@ -57,7 +57,6 @@ namespace SimpleGL {
     map<string, ProgramPtr> programs;
 
     Vector2i mousePosition { 0, 0 };
-    long animationTime { 0 };
 
     long fpsTime { 0 };
     long fpsCount { 0 };
@@ -653,8 +652,6 @@ namespace SimpleGL {
     // update fps
     d->fpsCount++;
     d->fpsTime += elapsed;
-    // increase animation time
-    d->animationTime += elapsed;
     // process nodes
     queue<SceneNodePtr> processQueue;
     // add root node to the updated Nodes
@@ -672,16 +669,8 @@ namespace SimpleGL {
         ModelPtr model = Root::instance()->retrieveModel(instance->model());
         if (!model)
           continue;
-        // update each animation
-        for (AnimationPtr animation: model->animations()) {
-          // update bone transforms
-          for (AnimationTrackPtr track: animation->tracks())
-            for (BonePtr bone: model->bones())
-              if (bone->name() == track->name())
-                bone->setTransform(track->transform(d->animationTime % animation->duration()));
-        }
-        // update skeleton
-        model->updateBones();
+        // update animations
+        model->updateAnimations(elapsed);
       }
       // queue child nodes for processing
       for (SceneNodePtr childNode: d->sceneNodes)
