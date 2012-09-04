@@ -39,7 +39,7 @@ void GLWidget::initializeGL() {
   // create camera node
   SceneNodePtr cameraNode = Root::instance()->createSceneNode();
   cameraNode->setParent(Root::instance()->rootSceneNode());
-  cameraNode->setPosition(Vector3f(0.0f, 170.0f, 300.0f));
+  cameraNode->setPosition(Vector3f(0.0f, 170.0f, 1000.0f));
   cameraNode->pitch(-10);
   // create a camera
   CameraPtr camera = Root::instance()->createCamera("FpsCamera");
@@ -133,14 +133,16 @@ void GLWidget::initializeGL() {
       light->setAttenuation(400.0f);
       // lightNode->pitch(-90, TS_WORLD); // needed for spots
       light->setParent(lightNode);
+      // create an instance
+      InstancePtr instance = Root::instance()->createInstance("MODEL", "");
+      // add model to the scene
+      SceneNodePtr modelNode = Root::instance()->createSceneNode();
+      modelNode->setParent(Root::instance()->rootSceneNode());
+      modelNode->setPosition(j * 180.0f, 0.0f, i * 180.0f);
+      modelNode->setScale(3.0f, 3.0f, 3.0f);
+      instance->setParent(modelNode);
     }
   }
-  // create an instance
-  InstancePtr instance = Root::instance()->createInstance("MODEL", "");
-  // add model to the scene
-  SceneNodePtr modelNode = Root::instance()->createSceneNode();
-  modelNode->setParent(Root::instance()->rootSceneNode());
-  instance->setParent(modelNode);
 }
 
 void GLWidget::resizeGL(int width, int height) {
