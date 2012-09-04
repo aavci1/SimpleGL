@@ -14,7 +14,7 @@ set (SOURCES
   Instance.cpp
   Light.cpp
   Material.cpp
-  Mesh.cpp
+  Model.cpp
   OutputStream.cpp
   PointLight.cpp
   Program.cpp

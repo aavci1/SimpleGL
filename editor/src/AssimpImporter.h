@@ -4,7 +4,7 @@
 #include "Types.h"
 
 namespace AssimpImporter {
-  SimpleGL::MeshPtr import(const string &name, const string &path);
+  SimpleGL::ModelPtr import(const string &name, const string &path);
 }
 
 #endif // ASSIMPIMPORTER_H

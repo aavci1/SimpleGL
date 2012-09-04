@@ -6,7 +6,7 @@
 #include "DirectionalLight.h"
 #include "Instance.h"
 #include "Material.h"
-#include "Mesh.h"
+#include "Model.h"
 #include "PointLight.h"
 #include "Program.h"
 #include "Root.h"

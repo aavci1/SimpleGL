@@ -18,7 +18,7 @@ namespace SimpleGL {
   class Instance;
   class Light;
   class Material;
-  class Mesh;
+  class Model;
   class Program;
   class SceneNode;
   class SubMesh;
@@ -32,7 +32,7 @@ namespace SimpleGL {
   typedef shared_ptr<Instance> InstancePtr;
   typedef shared_ptr<Light> LightPtr;
   typedef shared_ptr<Material> MaterialPtr;
-  typedef shared_ptr<Mesh> MeshPtr;
+  typedef shared_ptr<Model> ModelPtr;
   typedef shared_ptr<Program> ProgramPtr;
   typedef shared_ptr<SceneNode> SceneNodePtr;
   typedef shared_ptr<SubMesh> SubMeshPtr;

@@ -9,13 +9,13 @@ namespace SimpleGL {
 
   class Instance : public SceneObject {
   public:
-    Instance(const string &mesh, const string &material);
+    Instance(const string &model, const string &material);
     ~Instance();
 
     string type() const;
 
-    const string &mesh() const;
-    void setMesh(const string &mesh);
+    const string &model() const;
+    void setModel(const string &model);
 
     const string &material() const;
     void setMaterial(const string &material);

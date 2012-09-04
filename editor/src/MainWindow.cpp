@@ -2,7 +2,7 @@
 
 #include "AssimpImporter.h"
 #include "Instance.h"
-#include "Mesh.h"
+#include "Model.h"
 #include "Root.h"
 #include "SceneNode.h"
 #include "SubMesh.h"
@@ -38,17 +38,17 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::fileOpen() {
-  QString path = QFileDialog::getOpenFileName(this, tr("Open Mesh"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Meshes (*.sglm)"));
+  QString path = QFileDialog::getOpenFileName(this, tr("Open Model"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Models (*.sglm)"));
   // return if open canceled
   if (path.isNull())
     return;
-  // load mesh
+  // load model
   Root::instance()->load("MODEL", path.toStdString());
-  // retrieve mesh
-  MeshPtr mesh = Root::instance()->retrieveMesh("MODEL");
-  if (mesh) {
+  // retrieve model
+  ModelPtr model = Root::instance()->retrieveModel("MODEL");
+  if (model) {
     uint vertexCount = 0, indexCount = 0;
-    for (SubMeshPtr subMesh: mesh->subMeshes()) {
+    for (SubMeshPtr subMesh: model->subMeshes()) {
       vertexCount += subMesh->vertexCount();
       indexCount += subMesh->indexCount();
     }
@@ -62,35 +62,35 @@ void MainWindow::fileOpen() {
 }
 
 void MainWindow::fileSave() {
-  QString path = QFileDialog::getSaveFileName(this, tr("Save Mesh"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Meshes (*.sglm)"));
+  QString path = QFileDialog::getSaveFileName(this, tr("Save Model"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Meshes (*.sglm)"));
   // return if open canceled
   if (path.isNull())
     return;
-  // load mesh
+  // load model
   Root::instance()->save("MODEL", path.toStdString());
 }
 
 void MainWindow::fileSaveAs() {
-  QString path = QFileDialog::getSaveFileName(this, tr("Save Mesh As"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Meshes (*.sglm)"));
+  QString path = QFileDialog::getSaveFileName(this, tr("Save Model As"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Meshes (*.sglm)"));
   // return if open canceled
   if (path.isNull())
     return;
-  // load mesh
+  // load model
   Root::instance()->save("MODEL", path.toStdString());
 }
 
 void MainWindow::fileImport() {
-  QString path = QFileDialog::getOpenFileName(this, tr("Import Mesh"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("All Files (*.*)"));
+  QString path = QFileDialog::getOpenFileName(this, tr("Import Model"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("All Files (*.*)"));
   // return if open canceled
   if (path.isNull())
     return;
-  // load mesh
+  // load model
   AssimpImporter::import("MODEL", path.toStdString());
-  // retrieve mesh
-  MeshPtr mesh = Root::instance()->retrieveMesh("MODEL");
-  if (mesh) {
+  // retrieve model
+  ModelPtr model = Root::instance()->retrieveModel("MODEL");
+  if (model) {
     uint vertexCount = 0, indexCount = 0;
-    for (SubMeshPtr subMesh: mesh->subMeshes()) {
+    for (SubMeshPtr subMesh: model->subMeshes()) {
       vertexCount += subMesh->vertexCount();
       indexCount += subMesh->indexCount();
     }
@@ -104,7 +104,7 @@ void MainWindow::fileImport() {
 }
 
 void MainWindow::fileClose() {
-  Root::instance()->destroyMesh("MODEL");
+  Root::instance()->destroyModel("MODEL");
   // update vertex and face counts
   lblVertexCount->setText("");
   lblTriangleCount->setText("");

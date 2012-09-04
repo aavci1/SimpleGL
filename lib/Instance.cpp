@@ -9,12 +9,12 @@ namespace SimpleGL {
     ~InstancePrivate() {
     }
 
-    string mesh { "" };
+    string model { "" };
     string material { "" };
   };
 
-  Instance::Instance(const string &mesh, const string &material) : d(new InstancePrivate()) {
-    d->mesh = mesh;
+  Instance::Instance(const string &model, const string &material) : d(new InstancePrivate()) {
+    d->model = model;
     d->material = material;
   }
 
@@ -26,12 +26,12 @@ namespace SimpleGL {
     return "Instance";
   }
 
-  const string &Instance::mesh() const {
-    return d->mesh;
+  const string &Instance::model() const {
+    return d->model;
   }
 
-  void Instance::setMesh(const string &mesh) {
-    d->mesh = mesh;
+  void Instance::setModel(const string &model) {
+    d->model = model;
   }
 
   const string &Instance::material() const {

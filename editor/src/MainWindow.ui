@@ -56,7 +56,7 @@
    <addaction name="menu_File"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="QDockWidget" name="dockMeshInfo">
+  <widget class="QDockWidget" name="dockModelInfo">
    <property name="minimumSize">
     <size>
      <width>144</width>
@@ -70,7 +70,7 @@
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
-    <string>Mesh Info</string>
+    <string>Model Info</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>

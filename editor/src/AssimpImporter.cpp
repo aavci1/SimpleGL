@@ -4,7 +4,7 @@
 #include "AnimationTrack.h"
 #include "Bone.h"
 #include "Material.h"
-#include "Mesh.h"
+#include "Model.h"
 #include "Root.h"
 #include "SubMesh.h"
 
@@ -92,11 +92,11 @@ namespace AssimpImporter {
     return material;
   }
 
-  void importMesh(const aiScene *scene, MeshPtr  mesh, map<int, MaterialPtr> materials, uint index) {
+  void importModel(const aiScene *scene, ModelPtr  model, map<int, MaterialPtr> materials, uint index) {
     if (index >= scene->mNumMeshes)
       return;
     aiMesh *aimesh = scene->mMeshes[index];
-    SubMeshPtr subMesh = mesh->createSubMesh();
+    SubMeshPtr subMesh = model->createSubMesh();
     // create vertex buffer
     uint vertexCount = aimesh->mNumVertices;
     Vertex *vertices = new Vertex[vertexCount];
@@ -141,15 +141,15 @@ namespace AssimpImporter {
     for (uint i = 0; i < aimesh->mNumBones; ++i) {
       aiBone *aibone = aimesh->mBones[i];
       uint boneId = 0;
-      for (uint j = 0; j < mesh->bones().size(); ++j)
-        if (mesh->bones().at(j) && (mesh->bones().at(j)->name().compare(aibone->mName.data) == 0)) {
+      for (uint j = 0; j < model->bones().size(); ++j)
+        if (model->bones().at(j) && (model->bones().at(j)->name().compare(aibone->mName.data) == 0)) {
           boneId = j;
           break;
         }
       if (boneId == 0)
         continue;
       // set bones offset matrix
-      mesh->bones().at(boneId)->setOffsetMatrix(toMatrix(aibone->mOffsetMatrix));
+      model->bones().at(boneId)->setOffsetMatrix(toMatrix(aibone->mOffsetMatrix));
 
       for (uint j = 0; j < aibone->mNumWeights; ++j) {
         aiVertexWeight vertexWeight = aibone->mWeights[j];
@@ -181,14 +181,14 @@ namespace AssimpImporter {
     }
   }
 
-  void importNode(aiNode *_node, MeshPtr  mesh, BonePtr parent) {
-    BonePtr bone = mesh->createBone(string(_node->mName.data));
+  void importNode(aiNode *_node, ModelPtr  model, BonePtr parent) {
+    BonePtr bone = model->createBone(string(_node->mName.data));
     // import node info
     bone->setParent(parent);
     bone->setTransform(toMatrix(_node->mTransformation));
     // import children
     for (uint i = 0; i < _node->mNumChildren; ++i)
-      importNode(_node->mChildren[i], mesh, bone);
+      importNode(_node->mChildren[i], model, bone);
   }
 
   AnimationTrackPtr importChannel(AnimationPtr animation, aiNodeAnim *_channel, float ticksPerSecond) {
@@ -202,9 +202,9 @@ namespace AssimpImporter {
     return track;
   }
 
-  void importAnimation(const aiScene *scene, MeshPtr  mesh, uint index) {
+  void importAnimation(const aiScene *scene, ModelPtr  model, uint index) {
     aiAnimation *_animation = scene->mAnimations[index];
-    AnimationPtr animation = mesh->createAnimation(_animation->mName.data);
+    AnimationPtr animation = model->createAnimation(_animation->mName.data);
     double ticksPerSecond = _animation->mTicksPerSecond;
     if (ticksPerSecond == 0)
       ticksPerSecond = 10;
@@ -213,7 +213,7 @@ namespace AssimpImporter {
       importChannel(animation, _animation->mChannels[i], ticksPerSecond);
   }
 
-  MeshPtr  import(const string &name, const string &path) {
+  ModelPtr  import(const string &name, const string &path) {
     Assimp::Importer importer;
     // import scene
     const aiScene *scene = importer.ReadFile(path.c_str(),
@@ -238,7 +238,7 @@ namespace AssimpImporter {
     if (!scene)
       return nullptr;
 
-    MeshPtr mesh = Root::instance()->createMesh(name);
+    ModelPtr model = Root::instance()->createModel(name);
     string baseDir = path.substr(0, path.find_last_of("/"));
     map<int, MaterialPtr> materials;
     // TODO: import textures
@@ -246,15 +246,15 @@ namespace AssimpImporter {
     for (uint i = 0; i < scene->mNumMaterials; ++i)
       materials[i] = importMaterial(scene->mMaterials[i], baseDir, path + "$mat" + toString(i));
     // import nodes
-    importNode(scene->mRootNode, mesh, nullptr);
+    importNode(scene->mRootNode, model, nullptr);
     // import meshes
     for (uint i = 0; i < scene->mNumMeshes; ++i)
-      importMesh(scene, mesh, materials, i);
+      importModel(scene, model, materials, i);
     // import animations
     for (uint i = 0; i < scene->mNumAnimations; ++i)
-      importAnimation(scene, mesh, i);
-    // return mesh
-    return mesh;
+      importAnimation(scene, model, i);
+    // return model
+    return model;
   }
 
 }

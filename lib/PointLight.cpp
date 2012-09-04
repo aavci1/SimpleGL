@@ -2,7 +2,7 @@
 
 #include "Camera.h"
 #include "Material.h"
-#include "Mesh.h"
+#include "Model.h"
 #include "Program.h"
 #include "Root.h"
 #include "SceneNode.h"
@@ -19,7 +19,7 @@ namespace SimpleGL {
     ~PointLightPrivate() {
     }
 
-    MeshPtr sphere { nullptr };
+    ModelPtr sphere { nullptr };
 
     float attenuationRange { 256.0f };
     float attenuationConstant { 0.0f };

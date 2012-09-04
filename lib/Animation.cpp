@@ -44,7 +44,7 @@ namespace SimpleGL {
     AnimationTrackPtr track { new AnimationTrack(name) };
     // add to list
     d->tracks.push_back(track);
-    // return mesh
+    // return track
     return track;
   }
 }

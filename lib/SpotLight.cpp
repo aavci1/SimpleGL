@@ -2,7 +2,7 @@
 
 #include "Camera.h"
 #include "Material.h"
-#include "Mesh.h"
+#include "Model.h"
 #include "Program.h"
 #include "Root.h"
 #include "SceneNode.h"
@@ -19,7 +19,7 @@ namespace SimpleGL {
     ~SpotLightPrivate() {
     }
 
-    MeshPtr cone { nullptr };
+    ModelPtr cone { nullptr };
 
     Vector3f direction { 0.0f, 0.0f, -1.0f };
     float innerAngle { 30.0f };

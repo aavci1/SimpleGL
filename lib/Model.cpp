@@ -1,4 +1,4 @@
-#include "Mesh.h"
+#include "Model.h"
 
 #include "Animation.h"
 #include "Bone.h"
@@ -7,12 +7,12 @@
 #include <queue>
 
 namespace SimpleGL {
-  class MeshPrivate {
+  class ModelPrivate {
   public:
-    MeshPrivate() {
+    ModelPrivate() {
     }
 
-    ~MeshPrivate() {
+    ~ModelPrivate() {
     }
 
     string name;
@@ -21,23 +21,23 @@ namespace SimpleGL {
     vector<SubMeshPtr> subMeshes;
   };
 
-  Mesh::Mesh(const string &name) : d(new MeshPrivate()) {
+  Model::Model(const string &name) : d(new ModelPrivate()) {
     d->name = name;
   }
 
-  Mesh::~Mesh() {
+  Model::~Model() {
     delete d;
   }
 
-  const string &Mesh::name() const {
+  const string &Model::name() const {
     return d->name;
   }
 
-  const vector<AnimationPtr> &Mesh::animations() const {
+  const vector<AnimationPtr> &Model::animations() const {
     return d->animations;
   }
 
-  AnimationPtr Mesh::createAnimation(const string &name) {
+  AnimationPtr Model::createAnimation(const string &name) {
     AnimationPtr animation { new Animation(name) };
     // add to list
     d->animations.push_back(animation);
@@ -45,11 +45,11 @@ namespace SimpleGL {
     return animation;
   }
 
-  const vector<BonePtr> &Mesh::bones() const {
+  const vector<BonePtr> &Model::bones() const {
     return d->bones;
   }
 
-  BonePtr Mesh::createBone(const string &name) {
+  BonePtr Model::createBone(const string &name) {
     BonePtr bone { new Bone(name) };
     // add to list
     d->bones.push_back(bone);
@@ -57,11 +57,11 @@ namespace SimpleGL {
     return bone;
   }
 
-  const vector<SubMeshPtr> &Mesh::subMeshes() const {
+  const vector<SubMeshPtr> &Model::subMeshes() const {
     return d->subMeshes;
   }
 
-  SubMeshPtr Mesh::createSubMesh() {
+  SubMeshPtr Model::createSubMesh() {
     SubMeshPtr subMesh { new SubMesh() };
     // add to list
     d->subMeshes.push_back(subMesh);
@@ -69,7 +69,7 @@ namespace SimpleGL {
     return subMesh;
   }
 
-  void Mesh::updateBones() {
+  void Model::updateBones() {
     if (d->bones.size() == 0)
       return;
     // process bones
@@ -89,7 +89,7 @@ namespace SimpleGL {
     }
   }
 
-  void Mesh::render(CameraPtr camera) {
+  void Model::render(CameraPtr camera) {
     for (uint i = 0; i < d->subMeshes.size(); ++i)
       d->subMeshes[i]->render(camera);
   }

@@ -35,19 +35,19 @@ namespace SimpleGL {
     MaterialPtr retrieveMaterial(const string &name);
     void destroyMaterial(const string &name);
 
-    MeshPtr createMesh(const string &name);
-    MeshPtr retrieveMesh(const string &name);
-    void destroyMesh(const string &name);
+    ModelPtr createModel(const string &name);
+    ModelPtr retrieveModel(const string &name);
+    void destroyModel(const string &name);
 
-    MeshPtr createQuad(const string &name, float width = 1.0f, float height = 1.0f);
-    MeshPtr createPlane(const string &name, float width = 1.0f, float height = 1.0f, float uTile = 1.0f, float vTile = 1.0f);
-    MeshPtr createCube(const string &name, float width = 1.0f, float height = 1.0f, float depth = 1.0f);
-    MeshPtr createCone(const string &name, float radius = 1.0f, float height = 1.0f, uint slices = 16, uint stacks = 16);
-    MeshPtr createSphere(const string &name, float radius = 1.0f, uint slices = 16, uint stacks = 16);
+    ModelPtr createQuad(const string &name, float width = 1.0f, float height = 1.0f);
+    ModelPtr createPlane(const string &name, float width = 1.0f, float height = 1.0f, float uTile = 1.0f, float vTile = 1.0f);
+    ModelPtr createCube(const string &name, float width = 1.0f, float height = 1.0f, float depth = 1.0f);
+    ModelPtr createCone(const string &name, float radius = 1.0f, float height = 1.0f, uint slices = 16, uint stacks = 16);
+    ModelPtr createSphere(const string &name, float radius = 1.0f, uint slices = 16, uint stacks = 16);
     void save(const string &name, const string &path);
     void load(const string &name, const string &path);
 
-    InstancePtr createInstance(const string &mesh, const string &material);
+    InstancePtr createInstance(const string &model, const string &material);
 
     void prepareRender(long elapsed);
     void renderScene(CameraPtr camera);

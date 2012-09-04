@@ -2,7 +2,7 @@
 
 #include "Camera.h"
 #include "Material.h"
-#include "Mesh.h"
+#include "Model.h"
 #include "Program.h"
 #include "Root.h"
 #include "SceneNode.h"
@@ -17,7 +17,7 @@ namespace SimpleGL {
     ~DirectionalLightPrivate() {
     }
 
-    MeshPtr quad { nullptr };
+    ModelPtr quad { nullptr };
     Vector3f direction { 0.0f, 0.0f, -1.0f };
   };
 

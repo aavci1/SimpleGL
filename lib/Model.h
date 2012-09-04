@@ -1,15 +1,15 @@
-#ifndef MESH_H
-#define MESH_H
+#ifndef MODEL_H
+#define MODEL_H
 
 #include "Types.h"
 
 namespace SimpleGL {
-  class MeshPrivate;
+  class ModelPrivate;
 
-  class Mesh {
+  class Model {
   public:
-    Mesh(const string &name);
-    ~Mesh();
+    Model(const string &name);
+    ~Model();
 
     const string &name() const;
 
@@ -26,8 +26,8 @@ namespace SimpleGL {
     void render(CameraPtr camera);
 
   private:
-    MeshPrivate *d;
+    ModelPrivate *d;
   };
 }
 
-#endif // MESH_H
+#endif // MODEL_H

@@ -9,7 +9,7 @@
 #include "Instance.h"
 #include "Light.h"
 #include "Material.h"
-#include "Mesh.h"
+#include "Model.h"
 #include "OutputStream.h"
 #include "PointLight.h"
 #include "Program.h"
@@ -52,7 +52,7 @@ namespace SimpleGL {
     vector<InstancePtr> instances;
     vector<LightPtr> lights;
     map<string, CameraPtr> cameras;
-    map<string, MeshPtr> meshes;
+    map<string, ModelPtr> models;
     map<string, MaterialPtr> materials;
     map<string, ProgramPtr> programs;
 
@@ -174,29 +174,29 @@ namespace SimpleGL {
     d->materials.erase(name);
   }
 
-  MeshPtr Root::createMesh(const string &name) {
-    MeshPtr mesh { new Mesh(name) };
+  ModelPtr Root::createModel(const string &name) {
+    ModelPtr model { new Model(name) };
     // add to list
     if (!name.empty())
-      d->meshes[name] = mesh;
-    // return mesh
-    return mesh;
+      d->models[name] = model;
+    // return model
+    return model;
   }
 
-  MeshPtr Root::retrieveMesh(const string &name) {
-    if (name.empty() || d->meshes.count(name) == 0)
+  ModelPtr Root::retrieveModel(const string &name) {
+    if (name.empty() || d->models.count(name) == 0)
       return nullptr;
-    return d->meshes[name];
+    return d->models[name];
   }
 
-  void Root::destroyMesh(const string &name) {
-    if (d->meshes.count(name) == 0)
+  void Root::destroyModel(const string &name) {
+    if (d->models.count(name) == 0)
       return;
-    d->meshes.erase(name);
+    d->models.erase(name);
   }
 
-  MeshPtr Root::createQuad(const string &name, float width, float height) {
-    MeshPtr mesh = Root::instance()->createMesh(name);
+  ModelPtr Root::createQuad(const string &name, float width, float height) {
+    ModelPtr model = Root::instance()->createModel(name);
     // calculate vertex and index data
     float vertices[] = {
       -1.0f * width, -1.0f * height, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
@@ -206,15 +206,15 @@ namespace SimpleGL {
     };
     uint32_t indices[] = { 0, 1, 2, 0, 2, 3 };
     // set vertex and index data
-    SubMeshPtr subMesh = mesh->createSubMesh();
+    SubMeshPtr subMesh = model->createSubMesh();
     subMesh->setVertexData(vertices, 4, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
     subMesh->setIndexData(indices, 6);
-    // return mesh
-    return mesh;
+    // return model
+    return model;
   }
 
-  MeshPtr Root::createPlane(const string &name, float width, float height, float uTile, float vTile) {
-    MeshPtr mesh = Root::instance()->createMesh(name);
+  ModelPtr Root::createPlane(const string &name, float width, float height, float uTile, float vTile) {
+    ModelPtr model = Root::instance()->createModel(name);
     // calculate vertex and index data
     float vertices[] = {
       -1.0f * width, 0.0f, +1.0f * height, 0.0f, 1.0f, 0.0f, -1.0f * uTile, -1.0f * vTile,
@@ -224,15 +224,15 @@ namespace SimpleGL {
     };
     uint32_t indices[] = { 0, 1, 2, 0, 2, 3 };
     // set vertex and index data
-    SubMeshPtr subMesh = mesh->createSubMesh();
+    SubMeshPtr subMesh = model->createSubMesh();
     subMesh->setVertexData(vertices, 4, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
     subMesh->setIndexData(indices, 6);
-    // return mesh
-    return mesh;
+    // return model
+    return model;
   }
 
-  MeshPtr Root::createCube(const string &name, float width, float height, float depth) {
-    MeshPtr mesh = Root::instance()->createMesh(name);
+  ModelPtr Root::createCube(const string &name, float width, float height, float depth) {
+    ModelPtr model = Root::instance()->createModel(name);
     // calculate vertex and index data
     float vertices[] = {
       -1.0f * width, -1.0f * height,  1.0f * depth, 0.0f, 0.0f, +1.0f, 0.0f, 0.0f,
@@ -285,15 +285,15 @@ namespace SimpleGL {
       20, 22, 23
     };
     // set vertex and index data
-    SubMeshPtr subMesh = mesh->createSubMesh();
+    SubMeshPtr subMesh = model->createSubMesh();
     subMesh->setVertexData(vertices, 24, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
     subMesh->setIndexData(indices, 36);
-    // return mesh
-    return mesh;
+    // return model
+    return model;
   }
 
-  MeshPtr Root::createCone(const string &name, float radius, float height, uint slices, uint stacks) {
-    MeshPtr mesh = Root::instance()->createMesh(name);
+  ModelPtr Root::createCone(const string &name, float radius, float height, uint slices, uint stacks) {
+    ModelPtr model = Root::instance()->createModel(name);
     // calculate vertex and index data
     // allocate the vertex buffer
     uint vertexCount = (stacks + 1) * (slices + 1) + 1 + slices + 1;
@@ -376,18 +376,18 @@ namespace SimpleGL {
       }
     }
     // set vertex and index data
-    SubMeshPtr subMesh = mesh->createSubMesh();
+    SubMeshPtr subMesh = model->createSubMesh();
     subMesh->setVertexData(vertices, vertexCount, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
     subMesh->setIndexData(indices, indexCount);
     // clean up
     delete[] vertices;
     delete[] indices;
-    // return mesh
-    return mesh;
+    // return model
+    return model;
   }
 
-  MeshPtr Root::createSphere(const string &name, float radius, uint slices, uint stacks) {
-    MeshPtr mesh = Root::instance()->createMesh(name);
+  ModelPtr Root::createSphere(const string &name, float radius, uint slices, uint stacks) {
+    ModelPtr model = Root::instance()->createModel(name);
     // calculate vertex and index data
     // allocate the vertex buffer
     uint vertexCount = (stacks + 1) * (slices + 1);
@@ -438,21 +438,21 @@ namespace SimpleGL {
       }
     }
     // set vertex and index data
-    SubMeshPtr subMesh = mesh->createSubMesh();
+    SubMeshPtr subMesh = model->createSubMesh();
     subMesh->setVertexData(vertices, vertexCount, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
     subMesh->setIndexData(indices, indexCount);
     // clean up
     delete[] vertices;
     delete[] indices;
-    // return mesh
-    return mesh;
+    // return model
+    return model;
   }
 
   void Root::save(const string &name, const string &path) {
-    // find mesh
-    if (d->meshes.count(name) == 0)
+    // find mesmodel
+    if (d->models.count(name) == 0)
       return;
-    MeshPtr mesh = d->meshes[name];
+    ModelPtr model = d->models[name];
     // create output stream
     OutputStream out(path);
     // write magic bytes
@@ -460,9 +460,9 @@ namespace SimpleGL {
     // write version info
     out << uint8_t(1) << uint8_t(0);
     // write submesh count
-    out << uint16_t(mesh->subMeshes().size());
+    out << uint16_t(model->subMeshes().size());
     // write submeshes
-    for (SubMeshPtr subMesh: mesh->subMeshes()) {
+    for (SubMeshPtr subMesh: model->subMeshes()) {
       // write material info
       out << subMesh->material();
       // write vertex description
@@ -475,25 +475,25 @@ namespace SimpleGL {
       out.write(subMesh->indexData(), subMesh->indexSize() * subMesh->indexCount());
     }
     // write bone count
-    out << uint16_t(mesh->bones().size());
+    out << uint16_t(model->bones().size());
     // write bones
-    for (BonePtr bone: mesh->bones()) {
+    for (BonePtr bone: model->bones()) {
       // write bone name
       out << bone->name();
       // write parent name
       int boneIndex = -1;
       if (bone->parent())
-        for (uint i = 0; i < mesh->bones().size(); ++i)
-          if (mesh->bones().at(i) == bone->parent())
+        for (uint i = 0; i < model->bones().size(); ++i)
+          if (model->bones().at(i) == bone->parent())
             boneIndex = i;
       out << uint16_t(boneIndex);
       // write transform and offset matrices
       out << bone->transform() << bone->offsetMatrix();
     }
     // write animation count
-    out << uint16_t(mesh->animations().size());
+    out << uint16_t(model->animations().size());
     // write animations
-    for (AnimationPtr animation: mesh->animations()) {
+    for (AnimationPtr animation: model->animations()) {
       // write name and duration
       out << animation->name() << animation->duration();
       // write track count
@@ -522,8 +522,8 @@ namespace SimpleGL {
   }
 
   void Root::load(const string &name, const string &path) {
-    // create a new mesh
-    MeshPtr mesh = Root::instance()->createMesh(name);
+    // create a new model
+    ModelPtr model = Root::instance()->createModel(name);
     // create input stream
     InputStream in(path);
     // read magic bytes
@@ -555,7 +555,7 @@ namespace SimpleGL {
       char *indexData = new char[indexSize * indexCount];
       in.read(indexData, indexSize * indexCount);
       // create submesh
-      SubMeshPtr subMesh = mesh->createSubMesh();
+      SubMeshPtr subMesh = model->createSubMesh();
       subMesh->setMaterial(material);
       subMesh->setVertexData((float *)vertexData, vertexCount, vertexFormat);
       subMesh->setIndexData((uint32_t *)indexData, indexCount);
@@ -578,8 +578,8 @@ namespace SimpleGL {
       Matrix4f transform, offset;
       in >> transform >> offset;
       // create bone
-      BonePtr parent = (parentIndex < mesh->bones().size()) ? mesh->bones().at(parentIndex) : nullptr;
-      BonePtr bone = mesh->createBone(name);
+      BonePtr parent = (parentIndex < model->bones().size()) ? model->bones().at(parentIndex) : nullptr;
+      BonePtr bone = model->createBone(name);
       bone->setParent(parent);
       bone->setTransform(transform);
       bone->setOffsetMatrix(offset);
@@ -595,7 +595,7 @@ namespace SimpleGL {
       long duration = 0;
       in >> duration;
       // create animation
-      AnimationPtr animation = mesh->createAnimation(name);
+      AnimationPtr animation = model->createAnimation(name);
       animation->setDuration(duration);
       // read track count
       uint16_t trackCount = 0;
@@ -641,8 +641,8 @@ namespace SimpleGL {
     }
   }
 
-  InstancePtr Root::createInstance(const string &mesh, const string &material) {
-    InstancePtr instance { new Instance(mesh, material) };
+  InstancePtr Root::createInstance(const string &model, const string &material) {
+    InstancePtr instance { new Instance(model, material) };
     // add to list
     d->instances.push_back(instance);
     // return instance
@@ -669,19 +669,19 @@ namespace SimpleGL {
       for (InstancePtr instance: d->instances) {
         if (instance->parent() != node)
           continue;
-        MeshPtr mesh = Root::instance()->retrieveMesh(instance->mesh());
-        if (!mesh)
+        ModelPtr model = Root::instance()->retrieveModel(instance->model());
+        if (!model)
           continue;
         // update each animation
-        for (AnimationPtr animation: mesh->animations()) {
+        for (AnimationPtr animation: model->animations()) {
           // update bone transforms
           for (AnimationTrackPtr track: animation->tracks())
-            for (BonePtr bone: mesh->bones())
+            for (BonePtr bone: model->bones())
               if (bone->name() == track->name())
                 bone->setTransform(track->transform(d->animationTime % animation->duration()));
         }
         // update skeleton
-        mesh->updateBones();
+        model->updateBones();
       }
       // queue child nodes for processing
       for (SceneNodePtr childNode: d->sceneNodes)
@@ -705,11 +705,11 @@ namespace SimpleGL {
       for (InstancePtr instance: d->instances) {
         if (instance->parent() != node)
           continue;
-        MeshPtr mesh = Root::instance()->retrieveMesh(instance->mesh());
-        if (!mesh)
+        ModelPtr model = Root::instance()->retrieveModel(instance->model());
+        if (!model)
           continue;
         // draw sub meshes
-        for (SubMeshPtr subMesh: mesh->subMeshes()) {
+        for (SubMeshPtr subMesh: model->subMeshes()) {
           MaterialPtr material = Root::instance()->retrieveMaterial(instance->material());
           if (!material)
             material = Root::instance()->retrieveMaterial(subMesh->material());
@@ -725,10 +725,10 @@ namespace SimpleGL {
           // set uniforms
           program->setUniform("ModelMatrix", node->worldTransform());
           program->setUniform("ModelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * node->worldTransform());
-          for (uint l = 0; l < mesh->bones().size(); ++l) {
+          for (uint l = 0; l < model->bones().size(); ++l) {
             char boneName[12] = { 0 };
             snprintf(boneName, sizeof(boneName), "Bones[%d]", l);
-            program->setUniform(boneName, mesh->bones().at(l)->worldTransform() * mesh->bones().at(l)->offsetMatrix());
+            program->setUniform(boneName, model->bones().at(l)->worldTransform() * model->bones().at(l)->offsetMatrix());
           }
           // render the mesh
           subMesh->render(camera);
