@@ -11,6 +11,8 @@ namespace SimpleGL {
     ~CameraPrivate() {
     }
 
+    string name { "" };
+
     float fov { 60.0f };
     float aspectRatio { 1.33f };
     float nearClipDistance { 1.0f };
@@ -20,7 +22,12 @@ namespace SimpleGL {
     Matrix4f projectionMatrix;
   };
 
-  Camera::Camera() : d(new CameraPrivate()) {
+  Camera::Camera(const string &name) : d(new CameraPrivate()) {
+    d->name = name;
+  }
+
+  const string &Camera::name() const {
+    return d->name;
   }
 
   Camera::~Camera() {

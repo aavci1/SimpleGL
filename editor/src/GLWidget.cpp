@@ -37,12 +37,12 @@ void GLWidget::initializeGL() {
   // create window
   window = Root::instance()->createWindow(width(), height());
   // create camera node
-  cameraNode = Root::instance()->createSceneNode();
+  SceneNodePtr cameraNode = Root::instance()->createSceneNode();
   cameraNode->setParent(Root::instance()->rootSceneNode());
   cameraNode->setPosition(Vector3f(0.0f, 170.0f, 300.0f));
   cameraNode->pitch(-10);
   // create a camera
-  camera = Root::instance()->createCamera();
+  CameraPtr camera = Root::instance()->createCamera("FpsCamera");
   camera->setParent(cameraNode);
   // create a viewport
   window->createViewport(camera);
@@ -164,6 +164,12 @@ void GLWidget::keyReleaseEvent(QKeyEvent *e) {
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *e) {
+  CameraPtr camera = Root::instance()->retrieveCamera("FpsCamera");
+  if (!camera)
+    return;
+  SceneNodePtr cameraNode = camera->parent();
+  if (!cameraNode)
+    return;
   if (e->buttons() == Qt::RightButton) {
     // pan camera
     cameraNode->moveRelative(Vector3f(mousePosition.x() - e->pos().x(), e->pos().y() - mousePosition.y(), 0));
@@ -199,6 +205,12 @@ void GLWidget::mouseReleaseEvent(QMouseEvent *e) {
 }
 
 void GLWidget::wheelEvent(QWheelEvent *e) {
+  CameraPtr camera = Root::instance()->retrieveCamera("FpsCamera");
+  if (!camera)
+    return;
+  SceneNodePtr cameraNode = camera->parent();
+  if (!cameraNode)
+    return;
   float altitude = cameraNode->position().y;
   cameraNode->moveRelative(Vector3f(0, 0, -0.4f * e->delta()));
   cameraNode->setPosition(cameraNode->position().x, altitude, cameraNode->position().z);

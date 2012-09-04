@@ -51,7 +51,7 @@ namespace SimpleGL {
     vector<SceneNodePtr> sceneNodes;
     vector<InstancePtr> instances;
     vector<LightPtr> lights;
-    vector<CameraPtr> cameras;
+    map<string, CameraPtr> cameras;
     map<string, MeshPtr> meshes;
     map<string, MaterialPtr> materials;
     map<string, ProgramPtr> programs;
@@ -97,7 +97,7 @@ namespace SimpleGL {
     return d->rootSceneNode;
   }
 
-  LightPtr Root::createLight(string type) {
+  LightPtr Root::createLight(const string &type) {
     LightPtr light;
     if (type == "Light/Point")
       light = LightPtr(new PointLight());
@@ -111,12 +111,25 @@ namespace SimpleGL {
     return light;
   }
 
-  CameraPtr Root::createCamera() {
-    CameraPtr camera { new Camera() };
+  CameraPtr Root::createCamera(const string &name) {
+    CameraPtr camera { new Camera(name) };
     // add to list
-    d->cameras.push_back(camera);
+    if (!name.empty())
+      d->cameras[name] = camera;
     // return camera
     return camera;
+  }
+
+  CameraPtr Root::retrieveCamera(const string &name) {
+    if (name.empty() || d->cameras.count(name) == 0)
+      return nullptr;
+    return d->cameras[name];
+  }
+
+  void Root::destroyCamera(const string &name) {
+    if (d->cameras.count(name) == 0)
+      return;
+    d->cameras.erase(name);
   }
 
   ProgramPtr Root::createProgram(const string &name) {

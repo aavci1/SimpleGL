@@ -21,9 +21,11 @@ namespace SimpleGL {
     SceneNodePtr createSceneNode();
     SceneNodePtr rootSceneNode() const;
 
-    LightPtr createLight(string type);
+    LightPtr createLight(const string &type);
 
-    CameraPtr createCamera();
+    CameraPtr createCamera(const string &name);
+    CameraPtr retrieveCamera(const string &name);
+    void destroyCamera(const string &name);
 
     ProgramPtr createProgram(const string &name);
     ProgramPtr retrieveProgram(const string &name);

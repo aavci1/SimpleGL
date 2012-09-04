@@ -9,8 +9,10 @@ namespace SimpleGL {
 
   class Camera : public SceneObject {
   public:
-    Camera();
+    Camera(const string &name);
     ~Camera();
+
+    const string &name() const;
 
     string type() const;
 

@@ -27,8 +27,6 @@ protected:
 
 protected:
   SimpleGL::WindowPtr window { nullptr };
-  SimpleGL::CameraPtr camera { nullptr };
-  SimpleGL::SceneNodePtr cameraNode { nullptr };
   QPoint mousePosition { 0, 0 };
 };
 
