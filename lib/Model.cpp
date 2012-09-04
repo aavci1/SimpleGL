@@ -21,6 +21,7 @@ namespace SimpleGL {
     vector<BonePtr> bones;
     vector<MeshPtr> meshes;
     long animationTime { 0 };
+    vector<Matrix4f> transforms;
   };
 
   Model::Model(const string &name) : d(new ModelPrivate()) {
@@ -63,6 +64,10 @@ namespace SimpleGL {
       return;
     // process bone
     d->bones.at(0)->updateWorldTransform();
+    // update transforms
+    d->transforms.clear();
+    for (BonePtr bone: d->bones)
+      d->transforms.push_back(bone->worldTransform() * bone->offsetMatrix());
   }
 
   const vector<BonePtr> &Model::bones() const {
@@ -77,11 +82,8 @@ namespace SimpleGL {
     return bone;
   }
 
-  vector<Matrix4f> Model::boneTransforms() const {
-    vector<Matrix4f> transforms;
-    for (uint i = 0; i < d->bones.size(); ++i)
-      transforms.push_back(d->bones.at(i)->worldTransform() * d->bones.at(i)->offsetMatrix());
-    return transforms;
+  const vector<Matrix4f> &Model::boneTransforms() const {
+    return d->transforms;
   }
 
   const vector<MeshPtr> &Model::meshes() const {
