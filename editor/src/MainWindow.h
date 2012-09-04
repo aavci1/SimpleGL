@@ -3,8 +3,6 @@
 
 #include "ui_MainWindow.h"
 
-class QTimer;
-
 class MainWindow : public QMainWindow, private Ui::MainWindow {
   Q_OBJECT
 public:
@@ -20,8 +18,7 @@ public slots:
   void fileExit();
   void helpAbout();
 
-private:
-  QTimer *timer { nullptr };
+  void updateView();
 };
 
 #endif // MAINWINDOW_H

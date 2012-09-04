@@ -24,14 +24,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   connect(actionClose, SIGNAL(triggered()), this, SLOT(fileClose()));
   connect(actionExit, SIGNAL(triggered()), this, SLOT(fileExit()));
   connect(actionAbout, SIGNAL(triggered()), this, SLOT(helpAbout()));
-  // create timer
-  timer = new QTimer(this);
-  // set timer interval
-  timer->setInterval(10);
-  // connect update
-  connect(timer, SIGNAL(timeout()), widget, SLOT(updateGL()));
-  // start the timer
-  timer->start();
+  // schedule update
+  QTimer::singleShot(1, this, SLOT(updateView()));
 }
 
 MainWindow::~MainWindow() {
@@ -125,4 +119,13 @@ void MainWindow::helpAbout() {
                      .arg(QCoreApplication::applicationVersion())
                      .arg(QCoreApplication::organizationName())
                      .arg(QCoreApplication::organizationDomain()));
+}
+
+void MainWindow::updateView() {
+  // update widget
+  widget->updateGL();
+  // update fps
+  lblFps->setText(QString::number(Root::instance()->fps()));
+  // schedule next update
+  QTimer::singleShot(1, this, SLOT(updateView()));
 }
