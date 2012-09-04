@@ -14,6 +14,7 @@ set (SOURCES
   Instance.cpp
   Light.cpp
   Material.cpp
+  Mesh.cpp
   Model.cpp
   OutputStream.cpp
   PointLight.cpp
@@ -21,7 +22,6 @@ set (SOURCES
   Root.cpp
   SceneNode.cpp
   SceneObject.cpp
-  SubMesh.cpp
   SpotLight.cpp
   Viewport.cpp
   Window.cpp

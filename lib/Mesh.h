@@ -1,15 +1,15 @@
-#ifndef SUBMESH_H
-#define SUBMESH_H
+#ifndef MESH_H
+#define MESH_H
 
 #include "Types.h"
 
 namespace SimpleGL {
-  class SubMeshPrivate;
+  class MeshPrivate;
 
-  class SubMesh {
+  class Mesh {
   public:
-    SubMesh();
-    ~SubMesh();
+    Mesh();
+    ~Mesh();
 
     const string &material() const;
     void setMaterial(const string &name);
@@ -29,8 +29,8 @@ namespace SimpleGL {
     void render(CameraPtr camera);
 
   private:
-    SubMeshPrivate *d;
+    MeshPrivate *d;
   };
 }
 
-#endif // SUBMESH_H
+#endif // MESH_H

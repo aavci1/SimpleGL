@@ -2,7 +2,7 @@
 
 #include "Animation.h"
 #include "Bone.h"
-#include "SubMesh.h"
+#include "Mesh.h"
 
 #include <queue>
 
@@ -18,7 +18,7 @@ namespace SimpleGL {
     string name;
     vector<AnimationPtr> animations;
     vector<BonePtr> bones;
-    vector<SubMeshPtr> subMeshes;
+    vector<MeshPtr> meshes;
   };
 
   Model::Model(const string &name) : d(new ModelPrivate()) {
@@ -57,16 +57,16 @@ namespace SimpleGL {
     return bone;
   }
 
-  const vector<SubMeshPtr> &Model::subMeshes() const {
-    return d->subMeshes;
+  const vector<MeshPtr> &Model::meshes() const {
+    return d->meshes;
   }
 
-  SubMeshPtr Model::createSubMesh() {
-    SubMeshPtr subMesh { new SubMesh() };
+  MeshPtr Model::createMesh() {
+    MeshPtr mesh { new Mesh() };
     // add to list
-    d->subMeshes.push_back(subMesh);
+    d->meshes.push_back(mesh);
     // return mesh
-    return subMesh;
+    return mesh;
   }
 
   void Model::updateBones() {
@@ -90,7 +90,7 @@ namespace SimpleGL {
   }
 
   void Model::render(CameraPtr camera) {
-    for (uint i = 0; i < d->subMeshes.size(); ++i)
-      d->subMeshes[i]->render(camera);
+    for (uint i = 0; i < d->meshes.size(); ++i)
+      d->meshes[i]->render(camera);
   }
 }

@@ -2,10 +2,10 @@
 
 #include "AssimpImporter.h"
 #include "Instance.h"
+#include "Mesh.h"
 #include "Model.h"
 #include "Root.h"
 #include "SceneNode.h"
-#include "SubMesh.h"
 
 #include <QDesktopServices>
 #include <QFileDialog>
@@ -48,9 +48,9 @@ void MainWindow::fileOpen() {
   ModelPtr model = Root::instance()->retrieveModel("MODEL");
   if (model) {
     uint vertexCount = 0, indexCount = 0;
-    for (SubMeshPtr subMesh: model->subMeshes()) {
-      vertexCount += subMesh->vertexCount();
-      indexCount += subMesh->indexCount();
+    for (MeshPtr mesh: model->meshes()) {
+      vertexCount += mesh->vertexCount();
+      indexCount += mesh->indexCount();
     }
     lblVertexCount->setText(QString::number(vertexCount));
     lblTriangleCount->setText(QString::number(indexCount / 3));
@@ -90,9 +90,9 @@ void MainWindow::fileImport() {
   ModelPtr model = Root::instance()->retrieveModel("MODEL");
   if (model) {
     uint vertexCount = 0, indexCount = 0;
-    for (SubMeshPtr subMesh: model->subMeshes()) {
-      vertexCount += subMesh->vertexCount();
-      indexCount += subMesh->indexCount();
+    for (MeshPtr mesh: model->meshes()) {
+      vertexCount += mesh->vertexCount();
+      indexCount += mesh->indexCount();
     }
     lblVertexCount->setText(QString::number(vertexCount));
     lblTriangleCount->setText(QString::number(indexCount / 3));

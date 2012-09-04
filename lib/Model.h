@@ -19,8 +19,8 @@ namespace SimpleGL {
     const vector<BonePtr> &bones() const;
     BonePtr createBone(const string &name);
 
-    const vector<SubMeshPtr> &subMeshes() const;
-    SubMeshPtr createSubMesh();
+    const vector<MeshPtr> &meshes() const;
+    MeshPtr createMesh();
 
     void updateBones();
     void render(CameraPtr camera);

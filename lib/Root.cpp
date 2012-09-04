@@ -9,6 +9,7 @@
 #include "Instance.h"
 #include "Light.h"
 #include "Material.h"
+#include "Mesh.h"
 #include "Model.h"
 #include "OutputStream.h"
 #include "PointLight.h"
@@ -16,7 +17,6 @@
 #include "Root.h"
 #include "SceneNode.h"
 #include "SpotLight.h"
-#include "SubMesh.h"
 #include "Viewport.h"
 #include "Window.h"
 
@@ -206,9 +206,9 @@ namespace SimpleGL {
     };
     uint32_t indices[] = { 0, 1, 2, 0, 2, 3 };
     // set vertex and index data
-    SubMeshPtr subMesh = model->createSubMesh();
-    subMesh->setVertexData(vertices, 4, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
-    subMesh->setIndexData(indices, 6);
+    MeshPtr mesh = model->createMesh();
+    mesh->setVertexData(vertices, 4, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
+    mesh->setIndexData(indices, 6);
     // return model
     return model;
   }
@@ -224,9 +224,9 @@ namespace SimpleGL {
     };
     uint32_t indices[] = { 0, 1, 2, 0, 2, 3 };
     // set vertex and index data
-    SubMeshPtr subMesh = model->createSubMesh();
-    subMesh->setVertexData(vertices, 4, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
-    subMesh->setIndexData(indices, 6);
+    MeshPtr mesh = model->createMesh();
+    mesh->setVertexData(vertices, 4, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
+    mesh->setIndexData(indices, 6);
     // return model
     return model;
   }
@@ -285,9 +285,9 @@ namespace SimpleGL {
       20, 22, 23
     };
     // set vertex and index data
-    SubMeshPtr subMesh = model->createSubMesh();
-    subMesh->setVertexData(vertices, 24, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
-    subMesh->setIndexData(indices, 36);
+    MeshPtr mesh = model->createMesh();
+    mesh->setVertexData(vertices, 24, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
+    mesh->setIndexData(indices, 36);
     // return model
     return model;
   }
@@ -376,9 +376,9 @@ namespace SimpleGL {
       }
     }
     // set vertex and index data
-    SubMeshPtr subMesh = model->createSubMesh();
-    subMesh->setVertexData(vertices, vertexCount, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
-    subMesh->setIndexData(indices, indexCount);
+    MeshPtr mesh = model->createMesh();
+    mesh->setVertexData(vertices, vertexCount, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
+    mesh->setIndexData(indices, indexCount);
     // clean up
     delete[] vertices;
     delete[] indices;
@@ -438,9 +438,9 @@ namespace SimpleGL {
       }
     }
     // set vertex and index data
-    SubMeshPtr subMesh = model->createSubMesh();
-    subMesh->setVertexData(vertices, vertexCount, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
-    subMesh->setIndexData(indices, indexCount);
+    MeshPtr mesh = model->createMesh();
+    mesh->setVertexData(vertices, vertexCount, AT_POSITION | AT_NORMAL | AT_TEXCOORD0);
+    mesh->setIndexData(indices, indexCount);
     // clean up
     delete[] vertices;
     delete[] indices;
@@ -459,20 +459,20 @@ namespace SimpleGL {
     out << 'S' << 'G' << 'L' << 'M';
     // write version info
     out << uint8_t(1) << uint8_t(0);
-    // write submesh count
-    out << uint16_t(model->subMeshes().size());
-    // write submeshes
-    for (SubMeshPtr subMesh: model->subMeshes()) {
+    // write mesh count
+    out << uint16_t(model->meshes().size());
+    // write meshes
+    for (MeshPtr mesh: model->meshes()) {
       // write material info
-      out << subMesh->material();
+      out << mesh->material();
       // write vertex description
-      out << subMesh->vertexFormat() << subMesh->vertexSize() << subMesh->vertexCount();
+      out << mesh->vertexFormat() << mesh->vertexSize() << mesh->vertexCount();
       // write vertex data
-      out.write(subMesh->vertexData(), subMesh->vertexSize() * subMesh->vertexCount());
+      out.write(mesh->vertexData(), mesh->vertexSize() * mesh->vertexCount());
       // write index description
-      out << subMesh->indexSize() << subMesh->indexCount();
+      out << mesh->indexSize() << mesh->indexCount();
       // write index data
-      out.write(subMesh->indexData(), subMesh->indexSize() * subMesh->indexCount());
+      out.write(mesh->indexData(), mesh->indexSize() * mesh->indexCount());
     }
     // write bone count
     out << uint16_t(model->bones().size());
@@ -532,11 +532,11 @@ namespace SimpleGL {
     // read version info
     uint8_t major = 0, minor = 0;
     in >> major >> minor;
-    // read submesh count
-    uint16_t subMeshCount = 0;
-    in >> subMeshCount;
-    // read subMeshes
-    for (uint i = 0; i < subMeshCount; ++i) {
+    // read mesh count
+    uint16_t meshCount = 0;
+    in >> meshCount;
+    // read meshes
+    for (uint i = 0; i < meshCount; ++i) {
       // read material info
       string material;
       in >> material;
@@ -554,11 +554,11 @@ namespace SimpleGL {
       // read index data
       char *indexData = new char[indexSize * indexCount];
       in.read(indexData, indexSize * indexCount);
-      // create submesh
-      SubMeshPtr subMesh = model->createSubMesh();
-      subMesh->setMaterial(material);
-      subMesh->setVertexData((float *)vertexData, vertexCount, vertexFormat);
-      subMesh->setIndexData((uint32_t *)indexData, indexCount);
+      // create mesh
+      MeshPtr mesh = model->createMesh();
+      mesh->setMaterial(material);
+      mesh->setVertexData((float *)vertexData, vertexCount, vertexFormat);
+      mesh->setIndexData((uint32_t *)indexData, indexCount);
       // clean up
       delete vertexData;
       delete indexData;
@@ -708,11 +708,11 @@ namespace SimpleGL {
         ModelPtr model = Root::instance()->retrieveModel(instance->model());
         if (!model)
           continue;
-        // draw sub meshes
-        for (SubMeshPtr subMesh: model->subMeshes()) {
+        // draw meshes
+        for (MeshPtr mesh: model->meshes()) {
           MaterialPtr material = Root::instance()->retrieveMaterial(instance->material());
           if (!material)
-            material = Root::instance()->retrieveMaterial(subMesh->material());
+            material = Root::instance()->retrieveMaterial(mesh->material());
           if (!material)
             material = Root::instance()->retrieveMaterial("Default");
           if (!material)
@@ -731,7 +731,7 @@ namespace SimpleGL {
             program->setUniform(boneName, model->bones().at(l)->worldTransform() * model->bones().at(l)->offsetMatrix());
           }
           // render the mesh
-          subMesh->render(camera);
+          mesh->render(camera);
           // unbind material
           material->unbind();
         }

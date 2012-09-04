@@ -1,14 +1,14 @@
-#include "SubMesh.h"
+#include "Mesh.h"
 
 #include <GL/glew.h>
 
 namespace SimpleGL {
-  class SubMeshPrivate {
+  class MeshPrivate {
   public:
-    SubMeshPrivate() {
+    MeshPrivate() {
     }
 
-    ~SubMeshPrivate() {
+    ~MeshPrivate() {
       delete vertexData;
       delete indexData;
     }
@@ -29,7 +29,7 @@ namespace SimpleGL {
     uint32_t *indexData { 0 };
   };
 
-  SubMesh::SubMesh() : d(new SubMeshPrivate()) {
+  Mesh::Mesh() : d(new MeshPrivate()) {
     // generate vertex array
     glGenVertexArrays(1, &d->vertexArray);
     // generate vertex buffer
@@ -38,7 +38,7 @@ namespace SimpleGL {
     glGenBuffers(1, &d->indexBuffer);
   }
 
-  SubMesh::~SubMesh() {
+  Mesh::~Mesh() {
     // delete vertex array
     glDeleteVertexArrays(1, &d->vertexArray);
     // delete vertex buffer
@@ -49,43 +49,43 @@ namespace SimpleGL {
     delete d;
   }
 
-  const string &SubMesh::material() const {
+  const string &Mesh::material() const {
     return d->material;
   }
 
-  void SubMesh::setMaterial(const string &name) {
+  void Mesh::setMaterial(const string &name) {
     d->material = name;
   }
 
-  const uint16_t SubMesh::vertexFormat() const {
+  const uint16_t Mesh::vertexFormat() const {
     return d->vertexFormat;
   }
 
-  const uint16_t SubMesh::vertexSize() const {
+  const uint16_t Mesh::vertexSize() const {
     return d->vertexSize;
   }
 
-  const uint32_t SubMesh::vertexCount() const {
+  const uint32_t Mesh::vertexCount() const {
     return d->vertexCount;
   }
 
-  const char *SubMesh::vertexData() const {
+  const char *Mesh::vertexData() const {
     return (char *)d->vertexData;
   }
 
-  const uint16_t SubMesh::indexSize() const {
+  const uint16_t Mesh::indexSize() const {
     return d->indexSize;
   }
 
-  const uint32_t SubMesh::indexCount() const {
+  const uint32_t Mesh::indexCount() const {
     return d->indexCount;
   }
 
-  const char *SubMesh::indexData() const {
+  const char *Mesh::indexData() const {
     return (char *)d->indexData;
   }
 
-  const bool SubMesh::setVertexData(float *vertexData, uint vertexCount, uint vertexFormat) {
+  const bool Mesh::setVertexData(float *vertexData, uint vertexCount, uint vertexFormat) {
     // calculate vertex size
     d->vertexSize = 0;
     vector<pair<AttributeType, int>> attributes = {
@@ -194,7 +194,7 @@ namespace SimpleGL {
     return true;
   }
 
-  const bool SubMesh::setIndexData(uint32_t *indexData, uint indexCount) {
+  const bool Mesh::setIndexData(uint32_t *indexData, uint indexCount) {
     // generate and bind vertex array object
     glBindVertexArray(d->vertexArray);
     // generate index buffer object
@@ -211,7 +211,7 @@ namespace SimpleGL {
     return true;
   }
 
-  void SubMesh::render(CameraPtr camera) {
+  void Mesh::render(CameraPtr camera) {
     // bind vertex array
     glBindVertexArray(d->vertexArray);
     // draw triangles

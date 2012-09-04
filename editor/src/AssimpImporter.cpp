@@ -4,9 +4,9 @@
 #include "AnimationTrack.h"
 #include "Bone.h"
 #include "Material.h"
+#include "Mesh.h"
 #include "Model.h"
 #include "Root.h"
-#include "SubMesh.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -96,7 +96,7 @@ namespace AssimpImporter {
     if (index >= scene->mNumMeshes)
       return;
     aiMesh *aimesh = scene->mMeshes[index];
-    SubMeshPtr subMesh = model->createSubMesh();
+    MeshPtr mesh = model->createMesh();
     // create vertex buffer
     uint vertexCount = aimesh->mNumVertices;
     Vertex *vertices = new Vertex[vertexCount];
@@ -172,12 +172,12 @@ namespace AssimpImporter {
       indices[i * 3 + 2] = aimesh->mFaces[i].mIndices[2];
     }
     // set mesh data
-    subMesh->setVertexData((float *)vertices, vertexCount, AT_POSITION | AT_NORMAL | AT_TANGENT_AND_BITANGENT | AT_TEXCOORD0 | AT_TEXCOORD1 | AT_TEXCOORD2 | AT_TEXCOORD3 | AT_BONES);
-    subMesh->setIndexData(indices, indexCount);
+    mesh->setVertexData((float *)vertices, vertexCount, AT_POSITION | AT_NORMAL | AT_TANGENT_AND_BITANGENT | AT_TEXCOORD0 | AT_TEXCOORD1 | AT_TEXCOORD2 | AT_TEXCOORD3 | AT_BONES);
+    mesh->setIndexData(indices, indexCount);
     // set material
     if (materials[aimesh->mMaterialIndex] != nullptr) {
       materials[aimesh->mMaterialIndex]->setProgram(aimesh->HasBones() ? "Skinned" : "Textured");
-      subMesh->setMaterial(materials[aimesh->mMaterialIndex]->name());
+      mesh->setMaterial(materials[aimesh->mMaterialIndex]->name());
     }
   }
 
