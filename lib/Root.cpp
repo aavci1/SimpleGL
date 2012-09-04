@@ -692,9 +692,10 @@ namespace SimpleGL {
       SceneNodePtr node = processQueue.front();
       processQueue.pop();
       // render instances
-      for (InstancePtr instance: d->instances) {
-        if (instance->parent() != node.get())
+      for (SceneObjectPtr object: node->attachedObjects()) {
+        if (object->type() != "Instance")
           continue;
+        InstancePtr instance = static_pointer_cast<Instance>(object);
         ModelPtr model = Root::instance()->retrieveModel(instance->model());
         if (!model)
           continue;
