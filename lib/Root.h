@@ -25,19 +25,19 @@ namespace SimpleGL {
 
     CameraPtr createCamera(const string &name);
     CameraPtr retrieveCamera(const string &name);
-    void destroyCamera(const string &name);
+    void removeCamera(const string &name);
 
     ProgramPtr createProgram(const string &name);
     ProgramPtr retrieveProgram(const string &name);
-    void destroyProgram(const string &name);
+    void removeProgram(const string &name);
 
     MaterialPtr createMaterial(const string &name);
     MaterialPtr retrieveMaterial(const string &name);
-    void destroyMaterial(const string &name);
+    void removeMaterial(const string &name);
 
     ModelPtr createModel(const string &name);
     ModelPtr retrieveModel(const string &name);
-    void destroyModel(const string &name);
+    void removeModel(const string &name);
 
     ModelPtr createQuad(const string &name, float width = 1.0f, float height = 1.0f);
     ModelPtr createPlane(const string &name, float width = 1.0f, float height = 1.0f, float uTile = 1.0f, float vTile = 1.0f);

@@ -104,7 +104,7 @@ void MainWindow::fileImport() {
 }
 
 void MainWindow::fileClose() {
-  Root::instance()->destroyModel("MODEL");
+  Root::instance()->removeModel("MODEL");
   // update vertex and face counts
   lblVertexCount->setText("");
   lblTriangleCount->setText("");

@@ -24,6 +24,7 @@
 
 #include <map>
 #include <queue>
+#include <sstream>
 
 namespace SimpleGL {
   static Root *_instance { nullptr };
@@ -44,6 +45,12 @@ namespace SimpleGL {
     }
 
     ~RootPrivate() {
+    }
+
+    const string toString(const int number) {
+      stringstream ss;
+      ss << number;
+      return ss.str();
     }
 
     vector<WindowPtr> windows;
@@ -125,7 +132,7 @@ namespace SimpleGL {
     return d->cameras[name];
   }
 
-  void Root::destroyCamera(const string &name) {
+  void Root::removeCamera(const string &name) {
     if (d->cameras.count(name) == 0)
       return;
     d->cameras.erase(name);
@@ -146,7 +153,7 @@ namespace SimpleGL {
     return d->programs[name];
   }
 
-  void Root::destroyProgram(const string &name) {
+  void Root::removeProgram(const string &name) {
     if (d->programs.count(name) == 0)
       return;
     d->programs.erase(name);
@@ -167,7 +174,7 @@ namespace SimpleGL {
     return d->materials[name];
   }
 
-  void Root::destroyMaterial(const string &name) {
+  void Root::removeMaterial(const string &name) {
     if (d->materials.count(name) == 0)
       return;
     d->materials.erase(name);
@@ -188,7 +195,7 @@ namespace SimpleGL {
     return d->models[name];
   }
 
-  void Root::destroyModel(const string &name) {
+  void Root::removeModel(const string &name) {
     if (d->models.count(name) == 0)
       return;
     d->models.erase(name);
@@ -714,11 +721,9 @@ namespace SimpleGL {
           // set uniforms
           program->setUniform("ModelMatrix", node->worldTransform());
           program->setUniform("ModelViewProjMatrix", camera->projectionMatrix() * camera->viewMatrix() * node->worldTransform());
-          for (uint l = 0; l < model->bones().size(); ++l) {
-            char boneName[12] = { 0 };
-            snprintf(boneName, sizeof(boneName), "Bones[%d]", l);
-            program->setUniform(boneName, model->bones().at(l)->worldTransform() * model->bones().at(l)->offsetMatrix());
-          }
+          vector<Matrix4f> boneTransforms = model->boneTransforms();
+          for (uint l = 0; l < boneTransforms.size(); ++l)
+            program->setUniform(string("Bones[") + d->toString(l) + string("]"), boneTransforms[l]);
           // render the mesh
           mesh->render(camera);
           // unbind material

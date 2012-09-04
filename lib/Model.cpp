@@ -90,6 +90,13 @@ namespace SimpleGL {
     return bone;
   }
 
+  vector<Matrix4f> Model::boneTransforms() const {
+    vector<Matrix4f> transforms;
+    for (uint i = 0; i < d->bones.size(); ++i)
+      transforms.push_back(d->bones.at(i)->worldTransform() * d->bones.at(i)->offsetMatrix());
+    return transforms;
+  }
+
   const vector<MeshPtr> &Model::meshes() const {
     return d->meshes;
   }
