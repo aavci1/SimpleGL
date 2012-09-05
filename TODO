@@ -1,47 +1,53 @@
 * Rendering
-	* Ambient
-	* Emissive
-	* Bump/Normal/Displacement/Parallax mapping
-	* Specular mapping
-	* Hardware skinning
-	* Shadow mapping
-		* Adaptive shadow map atlas
-		* Soft shadows (GPU Gems 3)
-		* Paralel split shadow
-	* Blending mutliple textures
-	* Transparent objects
+  * Ambient
+  * Emissive
+  * Bump/Normal/Displacement/Parallax mapping
+  * Specular mapping
+  * Shadow mapping
+    * Adaptive shadow map atlas
+    * Soft shadows (GPU Gems 3)
+    * Paralel split shadow
+  * Blending mutliple textures
+  * Transparent objects
 
 * Post-production effects
-	* SSAO
-	* Depth of field
-	* Motion blur
-	* Bloom
-	* HDR
-	* Cel shading
-	* Glow
+  * SSAO
+  * Depth of field
+  * Motion blur
+  * Bloom
+  * HDR
+  * Cel shading
+  * Glow
+
+* Realtime shader generation
+  * Create shaders on the fly based on material properties
+  * Ability to give custom shaders
 
 * GUI / Overlays
-	* Look at gorilla for inspiration
+  * Look at gorilla for inspiration
 
 * Text Rendering
 
 * Particle Effects
-	* Emitters
-* Scene Graph
-	* Instances should hold state of the animation
+  * Emitters
+
+* Model -> Instance
+  * Skeleton -> SkeletonState (bone transforms etc)
+  * Animations -> AnimationStates (start/stop, time)
+  * Meshes -> MeshStates (material etc)
 
 * Optimizations
-	* Culling
-		* Node/Entity/Light bounding sphere vs camera bounding sphere culling
-		* Node/Entity/Light bounding box vs camera frustum culling
-	* Batching
-	* Instancing
-	* Level of detail
-	* Impostors
+  * Camera Frustum Culling
+  * Accelerated scene structure (octrees?)
+  * Sort Elements front-to-back
+  * Uniform Buffers (for bones etc)
+  * Instancing
+  * Level of detail
+  * Impostors
 
 * Mesh format
-	* Morph animations
-	* Level of detail
+  * Morph animations
+  * Level of detail
 
 * Use compressed DDS files since they are faster to load and increase performance
 * Load DDS files manually to hand them to the GPU directly without uncompressing
