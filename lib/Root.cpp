@@ -699,7 +699,7 @@ namespace SimpleGL {
         ModelPtr model = Root::instance()->retrieveModel(instance->model());
         if (!model)
           continue;
-        vector<Matrix4f> boneTransforms = model->boneTransforms();
+        const vector<Matrix4f> &boneTransforms = model->boneTransforms();
         // draw meshes
         for (MeshPtr mesh: model->meshes()) {
           MaterialPtr material = Root::instance()->retrieveMaterial(instance->material());
