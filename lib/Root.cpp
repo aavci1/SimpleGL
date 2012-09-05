@@ -22,6 +22,7 @@
 
 #include <GL/glew.h>
 
+#include <algorithm>
 #include <map>
 #include <queue>
 
@@ -37,6 +38,23 @@ namespace SimpleGL {
     // nullify instance
     _instance = nullptr;
   }
+
+  class RenderOp {
+  public:
+    RenderOp(MeshPtr mesh, string material, Matrix4f transform, const uint numBones, const float *boneTransforms) {
+      this->mesh = mesh;
+      this->material = material;
+      this->transform = transform;
+      this->numBones = numBones;
+      this->boneTransforms = boneTransforms;
+    }
+
+    MeshPtr mesh { nullptr };
+    string material;
+    Matrix4f transform;
+    uint numBones { 0 };
+    const float *boneTransforms { nullptr };
+  };
 
   class RootPrivate {
   public:
@@ -56,7 +74,7 @@ namespace SimpleGL {
     map<string, MaterialPtr> materials;
     map<string, ProgramPtr> programs;
 
-    vector<InstancePtr> renderQueue;
+    vector<RenderOp> renderQueue;
 
     Vector2i mousePosition { 0, 0 };
 
@@ -655,8 +673,9 @@ namespace SimpleGL {
     // update fps
     d->fpsCount++;
     d->fpsTime += elapsed;
-    // clear render queue
-    d->renderQueue.clear();
+    // update animations
+    for (auto it: d->models)
+      it.second->updateAnimations(elapsed);
     // process nodes
     queue<SceneNodePtr> processQueue;
     // add root node to the updated Nodes
@@ -668,16 +687,30 @@ namespace SimpleGL {
       // process node
       node->updateWorldTransform();
       // add instances to the queue
-      for (SceneObjectPtr object: node->attachedObjects())
-        if (object->type() == "Instance")
-          d->renderQueue.push_back(static_pointer_cast<Instance>(object));
+      for (SceneObjectPtr object: node->attachedObjects()) {
+        if (object->type() == "Instance") {
+          InstancePtr instance = static_pointer_cast<Instance>(object);
+          if (!instance)
+            continue;
+          ModelPtr model = Root::instance()->retrieveModel(instance->model());
+          if (!model)
+            continue;
+          for (MeshPtr mesh: model->meshes()) {
+            string material = "Default";
+            if (Root::instance()->retrieveMaterial(instance->material()))
+              material = instance->material();
+            else if (Root::instance()->retrieveMaterial(mesh->material()))
+              material = mesh->material();
+            d->renderQueue.push_back(RenderOp(mesh, material, node->worldTransform(), model->bones().size(), model->boneTransforms()));
+          }
+        }
+      }
       // queue child nodes for processing
       for (SceneNodePtr childNode: node->attachedNodes())
         processQueue.push(childNode);
     }
-    // update animations
-    for (auto it: d->models)
-      it.second->updateAnimations(elapsed);
+    // sort the render queue
+    sort(d->renderQueue.begin(), d->renderQueue.end(), [] (const RenderOp &p1, const RenderOp &p2) { return p1.material < p2.material; });
   }
 
   void Root::renderScene(CameraPtr camera) {
@@ -686,35 +719,39 @@ namespace SimpleGL {
     // cache viewProjMatrix
     Matrix4f viewProjMatrix = camera->projectionMatrix() * camera->viewMatrix();
     // render scene
-    for (InstancePtr instance: d->renderQueue) {
-      ModelPtr model = Root::instance()->retrieveModel(instance->model());
-      if (!model)
+    uint i = 0;
+    while (i < d->renderQueue.size()) {
+      // get material
+      MaterialPtr material = Root::instance()->retrieveMaterial(d->renderQueue.at(i).material);
+      if (!material)
         continue;
-      const float *transforms = model->boneTransforms();
-      // draw meshes
-      for (MeshPtr mesh: model->meshes()) {
-        MaterialPtr material = Root::instance()->retrieveMaterial(instance->material());
-        if (!material)
-          material = Root::instance()->retrieveMaterial(mesh->material());
-        if (!material)
-          material = Root::instance()->retrieveMaterial("Default");
-        if (!material)
-          continue;
-        ProgramPtr program = Root::instance()->retrieveProgram(material->program());
-        if (!program)
-          continue;
-        // bind the material
-        material->bind();
+      // get program
+      ProgramPtr program = Root::instance()->retrieveProgram(material->program());
+      if (!program)
+        continue;
+      // bind the material
+      material->bind();
+      // render meshes
+      do {
+        MeshPtr mesh = d->renderQueue.at(i).mesh;
+        Matrix4f transform = d->renderQueue.at(i).transform;
+        uint numBones = d->renderQueue.at(i).numBones;
+        const float *transforms = d->renderQueue.at(i).boneTransforms;
         // set uniforms
-        program->setUniform("ModelMatrix", instance->parent()->worldTransform());
-        program->setUniform("ModelViewProjMatrix", viewProjMatrix * instance->parent()->worldTransform());
-        program->setUniform4fv("Bones", model->bones().size(), transforms);
+        program->setUniform("ModelMatrix", transform);
+        program->setUniform("ModelViewProjMatrix", viewProjMatrix * transform);
+        if (numBones)
+          program->setUniform4fv("Bones", numBones, transforms);
         // render the mesh
         mesh->render(camera);
-        // unbind material
-        material->unbind();
-      }
+        // proceed to the next item
+        i++;
+      } while (i < d->renderQueue.size() && d->renderQueue.at(i).material == material->name());
+      // unbind the material
+      material->unbind();
     }
+    // clear render queue
+    d->renderQueue.clear();
   }
 
   void Root::renderLights(CameraPtr camera, Vector2f viewportSize) {
