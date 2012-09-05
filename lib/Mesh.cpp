@@ -183,8 +183,6 @@ namespace SimpleGL {
       // increase offset
       offset += 4 * sizeof(false);
     }
-    // unbind vertex array object
-    glBindVertexArray(0);
     // copy of the buffer
     d->vertexData = (float *)(new uint8_t[d->vertexSize * vertexCount]);
     memcpy(d->vertexData, vertexData, d->vertexSize * vertexCount);
@@ -201,8 +199,6 @@ namespace SimpleGL {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, d->indexBuffer);
     // assign data
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indexCount, indexData, GL_STATIC_DRAW);
-    // unbind vertex array object
-    glBindVertexArray(0);
     // copy the buffer
     d->indexData = new uint32_t[indexCount];
     memcpy(d->indexData, indexData, sizeof(uint32_t) * indexCount);
@@ -216,7 +212,5 @@ namespace SimpleGL {
     glBindVertexArray(d->vertexArray);
     // draw triangles
     glDrawElements(GL_TRIANGLES, d->indexCount, GL_UNSIGNED_INT, 0);
-    // unbind vertex array
-    glBindVertexArray(0);
   }
 }

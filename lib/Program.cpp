@@ -218,17 +218,7 @@ namespace SimpleGL {
     return true;
   }
 
-  const bool Program::bind() const {
-    // select shader
+  void Program::bind() const {
     glUseProgram(d->id);
-    // return succes
-    return true;
-  }
-
-  const bool Program::unbind() const {
-    // deselect shader
-    glUseProgram(0);
-    // return succes
-    return true;
   }
 }

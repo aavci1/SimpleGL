@@ -747,8 +747,6 @@ namespace SimpleGL {
         // proceed to the next item
         i++;
       } while (i < d->renderQueue.size() && d->renderQueue.at(i).material == material->name());
-      // unbind the material
-      material->unbind();
     }
     // clear render queue
     d->renderQueue.clear();
@@ -774,13 +772,11 @@ namespace SimpleGL {
       for (LightPtr light: d->lights)
         if (light->type() == type)
           light->render(camera);
-      // unbind the program
-      program->unbind();
     }
   }
 
   const float Root::fps() const {
-    if (d->fpsTime >= 1000) {
+    if (d->fpsTime >= 5000) {
       d->fps = d->fpsCount / (d->fpsTime * 0.001f);
       d->fpsCount = 0;
       d->fpsTime = 0;

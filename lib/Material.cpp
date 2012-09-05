@@ -91,7 +91,7 @@ namespace SimpleGL {
     d->textures.push_back(id);
   }
 
-  void Material::bind() {
+  void Material::bind() const {
     // bind program
     ProgramPtr program = Root::instance()->retrieveProgram(d->program);
     if (!program)
@@ -110,17 +110,5 @@ namespace SimpleGL {
     // set specular parameters
     program->setUniform("specularIntensity", 1.0f);
     program->setUniform("specularPower", 64.0f);
-  }
-
-  void Material::unbind() {
-    // unbind textures
-    for (uint j = 0; j < d->textures.size(); ++j) {
-      glActiveTexture(GL_TEXTURE0 + j);
-      glBindTexture(GL_TEXTURE_2D, 0);
-    }
-    // unbind program
-    ProgramPtr program = Root::instance()->retrieveProgram(d->program);
-    if (program)
-      program->unbind();
   }
 }

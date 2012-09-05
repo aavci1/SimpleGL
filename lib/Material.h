@@ -18,8 +18,7 @@ namespace SimpleGL {
 
     void addTexture(const string &path);
 
-    void bind();
-    void unbind();
+    void bind() const;
 
   private:
     MaterialPrivate *d;
