@@ -25,6 +25,8 @@ namespace SimpleGL {
     Vector3f worldPosition { 0.0f, 0.0f, 0.0f };
     Quaternion worldOrientation { 1.0f, 0.0f, 0.0f, 0.0f };
     Vector3f worldScale { 1.0f, 1.0f, 1.0f };
+
+    bool recalcWorldTransform { true };
     Matrix4f worldTransform;
   };
 
@@ -65,6 +67,7 @@ namespace SimpleGL {
     d->position = position;
     // recalculate transform
     d->recalcTransform = true;
+    recalcWorldTransform();
   }
 
   void SceneNode::setPosition(float x, float y, float z) {
@@ -75,6 +78,7 @@ namespace SimpleGL {
     d->position += worldOrientation() * translation;
     // recalculate transform
     d->recalcTransform = true;
+    recalcWorldTransform();
   }
 
   void SceneNode::moveRelative(float x, float y, float z) {
@@ -89,6 +93,7 @@ namespace SimpleGL {
     d->orientation = glm::normalize(orientation);
     // recalculate transform
     d->recalcTransform = true;
+    recalcWorldTransform();
   }
 
   void SceneNode::setOrientation(float w, float x, float y, float z) {
@@ -122,6 +127,7 @@ namespace SimpleGL {
     d->scale = scale;
     // recalculate transform
     d->recalcTransform = true;
+    recalcWorldTransform();
   }
 
   void SceneNode::setScale(float x, float y, float z) {
@@ -155,17 +161,27 @@ namespace SimpleGL {
     return d->worldTransform;
   }
 
+  void SceneNode::recalcWorldTransform() {
+    d->recalcWorldTransform = true;
+    // mark children
+    for (SceneNodePtr node: d->attachedNodes)
+      node->recalcWorldTransform();
+  }
+
   void SceneNode::updateWorldTransform() {
-    if (parent()) {
-      d->worldOrientation = parent()->worldOrientation() * d->orientation;
-      d->worldScale = parent()->worldScale() * d->scale;
-      d->worldPosition = parent()->worldPosition() + parent()->worldOrientation() * parent()->worldScale() * d->position;
-      d->worldTransform = glm::translate(d->worldPosition) * glm::mat4_cast(d->worldOrientation) * glm::scale(d->worldScale);
-    } else {
-      d->worldPosition = d->position;
-      d->worldOrientation = d->orientation;
-      d->worldScale = d->scale;
-      d->worldTransform = transform();
+    if (d->recalcWorldTransform) {
+      d->recalcWorldTransform = false;
+      if (parent()) {
+        d->worldOrientation = parent()->worldOrientation() * d->orientation;
+        d->worldScale = parent()->worldScale() * d->scale;
+        d->worldPosition = parent()->worldPosition() + parent()->worldOrientation() * parent()->worldScale() * d->position;
+        d->worldTransform = glm::translate(d->worldPosition) * glm::mat4_cast(d->worldOrientation) * glm::scale(d->worldScale);
+      } else {
+        d->worldPosition = d->position;
+        d->worldOrientation = d->orientation;
+        d->worldScale = d->scale;
+        d->worldTransform = transform();
+      }
     }
   }
 }

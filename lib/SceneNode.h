@@ -49,6 +49,7 @@ namespace SimpleGL {
 
     const Matrix4f &worldTransform() const;
 
+    void recalcWorldTransform();
     void updateWorldTransform();
 
   private:
