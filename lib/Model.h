@@ -18,7 +18,8 @@ namespace SimpleGL {
 
     const vector<BonePtr> &bones() const;
     BonePtr createBone(const string &name);
-    const vector<Matrix4f> &boneTransforms() const;
+
+    const float *boneTransforms() const;
 
     const vector<AnimationPtr> &animations() const;
     AnimationPtr createAnimation(const string &name);

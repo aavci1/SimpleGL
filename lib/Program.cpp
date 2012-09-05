@@ -207,6 +207,16 @@ namespace SimpleGL {
     // return succes
     return true;
   }
+  const bool Program::setUniform4fv(const char *name, const int numItems, const float *value) const {
+    // get uniform location
+    GLint location = glGetUniformLocation(d->id, name);
+    if (location == -1)
+      return false;
+    // set uniform value
+    glUniformMatrix4fv(location, numItems, GL_FALSE, value);
+    // return succes
+    return true;
+  }
 
   const bool Program::bind() const {
     // select shader

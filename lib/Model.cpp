@@ -21,7 +21,7 @@ namespace SimpleGL {
     vector<BonePtr> bones;
     vector<MeshPtr> meshes;
     long animationTime { 0 };
-    vector<Matrix4f> transforms;
+    float *transforms { nullptr };
   };
 
   Model::Model(const string &name) : d(new ModelPrivate()) {
@@ -65,9 +65,14 @@ namespace SimpleGL {
     // process bone
     d->bones.at(0)->updateWorldTransform();
     // update transforms
-    d->transforms.clear();
-    for (BonePtr bone: d->bones)
-      d->transforms.push_back(bone->worldTransform() * bone->offsetMatrix());
+    if (!d->transforms)
+      d->transforms = new float[d->bones.size() * 16];
+    for (uint i = 0; i < d->bones.size(); ++i) {
+      Matrix4f transform = d->bones.at(i)->worldTransform() * d->bones.at(i)->offsetMatrix();
+      const float *values = glm::value_ptr(transform);
+      for (uint j = 0; j < 16; ++j)
+        d->transforms[i * 16 + j] = values[j];
+    }
   }
 
   const vector<BonePtr> &Model::bones() const {
@@ -78,11 +83,14 @@ namespace SimpleGL {
     BonePtr bone { new Bone(name) };
     // add to list
     d->bones.push_back(bone);
+    // reset transforms array
+    delete d->transforms;
+    d->transforms = nullptr;
     // return bone
     return bone;
   }
 
-  const vector<Matrix4f> &Model::boneTransforms() const {
+  const float *Model::boneTransforms() const {
     return d->transforms;
   }
 

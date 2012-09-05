@@ -675,12 +675,6 @@ namespace SimpleGL {
   void Root::renderScene(CameraPtr camera) {
     if (!camera)
       return;
-    vector<string> boneNames;
-    char buffer[20] = { 0 };
-    for (uint i = 0; i < 100; ++i) {
-      snprintf(buffer, 100, "Bones[%d]", i);
-      boneNames.push_back(string(buffer));
-    }
     // cache viewProjMatrix
     Matrix4f viewProjMatrix = camera->projectionMatrix() * camera->viewMatrix();
     // render scene
@@ -699,7 +693,7 @@ namespace SimpleGL {
         ModelPtr model = Root::instance()->retrieveModel(instance->model());
         if (!model)
           continue;
-        const vector<Matrix4f> &boneTransforms = model->boneTransforms();
+        const float *transforms = model->boneTransforms();
         // draw meshes
         for (MeshPtr mesh: model->meshes()) {
           MaterialPtr material = Root::instance()->retrieveMaterial(instance->material());
@@ -717,8 +711,7 @@ namespace SimpleGL {
           // set uniforms
           program->setUniform("ModelMatrix", node->worldTransform());
           program->setUniform("ModelViewProjMatrix", viewProjMatrix * node->worldTransform());
-          for (uint l = 0; l < boneTransforms.size(); ++l)
-            program->setUniform(boneNames[l].c_str(), boneTransforms[l]);
+          program->setUniform4fv("Bones", model->bones().size(), transforms);
           // render the mesh
           mesh->render(camera);
           // unbind material

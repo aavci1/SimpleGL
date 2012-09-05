@@ -26,6 +26,7 @@ namespace SimpleGL {
     const bool setUniform(const char *name, const Vector2f &value) const;
     const bool setUniform(const char *name, const Vector3f &value) const;
     const bool setUniform(const char *name, const Matrix4f &value) const;
+    const bool setUniform4fv(const char *name, const int numItems, const float *value) const;
 
     const bool bind() const;
     const bool unbind() const;
