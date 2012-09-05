@@ -142,80 +142,67 @@ namespace SimpleGL {
     return d->log;
   }
 
-  const bool Program::setUniform(const char *name, uint value) const {
+  void Program::setUniform(const char *name, uint value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name);
     if (location == -1)
-      return false;
+      return;
     // set uniform value
     glUniform1i(location, value);
-    // return succes
-    return true;
   }
 
-  const bool Program::setUniform(const char *name, int value) const {
+  void Program::setUniform(const char *name, int value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name);
     if (location == -1)
-      return false;
+      return;
     // set uniform value
     glUniform1i(location, value);
-    // return succes
-    return true;
   }
 
-  const bool Program::setUniform(const char *name, float value) const {
+  void Program::setUniform(const char *name, float value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name);
     if (location == -1)
-      return false;
+      return;
     // set uniform value
     glUniform1f(location, value);
-    // return succes
-    return true;
   }
 
-  const bool Program::setUniform(const char *name, const Vector2f &value) const {
+  void Program::setUniform(const char *name, const Vector2f &value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name);
     if (location == -1)
-      return false;
+      return;
     // set uniform value
     glUniform2f(location, value.x, value.y);
-    // return succes
-    return true;
   }
 
-  const bool Program::setUniform(const char *name, const Vector3f &value) const {
+  void Program::setUniform(const char *name, const Vector3f &value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name);
     if (location == -1)
-      return false;
+      return;
     // set uniform value
     glUniform3f(location, value.x, value.y, value.z);
-    // return succes
-    return true;
   }
 
-  const bool Program::setUniform(const char *name, const Matrix4f &value) const {
+  void Program::setUniform(const char *name, const Matrix4f &value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name);
     if (location == -1)
-      return false;
+      return;
     // set uniform value
     glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
-    // return succes
-    return true;
   }
-  const bool Program::setUniform4fv(const char *name, const int numItems, const float *value) const {
+
+  void Program::setUniform4fv(const char *name, const int numItems, const float *value) const {
     // get uniform location
     GLint location = glGetUniformLocation(d->id, name);
     if (location == -1)
-      return false;
+      return;
     // set uniform value
     glUniformMatrix4fv(location, numItems, GL_FALSE, value);
-    // return succes
-    return true;
   }
 
   void Program::bind() const {
