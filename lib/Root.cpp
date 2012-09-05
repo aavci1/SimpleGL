@@ -56,6 +56,8 @@ namespace SimpleGL {
     map<string, MaterialPtr> materials;
     map<string, ProgramPtr> programs;
 
+    vector<InstancePtr> renderQueue;
+
     Vector2i mousePosition { 0, 0 };
 
     long fpsTime { 0 };
@@ -653,6 +655,8 @@ namespace SimpleGL {
     // update fps
     d->fpsCount++;
     d->fpsTime += elapsed;
+    // clear render queue
+    d->renderQueue.clear();
     // process nodes
     queue<SceneNodePtr> processQueue;
     // add root node to the updated Nodes
@@ -663,9 +667,13 @@ namespace SimpleGL {
       processQueue.pop();
       // process node
       node->updateWorldTransform();
+      // add instances to the queue
+      for (SceneObjectPtr object: node->attachedObjects())
+        if (object->type() == "Instance")
+          d->renderQueue.push_back(static_pointer_cast<Instance>(object));
       // queue child nodes for processing
       for (SceneNodePtr childNode: node->attachedNodes())
-          processQueue.push(childNode);
+        processQueue.push(childNode);
     }
     // update animations
     for (auto it: d->models)
@@ -678,49 +686,34 @@ namespace SimpleGL {
     // cache viewProjMatrix
     Matrix4f viewProjMatrix = camera->projectionMatrix() * camera->viewMatrix();
     // render scene
-    std::queue<SceneNodePtr> processQueue;
-    // add root node to the updated Nodes
-    processQueue.push(d->rootSceneNode);
-    // update nodes
-    while (!processQueue.empty()) {
-      SceneNodePtr node = processQueue.front();
-      processQueue.pop();
-      // render instances
-      for (SceneObjectPtr object: node->attachedObjects()) {
-        if (object->type() != "Instance")
+    for (InstancePtr instance: d->renderQueue) {
+      ModelPtr model = Root::instance()->retrieveModel(instance->model());
+      if (!model)
+        continue;
+      const float *transforms = model->boneTransforms();
+      // draw meshes
+      for (MeshPtr mesh: model->meshes()) {
+        MaterialPtr material = Root::instance()->retrieveMaterial(instance->material());
+        if (!material)
+          material = Root::instance()->retrieveMaterial(mesh->material());
+        if (!material)
+          material = Root::instance()->retrieveMaterial("Default");
+        if (!material)
           continue;
-        InstancePtr instance = static_pointer_cast<Instance>(object);
-        ModelPtr model = Root::instance()->retrieveModel(instance->model());
-        if (!model)
+        ProgramPtr program = Root::instance()->retrieveProgram(material->program());
+        if (!program)
           continue;
-        const float *transforms = model->boneTransforms();
-        // draw meshes
-        for (MeshPtr mesh: model->meshes()) {
-          MaterialPtr material = Root::instance()->retrieveMaterial(instance->material());
-          if (!material)
-            material = Root::instance()->retrieveMaterial(mesh->material());
-          if (!material)
-            material = Root::instance()->retrieveMaterial("Default");
-          if (!material)
-            continue;
-          ProgramPtr program = Root::instance()->retrieveProgram(material->program());
-          if (!program)
-            continue;
-          // bind the material
-          material->bind();
-          // set uniforms
-          program->setUniform("ModelMatrix", node->worldTransform());
-          program->setUniform("ModelViewProjMatrix", viewProjMatrix * node->worldTransform());
-          program->setUniform4fv("Bones", model->bones().size(), transforms);
-          // render the mesh
-          mesh->render(camera);
-          // unbind material
-          material->unbind();
-        }
+        // bind the material
+        material->bind();
+        // set uniforms
+        program->setUniform("ModelMatrix", instance->parent()->worldTransform());
+        program->setUniform("ModelViewProjMatrix", viewProjMatrix * instance->parent()->worldTransform());
+        program->setUniform4fv("Bones", model->bones().size(), transforms);
+        // render the mesh
+        mesh->render(camera);
+        // unbind material
+        material->unbind();
       }
-      // queue child nodes for processing
-      for (SceneNodePtr childNode: node->attachedNodes())
-          processQueue.push(childNode);
     }
   }
 
