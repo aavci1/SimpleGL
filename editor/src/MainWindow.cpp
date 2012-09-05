@@ -41,13 +41,14 @@ void MainWindow::fileOpen() {
   // retrieve model
   ModelPtr model = Root::instance()->retrieveModel("MODEL");
   if (model) {
-    uint vertexCount = 0, indexCount = 0;
+    vertexCount = 0;
+    indexCount = 0;
     for (MeshPtr mesh: model->meshes()) {
       vertexCount += mesh->vertexCount();
       indexCount += mesh->indexCount();
     }
-    lblVertexCount->setText(QString::number(vertexCount));
-    lblTriangleCount->setText(QString::number(indexCount / 3));
+    // update status message
+    sbMain->showMessage(tr("FPS: %1 | Vertices: %2 | Indices: %3").arg(fps).arg(vertexCount).arg(indexCount));
   }
   // enable actions
   actionSave->setEnabled(true);
@@ -83,13 +84,14 @@ void MainWindow::fileImport() {
   // retrieve model
   ModelPtr model = Root::instance()->retrieveModel("MODEL");
   if (model) {
-    uint vertexCount = 0, indexCount = 0;
+    vertexCount = 0;
+    indexCount = 0;
     for (MeshPtr mesh: model->meshes()) {
       vertexCount += mesh->vertexCount();
       indexCount += mesh->indexCount();
     }
-    lblVertexCount->setText(QString::number(vertexCount));
-    lblTriangleCount->setText(QString::number(indexCount / 3));
+    // update status message
+    sbMain->showMessage(tr("FPS: %1 | Vertices: %2 | Indices: %3").arg(fps).arg(vertexCount).arg(indexCount));
   }
   // enable actions
   actionSave->setEnabled(true);
@@ -99,9 +101,8 @@ void MainWindow::fileImport() {
 
 void MainWindow::fileClose() {
   Root::instance()->removeModel("MODEL");
-  // update vertex and face counts
-  lblVertexCount->setText("");
-  lblTriangleCount->setText("");
+  // update status message
+  sbMain->showMessage(QString("Ready"));
   // enable actions
   actionSave->setEnabled(false);
   actionSaveAs->setEnabled(false);
@@ -124,8 +125,9 @@ void MainWindow::helpAbout() {
 void MainWindow::updateView() {
   // update widget
   widget->updateGL();
-  // update fps
-  lblFps->setText(QString::number(Root::instance()->fps()));
+  // update status message
+  fps = Root::instance()->fps();
+  sbMain->showMessage(tr("FPS: %1 | Vertices: %2 | Indices: %3").arg(fps).arg(vertexCount).arg(indexCount));
   // schedule next update
   QTimer::singleShot(1, this, SLOT(updateView()));
 }

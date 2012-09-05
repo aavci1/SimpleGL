@@ -19,6 +19,11 @@ public slots:
   void helpAbout();
 
   void updateView();
+
+private:
+  uint vertexCount { 0 };
+  uint indexCount { 0 };
+  float fps { 0.0f };
 };
 
 #endif // MAINWINDOW_H
