@@ -32,7 +32,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::fileOpen() {
-  QString path = QFileDialog::getOpenFileName(this, tr("Open Model"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Models (*.sglm)"));
+  QString path = QFileDialog::getOpenFileName(this, tr("Open Model"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Models (*.model)"));
   // return if open canceled
   if (path.isNull())
     return;
@@ -57,7 +57,7 @@ void MainWindow::fileOpen() {
 }
 
 void MainWindow::fileSave() {
-  QString path = QFileDialog::getSaveFileName(this, tr("Save Model"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Meshes (*.sglm)"));
+  QString path = QFileDialog::getSaveFileName(this, tr("Save Model"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Models (*.model)"));
   // return if open canceled
   if (path.isNull())
     return;
@@ -66,7 +66,7 @@ void MainWindow::fileSave() {
 }
 
 void MainWindow::fileSaveAs() {
-  QString path = QFileDialog::getSaveFileName(this, tr("Save Model As"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Meshes (*.sglm)"));
+  QString path = QFileDialog::getSaveFileName(this, tr("Save Model As"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Models (*.model)"));
   // return if open canceled
   if (path.isNull())
     return;
