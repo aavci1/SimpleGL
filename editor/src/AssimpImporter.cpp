@@ -234,12 +234,14 @@ namespace AssimpImporter {
 
     ModelPtr model = Root::instance()->createModel(name);
     string baseDir = path.substr(0, path.find_last_of("/"));
+    string modelName = path.substr(path.find_last_of("/") + 1, path.find_last_of(".") - path.find_last_of("/") - 1);
     map<int, MaterialPtr> materials;
     // TODO: import textures
     // import materials
     for (uint i = 0; i < scene->mNumMaterials; ++i) {
       char materialName[256];
-      snprintf(materialName, 256, "%s$mat%d", path.c_str(), i);
+      snprintf(materialName, 256, "%s%d", modelName.c_str(), i);
+      printf("%s\n", materialName);
       materials[i] = importMaterial(scene->mMaterials[i], baseDir, materialName);
     }
     // import nodes

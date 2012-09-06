@@ -11,7 +11,7 @@ program Default {
 program Textured {
   vertex_shader Textured.vs
   fragment_shader Textured.fs
-  
+
   uniform modelViewProjMatrix
   uniform modelMatrix
   uniform specularIntensity
@@ -22,7 +22,7 @@ program Textured {
 program Skinned {
   vertex_shader Skinned.vs
   fragment_shader Skinned.fs
-  
+
   uniform boneTransforms
   uniform modelViewProjMatrix
   uniform modelMatrix
@@ -49,7 +49,7 @@ program Light/Directional {
 program Light/Point {
   vertex_shader LightPoint.vs
   fragment_shader LightPoint.fs
-  
+
   uniform modelViewProjMatrix
   uniform texture0
   uniform texture1
@@ -69,7 +69,7 @@ program Light/Point {
 program Light/Spot {
   vertex_shader LightSpot.vs
   fragment_shader LightSpot.fs
-    
+
   uniform modelViewProjMatrix
   uniform texture0
   uniform texture1
@@ -108,7 +108,72 @@ material Ebony {
   texture ebony.jpg
 }
 
-material Markus {
+material astroboy0 {
   program Skinned
-  texture markus_diffuse.png
+  texture astroboy/boy_10.tga
+}
+
+material astroboy1 {
+  program Skinned
+  texture astroboy/boy_10.tga
+}
+
+material astroboy2 {
+  program Skinned
+  texture astroboy/boy_10.tga
+}
+
+material astroboy3 {
+  program Skinned
+  texture astroboy/boy_10.tga
+}
+
+material boblampclean0 {
+  program Skinned
+  texture bob/guard1_body.tga
+}
+
+material boblampclean1 {
+  program Skinned
+  texture bob/guard1_face.tga
+}
+
+material boblampclean2 {
+  program Skinned
+  texture bob/guard1_helmet.tga
+}
+
+material boblampclean3 {
+  program Skinned
+  texture bob/iron_grill.tga
+}
+
+material boblampclean4 {
+  program Skinned
+  texture bob/round_grill.tga
+}
+
+material dwarf0 {
+  program Skinned
+  texture dwarf/axe.jpg
+}
+
+material dwarf1 {
+  program Skinned
+  texture dwarf/dwarf1.jpg
+}
+
+material jaiqua0 {
+  program Skinned
+  texture jaiqua/blue_jaiqua.jpg
+}
+
+material markus0 {
+  program Skinned
+  texture markus/markus_diffuse.png
+}
+
+material ninja0 {
+  program Skinned
+  texture ninja/nskinwh.jpg
 }
