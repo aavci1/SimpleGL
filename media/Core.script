@@ -177,3 +177,8 @@ material ninja0 {
   program Skinned
   texture ninja/nskinwh.jpg
 }
+
+material sniper0 {
+  program Textured
+  texture sniper/sniper.dds
+}
