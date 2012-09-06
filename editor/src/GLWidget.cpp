@@ -34,63 +34,21 @@ GLWidget::~GLWidget() {
 void GLWidget::initializeGL() {
   // initialize SimpleGL
   SimpleGL::initialize();
-  // create window
-  window = Root::instance()->createWindow(width(), height());
+  // create a camera
+  CameraPtr camera = Root::instance()->createCamera("FpsCamera");
   // create camera node
   SceneNodePtr cameraNode = Root::instance()->createSceneNode();
   Root::instance()->rootSceneNode()->attachNode(cameraNode);
   cameraNode->setPosition(Vector3f(0.0f, 170.0f, 1000.0f));
   cameraNode->pitch(-10);
-  // create a camera
-  CameraPtr camera = Root::instance()->createCamera("FpsCamera");
+  // attach camera to the node
   cameraNode->attachObject(camera);
+  // create a window
+  window = Root::instance()->createWindow(width(), height());
   // create a viewport
   window->createViewport(camera);
-  // create default program
-  ProgramPtr defaultProgram = Root::instance()->createProgram("Default");
-  if (!defaultProgram->loadShaderFromPath(ST_VERTEX, "media/Default.vert")) cerr << defaultProgram->log() << endl;
-  if (!defaultProgram->loadShaderFromPath(ST_FRAGMENT, "media/Default.frag")) cerr << defaultProgram->log() << endl;
-  if (!defaultProgram->link()) cerr << defaultProgram->log() << endl;
-  // create default material
-  MaterialPtr defaultMaterial = Root::instance()->createMaterial("Default");
-  defaultMaterial->setProgram("Default");
-  // point light program
-  ProgramPtr pointLightProgram = Root::instance()->createProgram("Light/Point");
-  if (!pointLightProgram->loadShaderFromPath(ST_VERTEX, "media/point_light_vp.glsl")) cerr << pointLightProgram->log() << endl;
-  if (!pointLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/point_light_fp.glsl")) cerr << pointLightProgram->log() << endl;
-  if (!pointLightProgram->link()) cerr << pointLightProgram->log() << endl;
-  // spot light program
-  ProgramPtr spotLightProgram = Root::instance()->createProgram("Light/Spot");
-  if (!spotLightProgram->loadShaderFromPath(ST_VERTEX, "media/spot_light_vp.glsl")) cerr << spotLightProgram->log() << endl;
-  if (!spotLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/spot_light_fp.glsl")) cerr << spotLightProgram->log() << endl;
-  if (!spotLightProgram->link()) cerr << spotLightProgram->log() << endl;
-  // directional light program
-  ProgramPtr directionalLightProgram = Root::instance()->createProgram("Light/Directional");
-  if (!directionalLightProgram->loadShaderFromPath(ST_VERTEX, "media/directional_light_vp.glsl")) cerr << directionalLightProgram->log() << endl;
-  if (!directionalLightProgram->loadShaderFromPath(ST_FRAGMENT, "media/directional_light_fp.glsl")) cerr << directionalLightProgram->log() << endl;
-  if (!directionalLightProgram->link()) cerr << directionalLightProgram->log() << endl;
-  // load texturing program
-  ProgramPtr textured = Root::instance()->createProgram("Textured");
-  if (!textured->loadShaderFromPath(ST_VERTEX, "media/textured_vp.glsl")) cerr << textured->log() << endl;
-  if (!textured->loadShaderFromPath(ST_FRAGMENT, "media/textured_fp.glsl")) cerr << textured->log() << endl;
-  if (!textured->link()) cerr << textured->log() << endl;
-  // load skinning program
-  ProgramPtr skinned = Root::instance()->createProgram("Skinned");
-  if (!skinned->loadShaderFromPath(ST_VERTEX, "media/skinned_vp.glsl")) cerr << skinned->log() << endl;
-  if (!skinned->loadShaderFromPath(ST_FRAGMENT, "media/skinned_fp.glsl")) cerr << skinned->log() << endl;
-  if (!skinned->link()) cerr << skinned->log() << endl;
-  // create materials
-  MaterialPtr floorMaterial = Root::instance()->createMaterial("Laminate");
-  floorMaterial->setProgram("Textured");
-  floorMaterial->addTexture("media/laminate.jpg");
-  // load materials
-  MaterialPtr ceilingMaterial = Root::instance()->createMaterial("Ceiling");
-  ceilingMaterial->setProgram("Textured");
-  ceilingMaterial->addTexture("media/ceiling.jpg");
-  // load materials
-  MaterialPtr ebonyMaterial = Root::instance()->createMaterial("Ebony");
-  ebonyMaterial->setProgram("Textured");
-  ebonyMaterial->addTexture("media/ebony.jpg");
+  // load scripts
+  Root::instance()->loadScript("media/Core.script");
   // create meshes
   Root::instance()->createPlane("Plane", 1000, 1000, 10, 10);
   Root::instance()->createSphere("Sphere", 10.0f);

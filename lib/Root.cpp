@@ -23,6 +23,7 @@
 #include <GL/glew.h>
 
 #include <algorithm>
+#include <fstream>
 #include <map>
 #include <queue>
 
@@ -669,6 +670,72 @@ namespace SimpleGL {
     return instance;
   }
 
+  void Root::loadScript(const string &path) {
+    ifstream in(path);
+    if (!in.is_open())
+      return;
+    // extract directory
+    string directory = path.substr(0, path.find_last_of("/"));
+    // parse the script
+    do {
+      string type, name, buffer;
+      in >> type >> name;
+      cout << type << " " << name << endl;
+      if (type == "program") {
+        ProgramPtr program = Root::instance()->createProgram(name);
+        do {
+          // read next token
+          in >> buffer;
+          // handle token
+          if (buffer == "{") {
+            // do nothing
+          } else if (buffer == "vertex_shader") {
+            // get program path
+            in >> buffer;
+            // add vertex program
+            if (!program->loadShaderFromPath(ST_VERTEX, directory + "/" + buffer))
+              cerr << program->log() << endl;
+          } else if (buffer == "fragment_shader") {
+            // get program path
+            in >> buffer;
+            // add fragment program
+            if (!program->loadShaderFromPath(ST_FRAGMENT, directory + "/" + buffer))
+              cerr << program->log() << endl;
+          } else if (buffer == "}") {
+            break;
+          }
+        } while (!in.eof());
+        // link the program
+        if (!program->link())
+          cerr << program->log() << endl;
+      } else if (type == "material") {
+        MaterialPtr material = Root::instance()->createMaterial(name);
+        do {
+          // read next token
+          in >> buffer;
+          // handle token
+          if (buffer == "{") {
+            // do nothing
+          } else if (buffer == "program") {
+            // get program name
+            in >> buffer;
+            // set program name
+            material->setProgram(buffer);
+          } else if (buffer == "texture") {
+            // read texture path
+            in >> buffer;
+            // add texture
+            material->addTexture(directory + "/" + buffer);
+          } else if (buffer == "}") {
+            break;
+          }
+        } while (!in.eof());
+      }
+    } while (!in.eof());
+
+    in.close();
+  }
+
   void Root::prepareRender(long elapsed) {
     // update fps
     d->fpsCount++;
@@ -738,10 +805,10 @@ namespace SimpleGL {
         uint numBones = d->renderQueue.at(i).numBones;
         const float *transforms = d->renderQueue.at(i).boneTransforms;
         // set uniforms
-        program->setUniform("ModelMatrix", transform);
-        program->setUniform("ModelViewProjMatrix", viewProjMatrix * transform);
+        program->setUniform("modelMatrix", transform);
+        program->setUniform("modelViewProjMatrix", viewProjMatrix * transform);
         if (numBones)
-          program->setUniform4fv("Bones", numBones, transforms);
+          program->setUniform4fv("boneTransforms", numBones, transforms);
         // render the mesh
         mesh->render(camera);
         // proceed to the next item

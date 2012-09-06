@@ -49,6 +49,8 @@ namespace SimpleGL {
 
     InstancePtr createInstance(const string &model, const string &material);
 
+    void loadScript(const string &path);
+
     void prepareRender(long elapsed);
     void renderScene(CameraPtr camera);
     void renderLights(CameraPtr camera, Vector2f viewportSize);

@@ -1,0 +1,114 @@
+program Default {
+  vertex_shader Default.vs
+  fragment_shader Default.fs
+
+  uniform modelViewProjMatrix
+  uniform modelMatrix
+  uniform specularIntensity
+  uniform specularPower
+}
+
+program Textured {
+  vertex_shader Textured.vs
+  fragment_shader Textured.fs
+  
+  uniform modelViewProjMatrix
+  uniform modelMatrix
+  uniform specularIntensity
+  uniform specularPower
+  uniform texture0
+}
+
+program Skinned {
+  vertex_shader Skinned.vs
+  fragment_shader Skinned.fs
+  
+  uniform boneTransforms
+  uniform modelViewProjMatrix
+  uniform modelMatrix
+  uniform specularIntensity
+  uniform specularPower
+  uniform texture0
+}
+
+program Light/Directional {
+  vertex_shader LightDirectional.vs
+  fragment_shader LightDirectional.fs
+
+  uniform texture0
+  uniform texture1
+  uniform texture2
+  uniform viewportSize
+  uniform cameraPos
+  uniform lightDir
+  uniform lightColor
+  uniform lightDiffuseIntensity
+  uniform lightSpecularIntensity
+}
+
+program Light/Point {
+  vertex_shader LightPoint.vs
+  fragment_shader LightPoint.fs
+  
+  uniform modelViewProjMatrix
+  uniform texture0
+  uniform texture1
+  uniform texture2
+  uniform viewportSize
+  uniform cameraPos
+  uniform lightPos
+  uniform lightColor
+  uniform lightDiffuseIntensity
+  uniform lightSpecularIntensity
+  uniform lightAttenuationRange
+  uniform lightAttenuationConstant
+  uniform lightAttenuationLinear
+  uniform lightAttenuationQuadratic
+}
+
+program Light/Spot {
+  vertex_shader LightSpot.vs
+  fragment_shader LightSpot.fs
+    
+  uniform modelViewProjMatrix
+  uniform texture0
+  uniform texture1
+  uniform texture2
+  uniform viewportSize
+  uniform cameraPos
+  uniform lightPos
+  uniform lightDir
+  uniform lightColor
+  uniform lightDiffuseIntensity
+  uniform lightSpecularIntensity
+  uniform lightInnerAngle
+  uniform lightOuterAngle
+  uniform lightAttenuationRange
+  uniform lightAttenuationConstant
+  uniform lightAttenuationLinear
+  uniform lightAttenuationQuadratic
+}
+
+material Default {
+  program Default
+}
+
+material Laminate {
+  program Textured
+  texture laminate.jpg
+}
+
+material Ceiling {
+  program Textured
+  texture ceiling.jpg
+}
+
+material Ebony {
+  program Textured
+  texture ebony.jpg
+}
+
+material Markus {
+  program Skinned
+  texture markus_diffuse.png
+}
