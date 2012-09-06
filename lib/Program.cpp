@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <map>
 #include <vector>
 
 namespace SimpleGL {
@@ -20,6 +21,8 @@ namespace SimpleGL {
     string log { "" };
     GLuint id { 0 };
     vector<GLuint> shaders;
+    vector<string> uniforms;
+    map<string, GLint> uniformLocations;
   };
 
   Program::Program(const string &name) : d(new ProgramPrivate()) {
@@ -95,6 +98,10 @@ namespace SimpleGL {
     return true;
   }
 
+  void Program::addUniform(const string &name) {
+    d->uniforms.push_back(name);
+  }
+
   const bool Program::link() {
     // attach shaders
     for (uint i = 0; i < d->shaders.size(); ++i)
@@ -134,6 +141,9 @@ namespace SimpleGL {
     // detach shaders
     for (uint i = 0; i < d->shaders.size(); ++i)
       glDetachShader(d->id, d->shaders[i]);
+    // resolve uniform locations
+    for (const string &uniform: d->uniforms)
+      d->uniformLocations[uniform] = glGetUniformLocation(d->id, uniform.c_str());
     // return success
     return true;
   }
@@ -142,67 +152,32 @@ namespace SimpleGL {
     return d->log;
   }
 
-  void Program::setUniform(const char *name, uint value) const {
-    // get uniform location
-    GLint location = glGetUniformLocation(d->id, name);
-    if (location == -1)
-      return;
-    // set uniform value
-    glUniform1i(location, value);
+  void Program::setUniform(const string &name, uint value) const {
+    glUniform1i(d->uniformLocations[name], value);
   }
 
-  void Program::setUniform(const char *name, int value) const {
-    // get uniform location
-    GLint location = glGetUniformLocation(d->id, name);
-    if (location == -1)
-      return;
-    // set uniform value
-    glUniform1i(location, value);
+  void Program::setUniform(const string &name, int value) const {
+    glUniform1i(d->uniformLocations[name], value);
   }
 
-  void Program::setUniform(const char *name, float value) const {
-    // get uniform location
-    GLint location = glGetUniformLocation(d->id, name);
-    if (location == -1)
-      return;
-    // set uniform value
-    glUniform1f(location, value);
+  void Program::setUniform(const string &name, float value) const {
+    glUniform1f(d->uniformLocations[name], value);
   }
 
-  void Program::setUniform(const char *name, const Vector2f &value) const {
-    // get uniform location
-    GLint location = glGetUniformLocation(d->id, name);
-    if (location == -1)
-      return;
-    // set uniform value
-    glUniform2f(location, value.x, value.y);
+  void Program::setUniform(const string &name, const Vector2f &value) const {
+    glUniform2f(d->uniformLocations[name], value.x, value.y);
   }
 
-  void Program::setUniform(const char *name, const Vector3f &value) const {
-    // get uniform location
-    GLint location = glGetUniformLocation(d->id, name);
-    if (location == -1)
-      return;
-    // set uniform value
-    glUniform3f(location, value.x, value.y, value.z);
+  void Program::setUniform(const string &name, const Vector3f &value) const {
+    glUniform3f(d->uniformLocations[name], value.x, value.y, value.z);
   }
 
-  void Program::setUniform(const char *name, const Matrix4f &value) const {
-    // get uniform location
-    GLint location = glGetUniformLocation(d->id, name);
-    if (location == -1)
-      return;
-    // set uniform value
-    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+  void Program::setUniform(const string &name, const Matrix4f &value) const {
+    glUniformMatrix4fv(d->uniformLocations[name], 1, GL_FALSE, glm::value_ptr(value));
   }
 
-  void Program::setUniform4fv(const char *name, const int numItems, const float *value) const {
-    // get uniform location
-    GLint location = glGetUniformLocation(d->id, name);
-    if (location == -1)
-      return;
-    // set uniform value
-    glUniformMatrix4fv(location, numItems, GL_FALSE, value);
+  void Program::setUniform4fv(const string &name, const int numItems, const float *value) const {
+    glUniformMatrix4fv(d->uniformLocations[name], numItems, GL_FALSE, value);
   }
 
   void Program::bind() const {
