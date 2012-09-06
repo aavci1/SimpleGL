@@ -73,19 +73,7 @@ namespace SimpleGL {
     return (char *)d->vertexData;
   }
 
-  const uint16_t Mesh::indexSize() const {
-    return d->indexSize;
-  }
-
-  const uint32_t Mesh::indexCount() const {
-    return d->indexCount;
-  }
-
-  const char *Mesh::indexData() const {
-    return (char *)d->indexData;
-  }
-
-  const bool Mesh::setVertexData(float *vertexData, uint vertexCount, uint vertexFormat) {
+  void Mesh::setVertexData(float *vertexData, uint vertexCount, uint vertexFormat) {
     // calculate vertex size
     d->vertexSize = 0;
     vector<pair<AttributeType, int>> attributes = {
@@ -188,11 +176,21 @@ namespace SimpleGL {
     memcpy(d->vertexData, vertexData, d->vertexSize * vertexCount);
     d->vertexCount = vertexCount;
     d->vertexFormat = vertexFormat;
-    // return succes
-    return true;
   }
 
-  const bool Mesh::setIndexData(uint32_t *indexData, uint indexCount) {
+  const uint16_t Mesh::indexSize() const {
+    return d->indexSize;
+  }
+
+  const uint32_t Mesh::indexCount() const {
+    return d->indexCount;
+  }
+
+  const char *Mesh::indexData() const {
+    return (char *)d->indexData;
+  }
+
+  void Mesh::setIndexData(uint32_t *indexData, uint indexCount) {
     // generate and bind vertex array object
     glBindVertexArray(d->vertexArray);
     // generate index buffer object
@@ -203,8 +201,6 @@ namespace SimpleGL {
     d->indexData = new uint32_t[indexCount];
     memcpy(d->indexData, indexData, sizeof(uint32_t) * indexCount);
     d->indexCount = indexCount;
-    // return succes
-    return true;
   }
 
   void Mesh::render(CameraPtr camera) {
