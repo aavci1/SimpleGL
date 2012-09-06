@@ -1,6 +1,6 @@
 program Default {
-  vertex_shader Default.vs
-  fragment_shader Default.fs
+  vertex_shader shaders/Default.vs
+  fragment_shader shaders/Default.fs
 
   uniform modelViewProjMatrix
   uniform modelMatrix
@@ -9,8 +9,8 @@ program Default {
 }
 
 program Textured {
-  vertex_shader Textured.vs
-  fragment_shader Textured.fs
+  vertex_shader shaders/Textured.vs
+  fragment_shader shaders/Textured.fs
 
   uniform modelViewProjMatrix
   uniform modelMatrix
@@ -20,8 +20,8 @@ program Textured {
 }
 
 program Skinned {
-  vertex_shader Skinned.vs
-  fragment_shader Skinned.fs
+  vertex_shader shaders/Skinned.vs
+  fragment_shader shaders/Skinned.fs
 
   uniform boneTransforms
   uniform modelViewProjMatrix
@@ -32,8 +32,8 @@ program Skinned {
 }
 
 program Light/Directional {
-  vertex_shader LightDirectional.vs
-  fragment_shader LightDirectional.fs
+  vertex_shader shaders/LightDirectional.vs
+  fragment_shader shaders/LightDirectional.fs
 
   uniform texture0
   uniform texture1
@@ -47,8 +47,8 @@ program Light/Directional {
 }
 
 program Light/Point {
-  vertex_shader LightPoint.vs
-  fragment_shader LightPoint.fs
+  vertex_shader shaders/LightPoint.vs
+  fragment_shader shaders/LightPoint.fs
 
   uniform modelViewProjMatrix
   uniform texture0
@@ -67,8 +67,8 @@ program Light/Point {
 }
 
 program Light/Spot {
-  vertex_shader LightSpot.vs
-  fragment_shader LightSpot.fs
+  vertex_shader shaders/LightSpot.vs
+  fragment_shader shaders/LightSpot.fs
 
   uniform modelViewProjMatrix
   uniform texture0
@@ -95,90 +95,90 @@ material Default {
 
 material Laminate {
   program Textured
-  texture laminate.jpg
+  texture textures/laminate.jpg
 }
 
 material Ceiling {
   program Textured
-  texture ceiling.jpg
+  texture textures/ceiling.jpg
 }
 
 material Ebony {
   program Textured
-  texture ebony.jpg
+  texture textures/ebony.jpg
 }
 
 material astroboy0 {
   program Skinned
-  texture astroboy/boy_10.tga
+  texture textures/astroboy.tga
 }
 
 material astroboy1 {
   program Skinned
-  texture astroboy/boy_10.tga
+  texture textures/astroboy.tga
 }
 
 material astroboy2 {
   program Skinned
-  texture astroboy/boy_10.tga
+  texture textures/astroboy.tga
 }
 
 material astroboy3 {
   program Skinned
-  texture astroboy/boy_10.tga
+  texture textures/astroboy.tga
 }
 
 material boblampclean0 {
   program Skinned
-  texture bob/guard1_body.tga
+  texture textures/guard1_body.tga
 }
 
 material boblampclean1 {
   program Skinned
-  texture bob/guard1_face.tga
+  texture textures/guard1_face.tga
 }
 
 material boblampclean2 {
   program Skinned
-  texture bob/guard1_helmet.tga
+  texture textures/guard1_helmet.tga
 }
 
 material boblampclean3 {
   program Skinned
-  texture bob/iron_grill.tga
+  texture textures/iron_grill.tga
 }
 
 material boblampclean4 {
   program Skinned
-  texture bob/round_grill.tga
+  texture textures/round_grill.tga
 }
 
 material dwarf0 {
   program Skinned
-  texture dwarf/axe.jpg
+  texture textures/axe.jpg
 }
 
 material dwarf1 {
   program Skinned
-  texture dwarf/dwarf1.jpg
+  texture textures/dwarf1.jpg
 }
 
 material jaiqua0 {
   program Skinned
-  texture jaiqua/blue_jaiqua.jpg
+  texture textures/blue_jaiqua.jpg
 }
 
 material markus0 {
   program Skinned
-  texture markus/markus_diffuse.png
+  texture textures/markus_diffuse.png
 }
 
 material ninja0 {
   program Skinned
-  texture ninja/nskinwh.jpg
+  texture textures/nskinwh.jpg
 }
 
 material sniper0 {
   program Textured
-  texture sniper/sniper.dds
+  texture textures/sniper_diffuse.dds
 }
