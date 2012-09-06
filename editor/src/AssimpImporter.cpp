@@ -241,7 +241,6 @@ namespace AssimpImporter {
     for (uint i = 0; i < scene->mNumMaterials; ++i) {
       char materialName[256];
       snprintf(materialName, 256, "%s%d", modelName.c_str(), i);
-      printf("%s\n", materialName);
       materials[i] = importMaterial(scene->mMaterials[i], baseDir, materialName);
     }
     // import nodes

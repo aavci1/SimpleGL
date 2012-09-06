@@ -847,7 +847,7 @@ namespace SimpleGL {
   }
 
   const float Root::fps() const {
-    if (d->fpsTime >= 5000) {
+    if (d->fpsTime >= 1000) {
       d->fps = d->fpsCount / (d->fpsTime * 0.001f);
       d->fpsCount = 0;
       d->fpsTime = 0;
