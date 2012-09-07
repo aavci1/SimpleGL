@@ -11,8 +11,8 @@ namespace SimpleGL {
 
     CameraPtr camera { nullptr };
 
-    float left { 0.0f };
-    float top { 0.0f };
+    float x { 0.0f };
+    float y { 0.0f };
     float width { 1.0f };
     float height { 1.0f };
     int zIndex { 0 };
@@ -34,12 +34,12 @@ namespace SimpleGL {
     d->camera = camera;
   }
 
-  const float Viewport::left() const {
-    return d->left;
+  const float Viewport::x() const {
+    return d->x;
   }
 
-  const float Viewport::top() const {
-    return d->top;
+  const float Viewport::y() const {
+    return d->y;
   }
 
   const float Viewport::width() const {
@@ -50,9 +50,9 @@ namespace SimpleGL {
     return d->height;
   }
 
-  void Viewport::setBounds(float left, float top, float width, float height) {
-    d->left = left;
-    d->top = top;
+  void Viewport::setBounds(float x, float y, float width, float height) {
+    d->x = x;
+    d->y = y;
     d->width = width;
     d->height = height;
   }

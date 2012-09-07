@@ -137,12 +137,12 @@ namespace SimpleGL {
     // render through each viewport
     for (ViewportPtr viewport: d->viewports) {
       // calculate viewport dimension in pixels;
-      float left = viewport->left() * d->width;
-      float top = viewport->top() * d->height;
+      float x = viewport->x() * d->width;
+      float y = viewport->y() * d->height;
       float width = viewport->width() * d->width;
       float height = viewport->height() * d->height;
       // set up viewport
-      glViewport(left, top, width, height);
+      glViewport(x, y, width, height);
       // get viewport camera
       CameraPtr camera = viewport->camera();
       if (!camera)

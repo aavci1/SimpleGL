@@ -14,11 +14,11 @@ namespace SimpleGL {
     CameraPtr camera() const;
     void setCamera(CameraPtr camera);
 
-    const float left() const;
-    const float top() const;
+    const float x() const;
+    const float y() const;
     const float width() const;
     const float height() const;
-    void setBounds(float left, float top, float width, float height);
+    void setBounds(float x, float y, float width, float height);
 
     const int zIndex() const;
     void setZIndex(int zIndex);
