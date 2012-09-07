@@ -153,9 +153,6 @@ namespace SimpleGL {
       ////  GEOMETRY PASS
       /////////////////////////////////////////////////////////////////////////////
       glBindFramebuffer(GL_DRAW_FRAMEBUFFER, d->frameBuffer);
-      // enable face culling
-      glEnable(GL_CULL_FACE);
-      glCullFace(GL_BACK);
       // enable depth test
       glEnable(GL_DEPTH_TEST);
       glDepthMask(GL_TRUE);

@@ -141,6 +141,7 @@ material boblampclean1 {
 material boblampclean2 {
   program Skinned
   texture textures/guard1_helmet.tga
+  cull_face none
 }
 
 material boblampclean3 {

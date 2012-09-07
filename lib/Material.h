@@ -6,6 +6,12 @@
 namespace SimpleGL {
   class MaterialPrivate;
 
+  enum CullFace {
+    CF_NONE,
+    CF_BACK,
+    CF_FRONT
+  };
+
   class Material {
   public:
     Material(const string &name);
@@ -17,6 +23,9 @@ namespace SimpleGL {
     void setProgram(const string &program);
 
     void addTexture(const string &path);
+
+    const CullFace cullFace() const;
+    void setCullFace(const CullFace cullFace);
 
     void bind() const;
 

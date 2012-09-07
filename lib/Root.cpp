@@ -730,7 +730,17 @@ namespace SimpleGL {
             in >> buffer;
             // add texture
             material->addTexture(directory + "/" + buffer);
-          } else if (buffer == "}") {
+          } else if (buffer == "cull_face") {
+            // read value
+            in >> buffer;
+            // set face culling
+            if (buffer == "none")
+              material->setCullFace(CF_NONE);
+            else if (buffer == "front")
+              material->setCullFace(CF_FRONT);
+            else if (buffer == "back")
+              material->setCullFace(CF_BACK);
+           } else if (buffer == "}") {
             break;
           }
         } while (!in.eof());

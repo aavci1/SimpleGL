@@ -19,6 +19,7 @@ namespace SimpleGL {
     string name { "" };
     string program { "" };
     vector<GLuint> textures;
+    CullFace cullFace { CF_BACK };
   };
 
   Material::Material(const string &name) : d(new MaterialPrivate()) {
@@ -91,7 +92,26 @@ namespace SimpleGL {
     d->textures.push_back(id);
   }
 
+  const CullFace Material::cullFace() const {
+    return d->cullFace;
+  }
+
+  void Material::setCullFace(const CullFace cullFace) {
+    d->cullFace = cullFace;
+  }
+
   void Material::bind() const {
+    // set culling method
+    if (d->cullFace == CF_NONE) {
+      glDisable(GL_CULL_FACE);
+    } else {
+      glEnable(GL_CULL_FACE);
+      // set face to cull
+      if (d->cullFace == CF_BACK)
+        glCullFace(GL_BACK);
+      else
+        glCullFace(GL_FRONT);
+    }
     // bind program
     ProgramPtr program = Root::instance()->retrieveProgram(d->program);
     if (!program)
