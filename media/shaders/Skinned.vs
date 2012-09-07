@@ -20,7 +20,7 @@ void main() {
    mat4 boneTransform = boneTransforms[BONEIDS[0]] * BONEWEIGHTS[0] + boneTransforms[BONEIDS[1]] * BONEWEIGHTS[1] + boneTransforms[BONEIDS[2]] * BONEWEIGHTS[2] + boneTransforms[BONEIDS[3]] * BONEWEIGHTS[3];
    gl_Position = modelViewProjMatrix * boneTransform * vec4(POSITION, 1.0);
    // pass output
-   _worldPosition = modelMatrix * vec4(POSITION, 1.0);
+   _worldPosition = modelMatrix * boneTransform * vec4(POSITION, 1.0);
    _normal = normalize(modelMatrix * boneTransform * vec4(NORMAL, 0.0));
    _texCoord = TEXCOORD0;
 }

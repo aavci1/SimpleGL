@@ -7,6 +7,7 @@ uniform mat4 modelMatrix;
 in vec3 POSITION;
 in vec3 NORMAL;
 in vec2 TEXCOORD0;
+
 // outputs
 out vec4 _worldPosition;
 out vec4 _normal;
