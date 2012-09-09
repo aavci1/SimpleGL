@@ -1,92 +1,31 @@
 program Default {
   vertex_shader shaders/Default.vs
   fragment_shader shaders/Default.fs
-
-  uniform modelViewProjMatrix
-  uniform modelMatrix
-  uniform specularIntensity
-  uniform specularPower
 }
 
 program Textured {
   vertex_shader shaders/Textured.vs
   fragment_shader shaders/Textured.fs
-
-  uniform modelViewProjMatrix
-  uniform modelMatrix
-  uniform specularIntensity
-  uniform specularPower
-  uniform texture0
 }
 
 program Skinned {
   vertex_shader shaders/Skinned.vs
   fragment_shader shaders/Skinned.fs
-
-  uniform boneTransforms
-  uniform modelViewProjMatrix
-  uniform modelMatrix
-  uniform specularIntensity
-  uniform specularPower
-  uniform texture0
 }
 
 program Light/Directional {
   vertex_shader shaders/LightDirectional.vs
   fragment_shader shaders/LightDirectional.fs
-
-  uniform texture0
-  uniform texture1
-  uniform texture2
-  uniform viewportSize
-  uniform cameraPos
-  uniform lightDir
-  uniform lightColor
-  uniform lightDiffuseIntensity
-  uniform lightSpecularIntensity
 }
 
 program Light/Point {
   vertex_shader shaders/LightPoint.vs
   fragment_shader shaders/LightPoint.fs
-
-  uniform modelViewProjMatrix
-  uniform texture0
-  uniform texture1
-  uniform texture2
-  uniform viewportSize
-  uniform cameraPos
-  uniform lightPos
-  uniform lightColor
-  uniform lightDiffuseIntensity
-  uniform lightSpecularIntensity
-  uniform lightAttenuationRange
-  uniform lightAttenuationConstant
-  uniform lightAttenuationLinear
-  uniform lightAttenuationQuadratic
 }
 
 program Light/Spot {
   vertex_shader shaders/LightSpot.vs
   fragment_shader shaders/LightSpot.fs
-
-  uniform modelViewProjMatrix
-  uniform texture0
-  uniform texture1
-  uniform texture2
-  uniform viewportSize
-  uniform cameraPos
-  uniform lightPos
-  uniform lightDirection
-  uniform lightColor
-  uniform lightDiffuseIntensity
-  uniform lightSpecularIntensity
-  uniform lightInnerAngle
-  uniform lightOuterAngle
-  uniform lightAttenuationRange
-  uniform lightAttenuationConstant
-  uniform lightAttenuationLinear
-  uniform lightAttenuationQuadratic
 }
 
 material Default {

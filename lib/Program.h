@@ -16,8 +16,6 @@ namespace SimpleGL {
     const bool loadShaderFromPath(ShaderType type, const string &path);
     const bool loadShaderFromSource(ShaderType type, const string &source);
 
-    void addUniform(const string &name);
-
     const bool link();
 
     const string &log() const;

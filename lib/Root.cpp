@@ -700,11 +700,6 @@ namespace SimpleGL {
             // add fragment program
             if (!program->loadShaderFromPath(ST_FRAGMENT, directory + "/" + buffer))
               cerr << program->log() << endl;
-          } else if (buffer == "uniform") {
-            // get uniform name
-            in >> buffer;
-            // add uniform
-            program->addUniform(buffer);
           } else if (buffer == "}") {
             break;
           }

@@ -21,7 +21,6 @@ namespace SimpleGL {
     string log { "" };
     GLuint id { 0 };
     vector<GLuint> shaders;
-    vector<string> uniforms;
     map<string, GLint> uniformLocations;
   };
 
@@ -103,10 +102,6 @@ namespace SimpleGL {
     return true;
   }
 
-  void Program::addUniform(const string &name) {
-    d->uniforms.push_back(name);
-  }
-
   const bool Program::link() {
     // attach shaders
     for (uint i = 0; i < d->shaders.size(); ++i)
@@ -146,9 +141,22 @@ namespace SimpleGL {
     // detach shaders
     for (uint i = 0; i < d->shaders.size(); ++i)
       glDetachShader(d->id, d->shaders[i]);
-    // resolve uniform locations
-    for (const string &uniform: d->uniforms)
-      d->uniformLocations[uniform] = glGetUniformLocation(d->id, uniform.c_str());
+    // get active uniform count
+    GLint numActiveUniforms = 0;
+    glGetProgramiv(d->id, GL_ACTIVE_UNIFORMS, &numActiveUniforms);
+    // get maximum active uniform name length
+    GLint maxUniformLength = 0;
+    glGetProgramiv(d->id, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxUniformLength);
+    // create name buffer
+    char uniformName[maxUniformLength];
+    for (GLint i = 0; i < numActiveUniforms; ++i) {
+      GLint size = 0;
+      GLenum type = 0;
+      // get name of the uniform
+      glGetActiveUniform(d->id, i, maxUniformLength, nullptr, &size, &type, uniformName);
+      // cache uniform location
+      d->uniformLocations[string(uniformName)] = glGetUniformLocation(d->id, uniformName);
+    }
     // return success
     return true;
   }
