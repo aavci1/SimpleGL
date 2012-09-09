@@ -77,7 +77,7 @@ program Light/Spot {
   uniform viewportSize
   uniform cameraPos
   uniform lightPos
-  uniform lightDir
+  uniform lightDirection
   uniform lightColor
   uniform lightDiffuseIntensity
   uniform lightSpecularIntensity
