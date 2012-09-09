@@ -48,6 +48,10 @@ namespace SimpleGL {
   const bool Program::loadShaderFromPath(ShaderType type, const string &path) {
     // read file
     ifstream in(path.c_str());
+    // check file
+    if (!in.is_open())
+      return false;
+    // read file contents
     stringstream buffer;
     buffer << in.rdbuf();
     // load shader from source
@@ -64,10 +68,11 @@ namespace SimpleGL {
       shaderType = GL_FRAGMENT_SHADER;
     // create shader object
     GLuint id = glCreateShader(shaderType);
+    if (id == 0)
+      return false;
     // set shader source
-    const char *s = strdup(source.c_str());
+    const char *s = source.c_str();
     glShaderSource(id, 1, &s, NULL);
-    delete s;
     // clear error message
     d->log = "";
     // compile shader
@@ -78,7 +83,7 @@ namespace SimpleGL {
     // if compilation failed
     if (status == GL_FALSE) {
       // get error message length
-      GLint messageLength;
+      GLint messageLength = 0;
       glGetShaderiv(id, GL_INFO_LOG_LENGTH, &messageLength);
       // create message buffer
       GLchar *message = new GLchar[messageLength + 1];
