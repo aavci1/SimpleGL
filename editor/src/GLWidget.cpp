@@ -36,11 +36,13 @@ void GLWidget::initializeGL() {
   SimpleGL::initialize();
   // create a camera
   CameraPtr camera = Root::instance()->createCamera("FpsCamera");
+  camera->setNearClipDistance(10);
+  camera->setFarClipDistance(10000);
   // create camera node
   SceneNodePtr cameraNode = Root::instance()->createSceneNode();
   Root::instance()->rootSceneNode()->attachNode(cameraNode);
-  cameraNode->setPosition(Vector3f(0.0f, 170.0f, 1000.0f));
-  cameraNode->pitch(-10);
+  cameraNode->setPosition(Vector3f(0.0f, 1000.0f, 3500.0f));
+  cameraNode->pitch(-20);
   // attach camera to the node
   cameraNode->attachObject(camera);
   // create a window
@@ -50,57 +52,52 @@ void GLWidget::initializeGL() {
   // load scripts
   Root::instance()->loadScript("media/Core.script");
   // create meshes
-  Root::instance()->createPlane("Plane", 1000, 1000, 10, 10);
+  Root::instance()->createPlane("Plane", 10000, 10000, 10, 10);
   Root::instance()->createSphere("Sphere", 10.0f);
   Root::instance()->createCube("Cube", 50.0f, 50.0f, 50.0f);
   // create floor object
   SceneNodePtr floorNode = Root::instance()->createSceneNode();
   Root::instance()->rootSceneNode()->attachNode(floorNode);
   floorNode->attachObject(Root::instance()->createInstance("Plane", "Laminate"));
-  // create ceiling object
-  SceneNodePtr ceilingNode = Root::instance()->createSceneNode();
-  Root::instance()->rootSceneNode()->attachNode(ceilingNode);
-  ceilingNode->setPosition(0.0f, 300.0f, 0.0f);
-  ceilingNode->roll(180.0f);
-  ceilingNode->attachObject(Root::instance()->createInstance("Plane", "Ceiling"));
   // add a directional light
   shared_ptr<DirectionalLight> directionalLight = static_pointer_cast<DirectionalLight>(Root::instance()->createLight("Light/Directional"));
-  directionalLight->setColor(1.0f, 1.0f, 1.0f);
+  directionalLight->setColor(0.1f, 0.1f, 0.1f);
   directionalLight->setDiffuseIntensity(1.0f);
   directionalLight->setSpecularIntensity(0.0f);
   directionalLight->setDirection(0, -1, -1);
   Root::instance()->rootSceneNode()->attachObject(directionalLight);
   // create lots of point lights
   srand(0);
-  for (int i = -5; i <= 5; ++i) {
-    for (int j = -5; j <= 5; ++j) {
+  int M = 25, N = 40;
+  for (int i = 0; i < M ; ++i) {
+    for (int j = 0; j < N; ++j) {
+      int x = (i - M / 2) * 180.0f, z = (j - N / 2) * 180.0f;
       // create light node
       SceneNodePtr lightNode = Root::instance()->createSceneNode();
       Root::instance()->rootSceneNode()->attachNode(lightNode);
-      lightNode->setPosition(j * 180.0f, 290.0f, i * 180.0f);
-      // attach a sphere
-      lightNode->attachObject(Root::instance()->createInstance("Sphere", "Ceiling"));
+      lightNode->setPosition(x, 290.0f, z);
       // attach a light
       shared_ptr<PointLight> light = static_pointer_cast<PointLight>(Root::instance()->createLight("Light/Point"));
-      // shared_ptr<SpotLight> light = static_pointer_cast<SpotLight>(Root::instance()->createLight("Light/Spot"));
-      // light->setInnerAngle(10);
-      // light->setOuterAngle(40);
+      //shared_ptr<SpotLight> light = static_pointer_cast<SpotLight>(Root::instance()->createLight("Light/Spot"));
+      //light->setInnerAngle(10);
+      //light->setOuterAngle(40);
+      //lightNode->pitch(-90, TS_WORLD);
       light->setColor(float(rand()) / RAND_MAX, float(rand()) / RAND_MAX, float(rand()) / RAND_MAX);
       light->setDiffuseIntensity(1.0f);
       light->setSpecularIntensity(1.0f);
       light->setAttenuation(400.0f);
-      // lightNode->pitch(-90, TS_WORLD); // needed for spots
       lightNode->attachObject(light);
       // create an instance
       InstancePtr instance = Root::instance()->createInstance("MODEL", "");
       // add model to the scene
       SceneNodePtr modelNode = Root::instance()->createSceneNode();
       Root::instance()->rootSceneNode()->attachNode(modelNode);
-      modelNode->setPosition(j * 180.0f, 0.0f, i * 180.0f);
+      modelNode->setPosition(x, 0.0f, z);
       modelNode->setScale(3.0f, 3.0f, 3.0f);
       modelNode->attachObject(instance);
     }
   }
+  Root::instance()->load("MODEL", "media/models/bob.model");
 }
 
 void GLWidget::resizeGL(int width, int height) {
@@ -109,6 +106,20 @@ void GLWidget::resizeGL(int width, int height) {
 }
 
 void GLWidget::paintGL() {
+  // move camera
+  if (moving) {
+    CameraPtr camera = Root::instance()->retrieveCamera("FpsCamera");
+    if (!camera)
+      return;
+    SceneNode *cameraNode = camera->parent();
+    if (!cameraNode)
+      return;
+    float altitude = cameraNode->position().y;
+    QPoint diff = referencePosition - mousePosition;
+    cameraNode->moveRelative(-0.5f * diff.x(), 0, -0.5f * diff.y());
+    cameraNode->setPosition(cameraNode->position().x, altitude, cameraNode->position().z);
+  }
+
   if (window)
     window->update();
 }
@@ -153,6 +164,11 @@ void GLWidget::mouseMoveEvent(QMouseEvent *e) {
 void GLWidget::mousePressEvent(QMouseEvent *e) {
   // update mouse position
   mousePosition = e->pos();
+  // start moving
+  if (e->button() == Qt::LeftButton) {
+    referencePosition = e->pos();
+    moving = true;
+  }
   // update view
   updateGL();
 }
@@ -160,6 +176,10 @@ void GLWidget::mousePressEvent(QMouseEvent *e) {
 void GLWidget::mouseReleaseEvent(QMouseEvent *e) {
   // update mouse position
   mousePosition = e->pos();
+  if (e->button() == Qt::LeftButton) {
+    referencePosition = QPoint(0, 0);
+    moving = false;
+  }
   // update view
   updateGL();
 }
