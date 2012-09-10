@@ -37,8 +37,9 @@ void GLWidget::initializeGL() {
   SimpleGL::initialize();
   // create a camera
   CameraPtr camera = Root::instance()->createCamera("FpsCamera");
-  camera->setNearClipDistance(10);
-  camera->setFarClipDistance(10000);
+  // set near clip distance to low to prevent flickering with lights
+  camera->setNearClipDistance(0.1f);
+  camera->setFarClipDistance(10000.0f);
   // create camera node
   SceneNodePtr cameraNode = Root::instance()->createSceneNode();
   Root::instance()->rootSceneNode()->attachNode(cameraNode);
@@ -79,10 +80,6 @@ void GLWidget::initializeGL() {
       lightNode->setPosition(x, 290.0f, z);
       // attach a light
       shared_ptr<PointLight> light = static_pointer_cast<PointLight>(Root::instance()->createLight("Light/Point"));
-//      shared_ptr<SpotLight> light = static_pointer_cast<SpotLight>(Root::instance()->createLight("Light/Spot"));
-//      light->setInnerAngle(10);
-//      light->setOuterAngle(40);
-//      lightNode->pitch(-90, TS_WORLD);
       light->setColor(float(rand()) / RAND_MAX, float(rand()) / RAND_MAX, float(rand()) / RAND_MAX);
       light->setDiffuseIntensity(1.0f);
       light->setSpecularIntensity(1.0f);
