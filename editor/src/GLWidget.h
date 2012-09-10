@@ -27,6 +27,7 @@ protected:
 
 protected:
   SimpleGL::WindowPtr window { nullptr };
+  vector<SimpleGL::LightPtr> lights;
   bool moving { false };
   QPoint referencePosition { 0, 0 };
   QPoint mousePosition { 0, 0 };

@@ -24,6 +24,7 @@
 using namespace SimpleGL;
 
 GLWidget::GLWidget(QWidget *parent) : QGLWidget(parent) {
+  setFocusPolicy(Qt::WheelFocus);
 }
 
 GLWidget::~GLWidget() {
@@ -78,15 +79,17 @@ void GLWidget::initializeGL() {
       lightNode->setPosition(x, 290.0f, z);
       // attach a light
       shared_ptr<PointLight> light = static_pointer_cast<PointLight>(Root::instance()->createLight("Light/Point"));
-      //shared_ptr<SpotLight> light = static_pointer_cast<SpotLight>(Root::instance()->createLight("Light/Spot"));
-      //light->setInnerAngle(10);
-      //light->setOuterAngle(40);
-      //lightNode->pitch(-90, TS_WORLD);
+//      shared_ptr<SpotLight> light = static_pointer_cast<SpotLight>(Root::instance()->createLight("Light/Spot"));
+//      light->setInnerAngle(10);
+//      light->setOuterAngle(40);
+//      lightNode->pitch(-90, TS_WORLD);
       light->setColor(float(rand()) / RAND_MAX, float(rand()) / RAND_MAX, float(rand()) / RAND_MAX);
       light->setDiffuseIntensity(1.0f);
       light->setSpecularIntensity(1.0f);
       light->setAttenuation(400.0f);
       lightNode->attachObject(light);
+      // add to the list
+      lights.push_back(light);
       // create an instance
       InstancePtr instance = Root::instance()->createInstance("MODEL", "");
       // add model to the scene
@@ -125,6 +128,9 @@ void GLWidget::paintGL() {
 }
 
 void GLWidget::keyPressEvent(QKeyEvent *e) {
+  if (e->key() == Qt::Key_Space)
+    for (SimpleGL::LightPtr light: lights)
+      light->setColor(float(rand()) / RAND_MAX, float(rand()) / RAND_MAX, float(rand()) / RAND_MAX);
   // update view
   updateGL();
 }
