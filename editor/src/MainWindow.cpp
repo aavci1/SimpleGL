@@ -8,6 +8,7 @@
 #include "SceneNode.h"
 
 #include <QDesktopServices>
+#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
@@ -23,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   connect(actionImport, SIGNAL(triggered()), this, SLOT(fileImport()));
   connect(actionClose, SIGNAL(triggered()), this, SLOT(fileClose()));
   connect(actionExit, SIGNAL(triggered()), this, SLOT(fileExit()));
+  connect(actionFullScreen, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
+  connect(widget, SIGNAL(toggleFullScreen()), this, SLOT(toggleFullScreen()));
   connect(actionAbout, SIGNAL(triggered()), this, SLOT(helpAbout()));
   // schedule update
   QTimer::singleShot(1, this, SLOT(updateView()));
@@ -111,6 +114,20 @@ void MainWindow::fileClose() {
 
 void MainWindow::fileExit() {
   this->close();
+}
+
+void MainWindow::toggleFullScreen() {
+  static bool fullScreen = false;
+  fullScreen = !fullScreen;
+  if (fullScreen) {
+    mbMain->hide();
+    sbMain->hide();
+    setWindowState(Qt::WindowFullScreen);
+  } else {
+    mbMain->show();
+    sbMain->show();
+    setWindowState(Qt::WindowNoState);
+  }
 }
 
 void MainWindow::helpAbout() {

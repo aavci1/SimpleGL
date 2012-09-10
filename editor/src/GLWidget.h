@@ -25,6 +25,9 @@ protected:
 
   void wheelEvent(QWheelEvent *e);
 
+signals:
+  void toggleFullScreen();
+
 protected:
   SimpleGL::WindowPtr window { nullptr };
   vector<SimpleGL::LightPtr> lights;

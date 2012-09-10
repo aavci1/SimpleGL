@@ -16,6 +16,7 @@ public slots:
   void fileImport();
   void fileClose();
   void fileExit();
+  void toggleFullScreen();
   void helpAbout();
 
   void updateView();

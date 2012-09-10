@@ -38,7 +38,7 @@ void GLWidget::initializeGL() {
   // create a camera
   CameraPtr camera = Root::instance()->createCamera("FpsCamera");
   // set near clip distance to low to prevent flickering with lights
-  camera->setNearClipDistance(0.1f);
+  camera->setNearClipDistance(2.0f);
   camera->setFarClipDistance(10000.0f);
   // create camera node
   SceneNodePtr cameraNode = Root::instance()->createSceneNode();
@@ -128,6 +128,8 @@ void GLWidget::keyPressEvent(QKeyEvent *e) {
   if (e->key() == Qt::Key_Space)
     for (SimpleGL::LightPtr light: lights)
       light->setColor(float(rand()) / RAND_MAX, float(rand()) / RAND_MAX, float(rand()) / RAND_MAX);
+  if ((e->modifiers() == Qt::ControlModifier) && (e->key() == Qt::Key_F))
+    emit toggleFullScreen();
   // update view
   updateGL();
 }
