@@ -79,7 +79,7 @@ void MainWindow::fileSaveAs() {
 }
 
 void MainWindow::fileImport() {
-  QString path = QFileDialog::getOpenFileName(this, tr("Import Model"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("Fbx Files (*.fbx)|All Files (*.*)"));
+  QString path = QFileDialog::getOpenFileName(this, tr("Import Model"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("FBX Files (*.fbx);;All Files (*.*)"));
   // return if open canceled
   if (path.isNull())
     return;
