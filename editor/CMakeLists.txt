@@ -14,6 +14,7 @@ link_directories (${CMAKE_BINARY_DIR}/lib)
 # add sources
 set (SOURCES
   src/AssimpImporter.cpp
+  src/FbxImporter.cpp
   src/GLWidget.cpp
   src/Main.cpp
   src/MainWindow.cpp
@@ -33,4 +34,4 @@ qt4_add_resources (RESOURCES
 )
 # opengl target
 add_executable (SimpleGL-Editor WIN32 ${SOURCES} ${MOC_SOURCES} ${UI_SOURCES} ${RESOURCES} resources.rc)
-target_link_libraries (SimpleGL-Editor SimpleGL ${QT_LIBRARIES} assimp)
+target_link_libraries (SimpleGL-Editor SimpleGL ${QT_LIBRARIES} assimp "/usr/lib/gcc4/x64/libfbxsdk-2013.2.so")

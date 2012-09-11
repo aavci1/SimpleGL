@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 
 #include "AssimpImporter.h"
+#include "FbxImporter.h"
 #include "Instance.h"
 #include "Mesh.h"
 #include "Model.h"
@@ -78,12 +79,15 @@ void MainWindow::fileSaveAs() {
 }
 
 void MainWindow::fileImport() {
-  QString path = QFileDialog::getOpenFileName(this, tr("Import Model"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("All Files (*.*)"));
+  QString path = QFileDialog::getOpenFileName(this, tr("Import Model"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("Fbx Files (*.fbx)|All Files (*.*)"));
   // return if open canceled
   if (path.isNull())
     return;
   // load model
-  AssimpImporter::import("MODEL", path.toStdString());
+  if (path.toLower().endsWith(".fbx"))
+    FBXImporter::import("MODEL", path.toStdString());
+  else
+    AssimpImporter::import("MODEL", path.toStdString());
   // retrieve model
   ModelPtr model = Root::instance()->retrieveModel("MODEL");
   if (model) {

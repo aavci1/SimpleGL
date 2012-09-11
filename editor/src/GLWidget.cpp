@@ -38,7 +38,7 @@ void GLWidget::initializeGL() {
   // create a camera
   CameraPtr camera = Root::instance()->createCamera("FpsCamera");
   // set near clip distance to low to prevent flickering with lights
-  camera->setNearClipDistance(2.0f);
+  camera->setNearClipDistance(1.0f);
   camera->setFarClipDistance(10000.0f);
   // create camera node
   SceneNodePtr cameraNode = Root::instance()->createSceneNode();
