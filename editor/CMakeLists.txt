@@ -16,11 +16,11 @@ ENDIF(QT_FOUND)
 
 # Assimp
 FIND_PACKAGE(Assimp REQUIRED)
-IF(Assimp_FOUND)
-  INCLUDE_DIRECTORIES(${Assimp_INCLUDE_DIR})
+IF(ASSIMP_FOUND)
+  INCLUDE_DIRECTORIES(${ASSIMP_INCLUDE_DIR})
 ELSE()
-  MESSAGE(FATAL_ERROR "Assimp not found! Please make sure Assimp is installed and Assimp_DIR is set correctly.")
-ENDIF(Assimp_FOUND)
+  MESSAGE(FATAL_ERROR "Assimp not found! Please make sure Assimp is installed and ASSIMP_DIR is set correctly.")
+ENDIF(ASSIMP_FOUND)
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/lib ${CMAKE_SOURCE_DIR}/editor/src)
 LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/lib)
