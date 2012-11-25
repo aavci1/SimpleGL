@@ -84,10 +84,7 @@ void MainWindow::fileImport() {
   if (path.isNull())
     return;
   // load model
-  if (path.toLower().endsWith(".fbx"))
-    FBXImporter::import("MODEL", path.toStdString());
-  else
-    AssimpImporter::import("MODEL", path.toStdString());
+  AssimpImporter::import("MODEL", path.toStdString());
   // retrieve model
   ModelPtr model = Root::instance()->retrieveModel("MODEL");
   if (model) {

@@ -1,8 +1,6 @@
-project (SimpleGL)
-# set cmake minimum cmake version
-cmake_minimum_required (VERSION 2.8)
-# extra definitions
-add_definitions(-Wall -std=c++11 -O2 -g)
-# add subdirectories
-add_subdirectory(lib)
-add_subdirectory(editor)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.10)
+
+SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+
+ADD_SUBDIRECTORY(lib)
+ADD_SUBDIRECTORY(editor)
