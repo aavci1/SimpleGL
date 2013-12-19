@@ -1,49 +1,57 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.10)
+cmake_minimum_required(VERSION 2.8.11)
 
-PROJECT(SimpleGL_Editor)
+project(SimpleGL_Editor)
 
-ADD_DEFINITIONS(-Wall -std=c++11 -O2 -g)
+add_definitions(-Wall -std=c++11 -O2 -g)
 
-# Qt
-FIND_PACKAGE(Qt4 REQUIRED)
-IF(QT_FOUND)
-  SET(QT_USE_QTOPENGL TRUE)
-  INCLUDE(${QT_USE_FILE})
-  INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}/editor)
-ELSE()
-  MESSAGE(FATAL_ERROR "Qt not found! Please make sure Qt is installed.")
-ENDIF(QT_FOUND)
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
+# Qt5
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Gui REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+
+# Eliminate a warning when building in Windows that relates
+# to static linking of Qt executables to qtmain.lib.
+# This policy was introduced in CMake version 2.8.11.
+# CMake version 2.8.11.2 warns when the policy is not set
+# and uses OLD behavior.
+if(POLICY CMP0020)
+    cmake_policy(SET CMP0020 NEW)
+endif()
 
 # Assimp
-FIND_PACKAGE(Assimp REQUIRED)
-IF(ASSIMP_FOUND)
-  INCLUDE_DIRECTORIES(${ASSIMP_INCLUDE_DIR})
-ELSE()
-  MESSAGE(FATAL_ERROR "Assimp not found! Please make sure Assimp is installed and ASSIMP_DIR is set correctly.")
-ENDIF(ASSIMP_FOUND)
+find_package(Assimp REQUIRED)
+if(ASSIMP_FOUND)
+  include_directories(${ASSIMP_INCLUDE_DIR})
+else()
+  message(FATAL_ERROR "Assimp not found! Please make sure Assimp is installed and ASSIMP_DIR is set correctly.")
+endif(ASSIMP_FOUND)
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/lib ${CMAKE_SOURCE_DIR}/editor/src)
-LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/lib)
+include_directories(${CMAKE_SOURCE_DIR}/lib ${CMAKE_SOURCE_DIR}/editor/src)
+link_directories(${CMAKE_BINARY_DIR}/lib)
 
-SET(SOURCES
+set(SOURCES
   src/AssimpImporter.cpp
   src/GLWidget.cpp
   src/Main.cpp
   src/MainWindow.cpp
 )
 
-QT4_WRAP_UI(UI_SOURCES
+qt5_wrap_ui(UI_SOURCES
   src/MainWindow.ui
 )
 
-QT4_WRAP_CPP(MOC_SOURCES
-  src/GLWidget.h
-  src/MainWindow.h
-)
-
-QT4_ADD_RESOURCES(RESOURCES
+qt5_add_resources(RESOURCES
   resources.qrc
 )
 
-ADD_EXECUTABLE(SimpleGL-Editor WIN32 ${SOURCES} ${MOC_SOURCES} ${UI_SOURCES} ${RESOURCES} resources.rc)
-TARGET_LINK_LIBRARIES(SimpleGL-Editor SimpleGL ${QT_LIBRARIES} ${ASSIMP_LIBRARIES})
+add_executable(SimpleGL-Editor WIN32 ${SOURCES} ${MOC_SOURCES} ${UI_SOURCES} ${RESOURCES} resources.rc)
+target_link_libraries(SimpleGL-Editor SimpleGL ${ASSIMP_LIBRARIES})
+qt5_use_modules(SimpleGL-Editor Widgets)
