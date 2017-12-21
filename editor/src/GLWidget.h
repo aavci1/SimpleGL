@@ -1,11 +1,11 @@
 #ifndef QSGLWIDGET_H
 #define QSGLWIDGET_H
 
-#include <QGLWidget>
+#include <QOpenGLWidget>
 
 #include "Types.h"
 
-class GLWidget : public QGLWidget {
+class GLWidget : public QOpenGLWidget {
   Q_OBJECT
 public:
   GLWidget(QWidget *parent = 0);

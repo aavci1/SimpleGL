@@ -23,7 +23,7 @@
 
 using namespace SimpleGL;
 
-GLWidget::GLWidget(QWidget *parent) : QGLWidget(parent) {
+GLWidget::GLWidget(QWidget *parent) : QOpenGLWidget(parent) {
   setFocusPolicy(Qt::WheelFocus);
 }
 
@@ -131,12 +131,12 @@ void GLWidget::keyPressEvent(QKeyEvent *e) {
   if ((e->modifiers() == Qt::ControlModifier) && (e->key() == Qt::Key_F))
     emit toggleFullScreen();
   // update view
-  updateGL();
+  update();
 }
 
 void GLWidget::keyReleaseEvent(QKeyEvent *e) {
   // update view
-  updateGL();
+  update();
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent *e) {
@@ -163,7 +163,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *e) {
   // update mouse position
   mousePosition = e->pos();
   // update view
-  updateGL();
+  update();
 }
 
 void GLWidget::mousePressEvent(QMouseEvent *e) {
@@ -175,7 +175,7 @@ void GLWidget::mousePressEvent(QMouseEvent *e) {
     moving = true;
   }
   // update view
-  updateGL();
+  update();
 }
 
 void GLWidget::mouseReleaseEvent(QMouseEvent *e) {
@@ -186,7 +186,7 @@ void GLWidget::mouseReleaseEvent(QMouseEvent *e) {
     moving = false;
   }
   // update view
-  updateGL();
+  update();
 }
 
 void GLWidget::wheelEvent(QWheelEvent *e) {
@@ -200,5 +200,5 @@ void GLWidget::wheelEvent(QWheelEvent *e) {
   cameraNode->moveRelative(Vector3f(0, 0, -0.4f * e->delta()));
   cameraNode->setPosition(cameraNode->position().x, altitude, cameraNode->position().z);
   // update view
-  updateGL();
+  update();
 }

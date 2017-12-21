@@ -10,6 +10,14 @@ int main(int argc, char **argv) {
   QCoreApplication::setApplicationVersion("2012");
   // create application
   QApplication app(argc, argv);
+
+  QSurfaceFormat format;
+  format.setVersion(4, 5);
+  format.setProfile(QSurfaceFormat::CoreProfile);
+  format.setDepthBufferSize(24);
+  format.setStencilBufferSize(8);
+  QSurfaceFormat::setDefaultFormat(format);
+
   // create main window
   MainWindow main;
   // show main window

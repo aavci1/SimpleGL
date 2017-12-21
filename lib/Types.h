@@ -41,21 +41,21 @@ namespace SimpleGL {
   typedef shared_ptr<Viewport> ViewportPtr;
   typedef shared_ptr<Window> WindowPtr;
 
-  typedef glm::detail::tvec2<int> Vector2i;
-  typedef glm::detail::tvec3<int> Vector3i;
-  typedef glm::detail::tvec4<int> Vector4i;
+  typedef glm::tvec2<int> Vector2i;
+  typedef glm::tvec3<int> Vector3i;
+  typedef glm::tvec4<int> Vector4i;
 
-  typedef glm::detail::tmat2x2<int> Matrix2i;
-  typedef glm::detail::tmat3x3<int> Matrix3i;
-  typedef glm::detail::tmat4x4<int> Matrix4i;
+  typedef glm::tmat2x2<int> Matrix2i;
+  typedef glm::tmat3x3<int> Matrix3i;
+  typedef glm::tmat4x4<int> Matrix4i;
 
-  typedef glm::detail::tvec2<float> Vector2f;
-  typedef glm::detail::tvec3<float> Vector3f;
-  typedef glm::detail::tvec4<float> Vector4f;
+  typedef glm::tvec2<float> Vector2f;
+  typedef glm::tvec3<float> Vector3f;
+  typedef glm::tvec4<float> Vector4f;
 
-  typedef glm::detail::tmat2x2<float> Matrix2f;
-  typedef glm::detail::tmat3x3<float> Matrix3f;
-  typedef glm::detail::tmat4x4<float> Matrix4f;
+  typedef glm::tmat2x2<float> Matrix2f;
+  typedef glm::tmat3x3<float> Matrix3f;
+  typedef glm::tmat4x4<float> Matrix4f;
 
   typedef glm::quat Quaternion;
 

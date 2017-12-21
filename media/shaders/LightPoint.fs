@@ -1,4 +1,6 @@
-#version 330 core
+#version 450 core
+precision mediump float;
+
 
 // gbuffer textures
 uniform sampler2D texture0;
@@ -36,7 +38,7 @@ void main() {
 	// discard fragment if facing away
 	vec3 lightDir = normalize(lightVector);
 	float diffuseFactor = dot(normal, -lightDir);
-	if (diffuseFactor <= 0)
+	if (diffuseFactor <= 0.0)
 		discard;
 	// calculate attenuation
 	float k = dist / lightAttenuationRange;
@@ -48,7 +50,7 @@ void main() {
 	vec3 eyeDir = normalize(cameraPos - position);
 	vec3 reflectionDir = normalize(reflect(lightDir, normal));
 	float specularFactor = pow(dot(eyeDir, reflectionDir), specularPower);
-	if (specularFactor > 0)
+	if (specularFactor > 0.0)
 		lightContrib += lightColor * lightSpecularIntensity * specularIntensity * specularFactor;
 	// calculate final color
     _color = vec4(color * lightContrib * attenuation, 1.0);

@@ -8,10 +8,10 @@
 #include "Root.h"
 #include "SceneNode.h"
 
-#include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QStandardPaths>
 #include <QTimer>
 
 using namespace SimpleGL;
@@ -36,7 +36,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::fileOpen() {
-  QString path = QFileDialog::getOpenFileName(this, tr("Open Model"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Models (*.model)"));
+  QString path = QFileDialog::getOpenFileName(this, tr("Open Model"), QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation), tr("SimpleGL Models (*.model)"));
   // return if open canceled
   if (path.isNull())
     return;
@@ -61,7 +61,7 @@ void MainWindow::fileOpen() {
 }
 
 void MainWindow::fileSave() {
-  QString path = QFileDialog::getSaveFileName(this, tr("Save Model"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Models (*.model)"));
+  QString path = QFileDialog::getSaveFileName(this, tr("Save Model"), QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation), tr("SimpleGL Models (*.model)"));
   // return if open canceled
   if (path.isNull())
     return;
@@ -70,7 +70,7 @@ void MainWindow::fileSave() {
 }
 
 void MainWindow::fileSaveAs() {
-  QString path = QFileDialog::getSaveFileName(this, tr("Save Model As"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("SimpleGL Models (*.model)"));
+  QString path = QFileDialog::getSaveFileName(this, tr("Save Model As"), QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation), tr("SimpleGL Models (*.model)"));
   // return if open canceled
   if (path.isNull())
     return;
@@ -79,7 +79,7 @@ void MainWindow::fileSaveAs() {
 }
 
 void MainWindow::fileImport() {
-  QString path = QFileDialog::getOpenFileName(this, tr("Import Model"), QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation), tr("FBX Files (*.fbx);;All Files (*.*)"));
+  QString path = QFileDialog::getOpenFileName(this, tr("Import Model"), QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation), tr("FBX Files (*.fbx);;All Files (*.*)"));
   // return if open canceled
   if (path.isNull())
     return;
@@ -142,7 +142,7 @@ void MainWindow::helpAbout() {
 
 void MainWindow::updateView() {
   // update widget
-  widget->updateGL();
+  widget->update();
   // update status message
   fps = Root::instance()->fps();
   sbMain->showMessage(tr("FPS: %1 | Vertices: %2 | Indices: %3").arg(fps).arg(vertexCount).arg(indexCount));

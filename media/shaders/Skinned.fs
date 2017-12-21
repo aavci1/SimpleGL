@@ -1,4 +1,6 @@
-#version 330 core
+#version 450 core
+precision mediump float;
+
 
 // uniforms
 uniform sampler2D texture0;
